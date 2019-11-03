@@ -1,31 +1,30 @@
-// AutoClicker.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include "pch.h"
-#include <iostream>
-#include "Clicker.h"
+#include "AutoClicker.h"
 
-
-int main()
+namespace AutoClicker
 {
- 
-	std::cout << "Starting Auto Clicker.\n";
-	bool endRequested = false;
-	Clicker* clicker = new Clicker();
-
-	while (!endRequested)
+	AutoClicker::AutoClicker()
 	{
-		clicker->Tick();
-
-		if (clicker->IsOver())
-		{
-			endRequested |= true;
-		}
 	}
 
-	std::cout << clicker << "\n";
 
-	free(clicker);
-	
-	std::cout << "Auto Clicker end.";
+	AutoClicker::~AutoClicker()
+	{
+	}
+
+	void AutoClicker::Tick()
+	{
+		this->clickerScore += this->speed;
+	}
+
+	bool AutoClicker::IsOver()
+	{
+		return this->clickerScore >= this->targetScore;
+	}
+
+	std::ostream& operator<<(std::ostream& stream, const AutoClicker* c)
+	{
+		stream << "Score : " << c->clickerScore << " Speed : " << c->speed << " Target : " << c->targetScore;
+		return stream;
+	}
 }
