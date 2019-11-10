@@ -20,6 +20,5 @@ namespace AutoClicker
 		long targetScore = 100;
 
 		long clickSpeed = 1;
-		long clockMultiplier = 1;
 	};
 }
