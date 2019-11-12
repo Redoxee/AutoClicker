@@ -7,9 +7,11 @@ using namespace utility;
 using namespace http;
 using namespace web::http::experimental::listener;
 
-ClickerServer::ClickerServer(utility::string_t url) : m_listener(url)
+ClickerServer::ClickerServer(utility::string_t url) : listener(url)
 {
-	m_listener.support(methods::GET, std::bind(&ClickerServer::handle_get, this, std::placeholders::_1));
+	this->clickerManager.StartClickerThread();
+
+	listener.support(methods::GET, std::bind(&ClickerServer::handle_get, this, std::placeholders::_1));
 }
 
 ClickerServer::~ClickerServer()
@@ -18,7 +20,9 @@ ClickerServer::~ClickerServer()
 
 void ClickerServer::handle_get(http_request message)
 {
-	cout << "Hello World" << endl;
-	string_t bod = U("HI");
-	message.reply(status_codes::OK, bod);
+	this->clickerManager.PostOrder(Order::Tick);
+	this->clickerManager.ProcessNextOrder();
+	web::json::value currentState = this->clickerManager.GetDataAsJson();
+	string_t body = currentState.serialize();
+	message.reply(status_codes::OK, body);
 }

@@ -126,6 +126,11 @@
     <ClCompile Include="ClickerServer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoClicker\AutoClicker.vcxproj">
+      <Project>{26d706e6-57e0-482e-8e03-c2e969dfda7d}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

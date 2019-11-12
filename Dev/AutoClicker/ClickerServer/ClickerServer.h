@@ -1,9 +1,11 @@
 #pragma once
 
+#include "ClickerManager.h"
 #include "cpprest/json.h"
 #include "cpprest/http_listener.h"
 #include "cpprest/uri.h"
 #include "cpprest/asyncrt_utils.h"
+#include "cpprest/json.h"
 
 using namespace web;
 using namespace http;
@@ -17,18 +19,20 @@ public:
 	ClickerServer(utility::string_t url);
 
 	pplx::task<void> open() { 
-		return m_listener.open(); 
+		return listener.open(); 
 	}
 	
 	pplx::task<void> close() {
-		return m_listener.close();
+		return listener.close();
 	}
+
 	~ClickerServer();
 
 private:
 
 	void handle_get(http_request message);
 
-	http_listener m_listener;
+	http_listener listener;
+	ClickerManager clickerManager;
 };
 
