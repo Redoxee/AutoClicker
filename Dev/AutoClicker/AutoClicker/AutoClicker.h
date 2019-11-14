@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <collection.h>
+#include "Upgrades.h"
+
 namespace AutoClicker
 {
 	struct Data
@@ -11,6 +14,12 @@ namespace AutoClicker
 		long TickCount;
 		long TargetScore;
 		long ClickValue;
+
+		long* UpgradeBought;
+
+		Data();
+		Data(int size);
+		~Data();
 
 		void CopyTo(Data& c) const
 		{
@@ -25,8 +34,14 @@ namespace AutoClicker
 	class AutoClicker
 	{
 	public:
+
+		UpgradeDefinition* UpgradeDefinitions;
+		int numberOfUpgrades;
+
 		AutoClicker();
 		~AutoClicker();
+
+		void Initialize(UpgradeDefinition* upgradeDefinitions, int numberOfUpgrades);
 
 		void Tick();
 		void Click();

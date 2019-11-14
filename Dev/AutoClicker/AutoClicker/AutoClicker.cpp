@@ -3,16 +3,46 @@
 
 namespace AutoClicker
 {
-	AutoClicker::AutoClicker()
+	Data::Data()
 	{
-		this->data.TargetScore = 1000000;
-		this->data.PassiveSpeed = 1;
-		this->data.ClickValue = 1;
 	}
 
+	Data::Data(int numberOfDefinition)
+	{
+		this->UpgradeBought = new long[numberOfDefinition];
+	}
+
+	Data::~Data()
+	{
+		if (this->UpgradeBought != nullptr)
+		{
+			delete(this->UpgradeBought);
+		}
+	}
+
+	AutoClicker::AutoClicker()
+	{
+	}
 
 	AutoClicker::~AutoClicker()
 	{
+	}
+
+	void AutoClicker::Initialize(UpgradeDefinition* upgradesDefinition, int numberOfUpgrades)
+	{
+		this->UpgradeDefinitions = upgradesDefinition;
+		this->numberOfUpgrades = numberOfUpgrades;
+
+		this->data = Data(numberOfUpgrades);
+
+		this->data.TargetScore = 1000000;
+		this->data.PassiveSpeed = 1;
+		this->data.ClickValue = 1;
+	
+		for (int index = 0; index < numberOfUpgrades; ++index)
+		{
+			this->data.UpgradeBought[index] = 0;
+		}
 	}
 
 	void AutoClicker::Tick()
