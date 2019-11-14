@@ -20,6 +20,12 @@ ClickerServer::~ClickerServer()
 
 void ClickerServer::handle_get(http_request message)
 {
+	auto http_get_vars = uri::split_query(message.request_uri().query());
+	for (auto current = http_get_vars.begin(); current != http_get_vars.end(); ++current)
+	{
+		cout << utility::conversions::to_utf8string(current->first) << " = " << utility::conversions::to_utf8string(current->second) << endl;
+	}
+
 	this->clickerManager.PostOrder(Order::Tick);
 	this->clickerManager.ProcessNextOrder();
 	web::json::value currentState = this->clickerManager.GetDataAsJson();
