@@ -1,6 +1,5 @@
 #pragma once
-
-#include "AutoClicker.h"
+#include <string>
 
 using namespace std;
 
@@ -21,8 +20,9 @@ namespace AutoClicker
 
 	struct UpgradeDefinition
 	{
+	public:
 		string Name;
-		string target;
+		string Target;
 		UpgradeType UprageType;
 		OperationType OperationType;
 		long BaseValue;

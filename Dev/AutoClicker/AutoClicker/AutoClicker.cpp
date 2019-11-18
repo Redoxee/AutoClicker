@@ -7,7 +7,7 @@ namespace AutoClicker
 	{
 	}
 
-	Data::Data(int numberOfDefinition)
+	Data::Data(size_t numberOfDefinition)
 	{
 		this->UpgradeBought = new long[numberOfDefinition];
 	}
@@ -17,6 +17,7 @@ namespace AutoClicker
 		if (this->UpgradeBought != nullptr)
 		{
 			delete(this->UpgradeBought);
+			this->UpgradeBought = nullptr;
 		}
 	}
 
@@ -28,10 +29,10 @@ namespace AutoClicker
 	{
 	}
 
-	void AutoClicker::Initialize(UpgradeDefinition* upgradesDefinition, int numberOfUpgrades)
+	void AutoClicker::Initialize(std::vector<UpgradeDefinition>& upgradesDefinitions)
 	{
-		this->UpgradeDefinitions = upgradesDefinition;
-		this->numberOfUpgrades = numberOfUpgrades;
+		this->UpgradeDefinitions = upgradesDefinitions;
+		size_t numberOfUpgrades = upgradesDefinitions.size();
 
 		this->data = Data(numberOfUpgrades);
 

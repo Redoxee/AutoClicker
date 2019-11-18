@@ -1,7 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <collection.h>
+#include <vector>
+
 #include "Upgrades.h"
 
 namespace AutoClicker
@@ -15,10 +16,13 @@ namespace AutoClicker
 		long TargetScore;
 		long ClickValue;
 
-		long* UpgradeBought;
+		size_t NumberOfUpgrades;
+		long* UpgradeBought = nullptr;
+		long* UpgradePrices = nullptr;
+		long* UpgradeBaseValues = nullptr;
 
 		Data();
-		Data(int size);
+		Data(size_t size);
 		~Data();
 
 		void CopyTo(Data& c) const
@@ -28,6 +32,20 @@ namespace AutoClicker
 			c.TickCount = this->TickCount;
 			c.TargetScore = this->TargetScore;
 			c.ClickValue = this->ClickValue;
+
+			if (c.UpgradeBought != nullptr)
+			{
+				delete(c.UpgradeBought);
+				c.UpgradeBought = nullptr;
+			}
+
+			if (this->UpgradeBought != nullptr)
+			{
+				c.UpgradeBought = new long[this->NumberOfUpgrades];
+				_memccpy(c.UpgradeBought, this->UpgradeBought, static_cast<int>(this->NumberOfUpgrades), sizeof(long));
+			}
+
+			c.NumberOfUpgrades = this->NumberOfUpgrades;
 		}
 	};
 
@@ -35,13 +53,13 @@ namespace AutoClicker
 	{
 	public:
 
-		UpgradeDefinition* UpgradeDefinitions;
+		std::vector<UpgradeDefinition> UpgradeDefinitions;
 		int numberOfUpgrades;
 
 		AutoClicker();
 		~AutoClicker();
 
-		void Initialize(UpgradeDefinition* upgradeDefinitions, int numberOfUpgrades);
+		void Initialize(std::vector<UpgradeDefinition>& upgradeDefinitions);
 
 		void Tick();
 		void Click();
@@ -53,7 +71,9 @@ namespace AutoClicker
 		}
 
 		friend std::ostream& operator<<(std::ostream&, const AutoClicker* c);
+
 	private:
+
 		Data data;
 	};
 }
