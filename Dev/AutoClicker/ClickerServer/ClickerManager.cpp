@@ -89,12 +89,15 @@ web::json::value ClickerManager::GetDataAsJson()
 	result[U("TickCount")] = data.TickCount;
 	result[U("TargetScore")] = data.TargetScore;
 	result[U("ClickValue")] = data.ClickValue;
-
-	size_t numberOfUpgrades = data.NumberOfUpgrades;
-	for (int index = 0; index < numberOfUpgrades; ++index)
+	
+	/*
+	if (data.NumberOfGenerators > 0)
 	{
-		result[U("PurchasedUpgrades")][index] = data.UpgradeBought[index];
-	}
+		for (int index = 0; index < data.NumberOfGenerators; ++index)
+		{
+			result[U"Generators"][U"index"][U"Price"] = data.Generators[index].Price();
+		}
+	}*/
 
 	return result;
 }

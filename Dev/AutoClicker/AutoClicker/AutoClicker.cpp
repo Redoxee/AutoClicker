@@ -5,19 +5,30 @@ namespace AutoClicker
 {
 	Data::Data()
 	{
+		this->NumberOfGenerators = 0;
+		this->Generators = nullptr;
 	}
 
-	Data::Data(size_t numberOfDefinition)
+	Data::Data(const std::vector<GeneratorDefinition>& definitions)
 	{
-		this->UpgradeBought = new long[numberOfDefinition];
+		this->NumberOfGenerators = definitions.size();
+		if (this->NumberOfGenerators > 0)
+		{
+			this->Generators = new Generator[this->NumberOfGenerators];
+			for (int index = 0; index < this->NumberOfGenerators; ++index)
+			{
+				this->Generators[index].Definition = &definitions[index];
+				this->Generators[index].InstanceBought = 0;
+			}
+		}
 	}
 
 	Data::~Data()
 	{
-		if (this->UpgradeBought != nullptr)
+		if (this->Generators != nullptr)
 		{
-			delete(this->UpgradeBought);
-			this->UpgradeBought = nullptr;
+			delete[] this->Generators;
+			this->Generators = nullptr;
 		}
 	}
 
@@ -29,32 +40,48 @@ namespace AutoClicker
 	{
 	}
 
-	void AutoClicker::Initialize(std::vector<UpgradeDefinition>& upgradesDefinitions)
+	void AutoClicker::Initialize(std::vector<GeneratorDefinition>& generatorDefinitions)
 	{
-		this->UpgradeDefinitions = upgradesDefinitions;
-		size_t numberOfUpgrades = upgradesDefinitions.size();
-
-		this->data = Data(numberOfUpgrades);
+		this->data = Data(generatorDefinitions);
 
 		this->data.TargetScore = 1000000;
 		this->data.PassiveSpeed = 1;
 		this->data.ClickValue = 1;
-	
-		for (int index = 0; index < numberOfUpgrades; ++index)
-		{
-			this->data.UpgradeBought[index] = 0;
-		}
 	}
 
 	void AutoClicker::Tick()
 	{
-		this->data.Score += this->data.PassiveSpeed;
+		long stock = this->data.PassiveSpeed;
+		for (int index = 0; index < this->data.NumberOfGenerators; ++index)
+		{
+			stock += this->data.Generators[index].InstanceBought * this->data.Generators[index].Definition->BaseRate;
+		}
+
+		this->data.Score += stock;
 		++this->data.TickCount;
 	}
 
 	void AutoClicker::Click()
 	{
 		this->data.Score += this->data.ClickValue;
+	}
+
+	bool AutoClicker::BuyGenerator(int index)
+	{
+		if (index < 0 || index >= this->data.NumberOfGenerators)
+		{
+			return false;
+		}
+		
+		long price = this->data.Generators[index].Price();
+
+		if (price > this->data.Score)
+		{
+			return false;
+		}
+
+		++this->data.Generators[index].InstanceBought;
+		return true;
 	}
 
 	bool AutoClicker::IsOver()

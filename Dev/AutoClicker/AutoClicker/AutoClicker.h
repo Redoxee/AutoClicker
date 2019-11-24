@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Upgrades.h"
+#include "Generator.h"
 
 namespace AutoClicker
 {
@@ -16,13 +17,11 @@ namespace AutoClicker
 		long TargetScore;
 		long ClickValue;
 
-		size_t NumberOfUpgrades;
-		long* UpgradeBought = nullptr;
-		long* UpgradePrices = nullptr;
-		long* UpgradeBaseValues = nullptr;
+		size_t NumberOfGenerators;
+		Generator* Generators;
 
 		Data();
-		Data(size_t size);
+		Data(const std::vector<GeneratorDefinition>& generatorDefinitions);
 		~Data();
 
 		void CopyTo(Data& c) const
@@ -33,37 +32,32 @@ namespace AutoClicker
 			c.TargetScore = this->TargetScore;
 			c.ClickValue = this->ClickValue;
 
-			if (c.UpgradeBought != nullptr)
+			if (this->NumberOfGenerators != c.NumberOfGenerators)
 			{
-				delete(c.UpgradeBought);
-				c.UpgradeBought = nullptr;
+				delete[] c.Generators;
+				c.NumberOfGenerators = this->NumberOfGenerators;
+				c.Generators = new Generator[c.NumberOfGenerators];
 			}
-
-			if (this->UpgradeBought != nullptr)
+			
+			for (int index = 0; index < this->NumberOfGenerators; ++index)
 			{
-				c.UpgradeBought = new long[this->NumberOfUpgrades];
-				_memccpy(c.UpgradeBought, this->UpgradeBought, static_cast<int>(this->NumberOfUpgrades), sizeof(long));
+				c.Generators[index] = this->Generators[index];
 			}
-
-			c.NumberOfUpgrades = this->NumberOfUpgrades;
 		}
 	};
 
 	class AutoClicker
 	{
 	public:
-
-		std::vector<UpgradeDefinition> UpgradeDefinitions;
-		int numberOfUpgrades;
-
 		AutoClicker();
 		~AutoClicker();
 
-		void Initialize(std::vector<UpgradeDefinition>& upgradeDefinitions);
+		void Initialize(std::vector<GeneratorDefinition>& generatorDefinition);
 
 		void Tick();
 		void Click();
 		bool IsOver();
+		bool BuyGenerator(int index);
 
 		void GetData(Data& d) const
 		{
