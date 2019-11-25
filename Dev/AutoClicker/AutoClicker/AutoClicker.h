@@ -61,13 +61,14 @@ namespace AutoClicker
 
 		void GetData(Data& d) const
 		{
-			this->data.CopyTo(d);
+			this->data->CopyTo(d);
 		}
 
 		friend std::ostream& operator<<(std::ostream&, const AutoClicker* c);
 
 	private:
+		std::vector<GeneratorDefinition> generatorDefinitions;
 
-		Data data;
+		Data* data = nullptr;
 	};
 }

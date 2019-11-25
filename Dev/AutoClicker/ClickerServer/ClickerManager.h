@@ -15,14 +15,15 @@ enum Order
 class ClickerManager
 {
 public:
+	ClickerManager();
+	~ClickerManager();
+
 	void PostOrder(Order order);
 	void ProcessNextOrder();
 	bool IsTerminated();
 
 	void StartClickerThread();
 	web::json::value GetDataAsJson();
-
-	~ClickerManager();
 
 private:
 	bool isTerminated = false;

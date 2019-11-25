@@ -1,5 +1,20 @@
 #include "ClickerManager.h"
 #include <chrono>
+#include "vector"
+
+ClickerManager::ClickerManager()
+{
+	std::vector<AutoClicker::GeneratorDefinition> generators;
+	AutoClicker::GeneratorDefinition generator;
+	
+	generator.BasePrice = 10;
+	generator.BaseRate = 2;
+	generator.PriceRate = 2;
+
+	generators.push_back(generator);
+
+	this->clickerInstance.Initialize(generators);
+}
 
 ClickerManager::~ClickerManager()
 {
@@ -90,14 +105,20 @@ web::json::value ClickerManager::GetDataAsJson()
 	result[U("TargetScore")] = data.TargetScore;
 	result[U("ClickValue")] = data.ClickValue;
 	
-	/*
 	if (data.NumberOfGenerators > 0)
 	{
+		auto generators = web::json::value::array();
 		for (int index = 0; index < data.NumberOfGenerators; ++index)
 		{
-			result[U"Generators"][U"index"][U"Price"] = data.Generators[index].Price();
+			auto generator = web::json::value::object();
+			generator[U("Price")] = data.Generators[index].Price();
+			generator[U("NumberOfInstanceBought")] = data.Generators[index].InstanceBought;
+			generator[U("BaseRate")] = data.Generators[index].Definition->BaseRate;
+			generators[index] = generator;
 		}
-	}*/
+
+		result[U("Generators")] = generators;
+	}
 
 	return result;
 }

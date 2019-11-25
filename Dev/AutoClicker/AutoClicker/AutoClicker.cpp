@@ -38,60 +38,69 @@ namespace AutoClicker
 
 	AutoClicker::~AutoClicker()
 	{
+		if (this->data != nullptr)
+		{
+			delete this->data;
+			this->data = nullptr;
+		}
 	}
 
-	void AutoClicker::Initialize(std::vector<GeneratorDefinition>& generatorDefinitions)
+	void AutoClicker::Initialize(std::vector<GeneratorDefinition>& gDefinitions)
 	{
-		this->data = Data(generatorDefinitions);
+		this->generatorDefinitions = gDefinitions;
+		this->data = new Data(generatorDefinitions);
+		
+		this->data->TickCount = 0;
+		this->data->Score = 0;
 
-		this->data.TargetScore = 1000000;
-		this->data.PassiveSpeed = 1;
-		this->data.ClickValue = 1;
+		this->data->TargetScore = 1000000;
+		this->data->PassiveSpeed = 0;
+		this->data->ClickValue = 1;
 	}
 
 	void AutoClicker::Tick()
 	{
-		long stock = this->data.PassiveSpeed;
-		for (int index = 0; index < this->data.NumberOfGenerators; ++index)
+		long stock = this->data->PassiveSpeed;
+		for (int index = 0; index < this->data->NumberOfGenerators; ++index)
 		{
-			stock += this->data.Generators[index].InstanceBought * this->data.Generators[index].Definition->BaseRate;
+			stock += this->data->Generators[index].InstanceBought * this->data->Generators[index].Definition->BaseRate;
 		}
 
-		this->data.Score += stock;
-		++this->data.TickCount;
+		this->data->Score += stock;
+		++this->data->TickCount;
 	}
 
 	void AutoClicker::Click()
 	{
-		this->data.Score += this->data.ClickValue;
+		this->data->Score += this->data->ClickValue;
 	}
 
 	bool AutoClicker::BuyGenerator(int index)
 	{
-		if (index < 0 || index >= this->data.NumberOfGenerators)
+		if (index < 0 || index >= this->data->NumberOfGenerators)
 		{
 			return false;
 		}
 		
-		long price = this->data.Generators[index].Price();
+		long price = this->data->Generators[index].Price();
 
-		if (price > this->data.Score)
+		if (price > this->data->Score)
 		{
 			return false;
 		}
 
-		++this->data.Generators[index].InstanceBought;
+		++this->data->Generators[index].InstanceBought;
 		return true;
 	}
 
 	bool AutoClicker::IsOver()
 	{
-		return this->data.Score >= this->data.TargetScore;
+		return this->data->Score >= this->data->TargetScore;
 	}
 
 	std::ostream& operator<<(std::ostream& stream, const AutoClicker* c)
 	{
-		stream << "Score : " << c->data.Score << " Speed : " << c->data.PassiveSpeed << " Target : " << c->data.TargetScore;
+		stream << "Score : " << c->data->Score << " Speed : " << c->data->PassiveSpeed << " Target : " << c->data->TargetScore;
 		return stream;
 	}
 }
