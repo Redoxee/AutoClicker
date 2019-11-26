@@ -4,12 +4,27 @@
 #include "cpprest/json.h"
 #include <thread>
 #include <mutex>
+#include "vector"
 
-enum Order
+enum OrderIdentifier
 {
 	Tick,
 	Click,
+	BuyGenerator,
 	Terminate,
+};
+
+class Order
+{
+public:
+	Order(OrderIdentifier id, int value)
+	{
+		this->Identifier = id;
+		this->Value = value;
+	}
+
+	OrderIdentifier Identifier = OrderIdentifier::Tick;
+	int Value = 0;
 };
 
 class ClickerManager
@@ -26,6 +41,8 @@ public:
 	web::json::value GetDataAsJson();
 
 private:
+	std::vector<AutoClicker::GeneratorDefinition> generatorDefinitions;
+
 	bool isTerminated = false;
 
 	AutoClicker::AutoClicker clickerInstance;

@@ -30,7 +30,9 @@ public:
 
 private:
 
-	void handle_get(http_request message);
+	void HandleGet(http_request message);
+	void ParseOrderRequest(string& id, string& parameter);
+
 
 	http_listener listener;
 	ClickerManager clickerManager;
