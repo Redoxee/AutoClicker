@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::handleClick()
 {
-    request.setUrl(QUrl("http://localhost:1234/AutoClicker"));
+    request.setUrl(QUrl("http://localhost:1234/AutoClicker?Click=True"));
     manager->get(request);
 }
 

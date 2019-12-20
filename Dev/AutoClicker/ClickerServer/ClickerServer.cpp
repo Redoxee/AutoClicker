@@ -24,6 +24,10 @@ void ClickerServer::handle_get(http_request message)
 	for (auto current = http_get_vars.begin(); current != http_get_vars.end(); ++current)
 	{
 		cout << utility::conversions::to_utf8string(current->first) << " = " << utility::conversions::to_utf8string(current->second) << endl;
+		if (current->first == U("Click"))
+		{
+			this->clickerManager.PostOrder(Order::Click);
+		}
 	}
 
 	this->clickerManager.PostOrder(Order::Tick);
