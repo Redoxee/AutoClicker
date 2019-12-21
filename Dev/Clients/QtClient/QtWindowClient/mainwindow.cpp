@@ -13,13 +13,27 @@ MainWindow::MainWindow(QWidget *parent)
         );
 
     QPushButton* clickerButton = findChild<QPushButton*>("ClickerButton");
-    connect(clickerButton, SIGNAL (released()), this, SLOT (handleClick()));
+    QObject::connect(clickerButton, SIGNAL (released()), this, SLOT (handleClick()));
 
     scoreValueLabel = findChild<QLabel*>("ScoreValue");
     tickValueLabel = findChild<QLabel*>("TickValue");
 
     scoreValueLabel->setText("0");
     tickValueLabel->setText("0");
+
+    this->refreshWorker = new RefresherWorker();
+    QObject::connect(this->refreshWorker, SIGNAL(refreshData(int)), this, SLOT(refreshData(int)));
+    this->workerThread = new QThread();
+    this->refreshWorker->moveToThread(this->workerThread);
+
+    connect(this->workerThread, SIGNAL(started()), this->refreshWorker, SLOT(run()));
+    this->workerThread->start();
+}
+
+MainWindow::~MainWindow()
+{
+    this->refreshWorker->stop();
+    delete ui;
 }
 
 void MainWindow::handleClick()
@@ -48,8 +62,8 @@ void MainWindow::handleHttpRequest(QNetworkReply *reply)
     tickValueLabel->setText(QString::number(tickCount));
 }
 
-MainWindow::~MainWindow()
+void MainWindow::refreshData(int data)
 {
-    delete ui;
+    scoreValueLabel->setText(QString::number(data));
 }
 

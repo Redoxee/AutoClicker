@@ -12,6 +12,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include <QThread>
+
+#include "refresherworker.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -28,6 +32,8 @@ private slots:
     void handleClick();
     void handleHttpRequest(QNetworkReply *reply);
 
+    void refreshData(int data);
+
 private:
     Ui::MainWindow *ui;
 
@@ -36,5 +42,8 @@ private:
 
     QLabel* scoreValueLabel;
     QLabel* tickValueLabel;
+
+    RefresherWorker* refreshWorker;
+    QThread* workerThread;
 };
 #endif // MAINWINDOW_H

@@ -18,10 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    refresherworker.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    refresherworker.h
 
 FORMS += \
     mainwindow.ui
