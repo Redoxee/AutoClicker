@@ -10,7 +10,7 @@ enum OrderIdentifier
 {
 	Tick,
 	Click,
-	BuyGenerator,
+	BuyUpgrade,
 	Meta_Terminate,
 	Meta_TickLength,
 };
@@ -47,7 +47,7 @@ public:
 	}
 
 private:
-	std::vector<AutoClicker::GeneratorDefinition> generatorDefinitions;
+	std::vector<AutoClicker::UpgradeDefinition> upgradeDefinitions;
 
 	bool isTerminated = false;
 

@@ -1,18 +1,19 @@
 #include "ClickerManager.h"
 #include <chrono>
 #include "vector"
+#include <stdio.h>
 
 ClickerManager::ClickerManager()
 {
-	AutoClicker::GeneratorDefinition generator;
+	AutoClicker::UpgradeDefinition generator;
 	
 	generator.BasePrice = 10;
-	generator.BaseRate = 2;
+	generator.ImpactValue = 2;
 	generator.PriceRate = 2;
 
-	this->generatorDefinitions.push_back(generator);
+	this->upgradeDefinitions.push_back(generator);
 
-	this->clickerInstance.Initialize(this->generatorDefinitions);
+	this->clickerInstance.Initialize(this->upgradeDefinitions);
 }
 
 ClickerManager::~ClickerManager()
@@ -55,16 +56,16 @@ void ClickerManager::ProcessNextOrder()
 		this->clickerInstance.Click();
 		break;
 
-	case BuyGenerator:
+	case BuyUpgrade:
 	{
 		int index = order.Value;
-		if (index < 0 || index >= this->generatorDefinitions.size())
+		if (index < 0 || index >= this->upgradeDefinitions.size())
 		{
-			cerr << "when buyting generator index out of range " << order.Value << endl;
+			std::cerr << "when buyting generator index out of range " << order.Value << std::endl;
 		}
 		else
 		{
-			this->clickerInstance.BuyGenerator(index);
+			this->clickerInstance.BuyUpgrade(index);
 		}
 
 		break;
@@ -129,19 +130,21 @@ web::json::value ClickerManager::GetDataAsJson()
 	result[U("TargetScore")] = data.TargetScore;
 	result[U("ClickValue")] = data.ClickValue;
 	
-	if (data.NumberOfGenerators > 0)
+	if (data.NumberOfUpgrades > 0)
 	{
-		auto generators = web::json::value::array();
-		for (int index = 0; index < data.NumberOfGenerators; ++index)
+		auto upgrades = web::json::value::array();
+		for (int index = 0; index < data.NumberOfUpgrades; ++index)
 		{
-			auto generator = web::json::value::object();
-			generator[U("Price")] = data.Generators[index].Price();
-			generator[U("NumberOfInstanceBought")] = data.Generators[index].InstanceBought;
-			generator[U("BaseRate")] = data.Generators[index].Definition->BaseRate;
-			generators[index] = generator;
+			auto upgrade = web::json::value::object();
+			upgrade[U("Price")] = data.Upgrades[index].Price();
+			upgrade[U("NumberOfInstanceBought")] = data.Upgrades[index].InstanceBought;
+			upgrade[U("BaseRate")] = data.Upgrades[index].Definition->ImpactValue;
+			utility::string_t description = utility::conversions::to_string_t(data.Upgrades[index].Definition->Description);
+			upgrade[U("Description")] = web::json::value::string(description);
+			upgrades[index] = upgrade;
 		}
 
-		result[U("Generators")] = generators;
+		result[U("Upgrades")] = upgrades;
 	}
 
 	return result;

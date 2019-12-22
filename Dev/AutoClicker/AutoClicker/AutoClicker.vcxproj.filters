@@ -21,10 +21,7 @@
     <ClInclude Include="AutoClicker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgrades.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Generator.h">
+    <ClInclude Include="Upgrade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,10 +32,7 @@
     <ClCompile Include="AutoClicker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Upgrades.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Generator.cpp">
+    <ClCompile Include="Upgrade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

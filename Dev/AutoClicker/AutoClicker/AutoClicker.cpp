@@ -5,30 +5,30 @@ namespace AutoClicker
 {
 	Data::Data()
 	{
-		this->NumberOfGenerators = 0;
-		this->Generators = nullptr;
+		this->NumberOfUpgrades = 0;
+		this->Upgrades = nullptr;
 	}
 
-	Data::Data(const std::vector<GeneratorDefinition>& definitions)
+	Data::Data(const std::vector<UpgradeDefinition>& definitions)
 	{
-		this->NumberOfGenerators = definitions.size();
-		if (this->NumberOfGenerators > 0)
+		this->NumberOfUpgrades = definitions.size();
+		if (this->NumberOfUpgrades > 0)
 		{
-			this->Generators = new Generator[this->NumberOfGenerators];
-			for (int index = 0; index < this->NumberOfGenerators; ++index)
+			this->Upgrades = new Upgrade[this->NumberOfUpgrades];
+			for (int index = 0; index < this->NumberOfUpgrades; ++index)
 			{
-				this->Generators[index].Definition = &definitions[index];
-				this->Generators[index].InstanceBought = 0;
+				this->Upgrades[index].Definition = &definitions[index];
+				this->Upgrades[index].InstanceBought = 0;
 			}
 		}
 	}
 
 	Data::~Data()
 	{
-		if (this->Generators != nullptr)
+		if (this->Upgrades != nullptr)
 		{
-			delete[] this->Generators;
-			this->Generators = nullptr;
+			delete[] this->Upgrades;
+			this->Upgrades = nullptr;
 		}
 	}
 
@@ -45,10 +45,10 @@ namespace AutoClicker
 		}
 	}
 
-	void AutoClicker::Initialize(std::vector<GeneratorDefinition>& gDefinitions)
+	void AutoClicker::Initialize(std::vector<UpgradeDefinition>& uDefinitions)
 	{
-		this->generatorDefinitions = gDefinitions;
-		this->data = new Data(generatorDefinitions);
+		this->upgradeDefinitions = uDefinitions;
+		this->data = new Data(upgradeDefinitions);
 		
 		this->data->TickCount = 0;
 		this->data->Score = 0;
@@ -61,9 +61,9 @@ namespace AutoClicker
 	void AutoClicker::Tick()
 	{
 		long stock = this->data->PassiveSpeed;
-		for (int index = 0; index < this->data->NumberOfGenerators; ++index)
+		for (int index = 0; index < this->data->NumberOfUpgrades; ++index)
 		{
-			stock += this->data->Generators[index].InstanceBought * this->data->Generators[index].Definition->BaseRate;
+			stock += this->data->Upgrades[index].InstanceBought * this->data->Upgrades[index].Definition->ImpactValue;
 		}
 
 		this->data->Score += stock;
@@ -75,21 +75,26 @@ namespace AutoClicker
 		this->data->Score += this->data->ClickValue;
 	}
 
-	bool AutoClicker::BuyGenerator(int index)
+	bool AutoClicker::BuyUpgrade(int index)
 	{
-		if (index < 0 || index >= this->data->NumberOfGenerators)
+		if (index < 0 || index >= this->data->NumberOfUpgrades)
 		{
 			return false;
 		}
 		
-		long price = this->data->Generators[index].Price();
+		long price = this->data->Upgrades[index].Price();
 
 		if (price > this->data->Score)
 		{
 			return false;
 		}
 
-		++this->data->Generators[index].InstanceBought;
+		if (this->data->Upgrades[index].Definition->Unique && this->data->Upgrades[index].InstanceBought > 0)
+		{
+			return false;
+		}
+
+		++this->data->Upgrades[index].InstanceBought;
 		return true;
 	}
 

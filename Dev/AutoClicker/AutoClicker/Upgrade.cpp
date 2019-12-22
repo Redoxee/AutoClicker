@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Generator.h"
+#include "Upgrade.h"
 
 namespace AutoClicker
 {
-	long Generator::Price()
+	long Upgrade::Price()
 	{
 		return this->Definition->BasePrice;
 	}

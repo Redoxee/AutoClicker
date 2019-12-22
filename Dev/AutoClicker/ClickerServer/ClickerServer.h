@@ -31,7 +31,7 @@ public:
 private:
 
 	void HandleGet(http_request message);
-	void ParseOrderRequest(string& id, string& parameter, string_t& body);
+	void ParseOrderRequest(std::string& id, std::string& parameter, string_t& body);
 
 
 	http_listener listener;

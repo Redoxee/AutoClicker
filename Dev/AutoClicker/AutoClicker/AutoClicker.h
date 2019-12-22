@@ -3,8 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Upgrades.h"
-#include "Generator.h"
+#include "Upgrade.h"
 
 namespace AutoClicker
 {
@@ -17,11 +16,11 @@ namespace AutoClicker
 		long TargetScore;
 		long ClickValue;
 
-		size_t NumberOfGenerators;
-		Generator* Generators;
+		size_t NumberOfUpgrades;
+		Upgrade* Upgrades;
 
 		Data();
-		Data(const std::vector<GeneratorDefinition>& generatorDefinitions);
+		Data(const std::vector<UpgradeDefinition>& upgradeDefinitions);
 		~Data();
 
 		void CopyTo(Data& c) const
@@ -32,16 +31,16 @@ namespace AutoClicker
 			c.TargetScore = this->TargetScore;
 			c.ClickValue = this->ClickValue;
 
-			if (this->NumberOfGenerators != c.NumberOfGenerators)
+			if (this->NumberOfUpgrades != c.NumberOfUpgrades)
 			{
-				delete[] c.Generators;
-				c.NumberOfGenerators = this->NumberOfGenerators;
-				c.Generators = new Generator[c.NumberOfGenerators];
+				delete[] c.Upgrades;
+				c.NumberOfUpgrades = this->NumberOfUpgrades;
+				c.Upgrades = new Upgrade[c.NumberOfUpgrades];
 			}
 			
-			for (int index = 0; index < this->NumberOfGenerators; ++index)
+			for (int index = 0; index < this->NumberOfUpgrades; ++index)
 			{
-				c.Generators[index] = this->Generators[index];
+				c.Upgrades[index] = this->Upgrades[index];
 			}
 		}
 	};
@@ -52,12 +51,12 @@ namespace AutoClicker
 		AutoClicker();
 		~AutoClicker();
 
-		void Initialize(std::vector<GeneratorDefinition>& generatorDefinition);
+		void Initialize(std::vector<UpgradeDefinition>& upgradeDefinition);
 
 		void Tick();
 		void Click();
 		bool IsOver();
-		bool BuyGenerator(int index);
+		bool BuyUpgrade(int index);
 
 		void GetData(Data& d) const
 		{
@@ -67,7 +66,7 @@ namespace AutoClicker
 		friend std::ostream& operator<<(std::ostream&, const AutoClicker* c);
 
 	private:
-		std::vector<GeneratorDefinition> generatorDefinitions;
+		std::vector<UpgradeDefinition> upgradeDefinitions;
 
 		Data* data = nullptr;
 	};

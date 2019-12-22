@@ -34,7 +34,7 @@ void ClickerServer::HandleGet(http_request message)
 	message.reply(status_codes::OK, body);
 }
 
-void ClickerServer::ParseOrderRequest(string& id, string& param, string_t& body)
+void ClickerServer::ParseOrderRequest(std::string& id, std::string& param, string_t& body)
 {
 	cout << "Order : " << id << " Parameter : " << param << endl;
 
@@ -43,10 +43,10 @@ void ClickerServer::ParseOrderRequest(string& id, string& param, string_t& body)
 	{
 		this->clickerManager.PostOrder(Order(OrderIdentifier::Click, 0));
 	}
-	else if (id == "generator")
+	else if (id == "upgrade")
 	{
 		int generatorIndex = std::stoi(param);
-		this->clickerManager.PostOrder(Order(OrderIdentifier::BuyGenerator, generatorIndex));
+		this->clickerManager.PostOrder(Order(OrderIdentifier::BuyUpgrade, generatorIndex));
 	}
 	else if (id == "get_state")
 	{
