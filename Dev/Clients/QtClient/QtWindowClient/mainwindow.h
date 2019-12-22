@@ -37,11 +37,13 @@ public slots:
 private:
     Ui::MainWindow *ui;
 
-    QNetworkAccessManager *manager;
-    QNetworkRequest request;
-
     QLabel* scoreValueLabel;
     QLabel* tickValueLabel;
+    QLabel* clickValueLabel;
+    QLabel* targetScoreLabel;
+
+    QNetworkAccessManager *manager;
+    QNetworkRequest request;
 
     RefresherWorker* refreshWorker;
     QThread* workerThread;

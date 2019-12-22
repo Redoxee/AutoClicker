@@ -11,6 +11,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "AutoClickerConfig.h"
 
 class RefresherWorker : public QObject
 {
@@ -48,6 +49,7 @@ private:
     void ProcessReply(QNetworkReply* reply);
     void TryRequestRefresh();
 
+    ulong tickLength = 100;
 };
 
 #endif // REFRESHERWORKER_H

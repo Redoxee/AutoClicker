@@ -7,7 +7,11 @@ void RefresherWorker::run()
     this->manager = new QNetworkAccessManager();
     QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
-    this->TryRequestRefresh();
+
+    QString uri = QString::fromStdString((AutoClicker::BaseURI() + "get_state = full, set_ticklength = " + std::to_string(AutoClicker::TickLength())));
+    this->request.setUrl(QUrl(uri));
+    this->waitingForQuery = true;
+    this->manager->get(this->request);
 }
 
 void RefresherWorker::TryRequestRefresh()
@@ -22,7 +26,7 @@ void RefresherWorker::TryRequestRefresh()
         return;
     }
 
-    this->request.setUrl(QUrl("http://localhost:1234/AutoClicker?display=full"));
+    this->request.setUrl(QUrl("http://localhost:1234/AutoClicker?get_state=full"));
     this->waitingForQuery = true;
     this->manager->get(this->request);
 }
@@ -48,6 +52,6 @@ void RefresherWorker::handleHttpRequest(QNetworkReply* reply)
 {
     this->waitingForQuery = false;
     this->ProcessReply(reply);
-    QThread::msleep(100);
+    QThread::msleep(this->tickLength);
     this->TryRequestRefresh();
 }

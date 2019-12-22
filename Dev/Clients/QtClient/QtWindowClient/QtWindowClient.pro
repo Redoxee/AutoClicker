@@ -22,6 +22,7 @@ SOURCES += \
     refresherworker.cpp
 
 HEADERS += \
+    AutoClickerConfig.h \
     mainwindow.h \
     refresherworker.h
 

@@ -22,20 +22,22 @@ ClickerServer::~ClickerServer()
 void ClickerServer::HandleGet(http_request message)
 {
 	auto http_get_vars = uri::split_query(message.request_uri().query());
+	string_t body = U("");
+
 	for (auto current = http_get_vars.begin(); current != http_get_vars.end(); ++current)
 	{
 		string id = utility::conversions::to_utf8string(current->first);
 		string parameter = utility::conversions::to_utf8string(current->second);
-		this->ParseOrderRequest(id, parameter);
+		this->ParseOrderRequest(id, parameter, body);
 	}
 
-	web::json::value currentState = this->clickerManager.GetDataAsJson();
-	string_t body = currentState.serialize();
 	message.reply(status_codes::OK, body);
 }
 
-void ClickerServer::ParseOrderRequest(string& id, string& param)
+void ClickerServer::ParseOrderRequest(string& id, string& param, string_t& body)
 {
+	cout << "Order : " << id << " Parameter : " << param << endl;
+
 	boost::algorithm::to_lower(id);
 	if (id == "click")
 	{
@@ -45,5 +47,15 @@ void ClickerServer::ParseOrderRequest(string& id, string& param)
 	{
 		int generatorIndex = std::stoi(param);
 		this->clickerManager.PostOrder(Order(OrderIdentifier::BuyGenerator, generatorIndex));
+	}
+	else if (id == "get_state")
+	{
+		web::json::value currentState = this->clickerManager.GetDataAsJson();
+		body = currentState.serialize();
+	}
+	else if (id == "set_ticklength")
+	{
+		int tickLength = std::stoi(param);
+		this->clickerManager.PostOrder(Order(OrderIdentifier::Meta_TickLength, tickLength));
 	}
 }

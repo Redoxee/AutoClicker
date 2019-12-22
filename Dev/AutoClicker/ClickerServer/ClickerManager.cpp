@@ -69,10 +69,12 @@ void ClickerManager::ProcessNextOrder()
 
 		break;
 	}
-	case Terminate:
+	case Meta_Terminate:
 		this->isTerminated = true;
 		break;
-
+	case Meta_TickLength:
+		this->SetTickLength(order.Value);
+		break;
 	default:
 		break;
 	}
@@ -97,7 +99,10 @@ void ClickerManager::ManagerThreadLoop()
 			this->Synchonize();
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		if (this->tickLength > 0)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(this->tickLength));
+		}
 	}
 	std::cout << "Exiting the clicker manager thread loop" << std::endl;
 }

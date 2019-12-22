@@ -11,7 +11,8 @@ enum OrderIdentifier
 	Tick,
 	Click,
 	BuyGenerator,
-	Terminate,
+	Meta_Terminate,
+	Meta_TickLength,
 };
 
 class Order
@@ -40,6 +41,11 @@ public:
 	void StartClickerThread();
 	web::json::value GetDataAsJson();
 
+	void SetTickLength(long length)
+	{
+		this->tickLength = length;
+	}
+
 private:
 	std::vector<AutoClicker::GeneratorDefinition> generatorDefinitions;
 
@@ -54,4 +60,5 @@ private:
 
 	void ManagerThreadLoop();
 	void Synchonize();
+	long tickLength = 100;
 };

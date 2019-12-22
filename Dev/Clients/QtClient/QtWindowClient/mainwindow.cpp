@@ -5,16 +5,18 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    this->ui->setupUi(this);
+    this->setWindowTitle("Auto Clicker");
+    this->scoreValueLabel = findChild<QLabel*>("ScoreValue");
+    this->targetScoreLabel = findChild<QLabel*>("ScoreTarget");
+    this->tickValueLabel = findChild<QLabel*>("TickValue");
+    this->clickValueLabel = findChild<QLabel*>("ClickValue");
 
     this->manager = new QNetworkAccessManager();
     QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
     QPushButton* clickerButton = findChild<QPushButton*>("ClickerButton");
     QObject::connect(clickerButton, SIGNAL (released()), this, SLOT (handleClick()));
-
-    scoreValueLabel = findChild<QLabel*>("ScoreValue");
-    tickValueLabel = findChild<QLabel*>("TickValue");
 
     scoreValueLabel->setText("0");
     tickValueLabel->setText("0");
@@ -46,18 +48,18 @@ void MainWindow::handleHttpRequest(QNetworkReply* reply)
         qDebug() << reply->errorString();
         return;
     }
-
-    QString answer = reply->readAll();
-
-    qDebug() << answer;
 }
 
 void MainWindow::refreshData(QJsonObject jsonData)
 {
     int score = jsonData["Score"].toInt();
     int tickCount = jsonData["TickCount"].toInt();
+    int targetScore = jsonData["TargetScore"].toInt();
+    int clickValue = jsonData["ClickValue"].toInt();
 
-    scoreValueLabel->setText(QString::number(score));
-    tickValueLabel->setText(QString::number(tickCount));
+    this->scoreValueLabel->setText(QString::number(score));
+    this->tickValueLabel->setText(QString::number(tickCount));
+    this->targetScoreLabel->setText("/" + QString::number(targetScore));
+    this->clickValueLabel->setText("+"+QString::number(clickValue) + " coins");
 }
 
