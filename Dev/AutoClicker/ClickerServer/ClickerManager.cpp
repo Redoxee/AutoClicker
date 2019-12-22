@@ -6,12 +6,22 @@
 ClickerManager::ClickerManager()
 {
 	AutoClicker::UpgradeDefinition generator;
-	
-	generator.BasePrice = 10;
+	generator.UpgradeType = AutoClicker::UpgradeType::Generator;
+	generator.BasePrice = 100;
 	generator.ImpactValue = 2;
 	generator.PriceRate = 2;
-
+	generator.Description = "Add two coin every tick";
+	generator.Unique = false;
 	this->upgradeDefinitions.push_back(generator);
+
+	AutoClicker::UpgradeDefinition clickerUpgrade;
+	clickerUpgrade.UpgradeType = AutoClicker::UpgradeType::ClickValue;
+	clickerUpgrade.ImpactValue = 1;
+	clickerUpgrade.BasePrice = 10;
+	clickerUpgrade.PriceRate = 2;
+	clickerUpgrade.Unique = false;
+	clickerUpgrade.Description = "Improve each click by one";
+	this->upgradeDefinitions.push_back(clickerUpgrade);
 
 	this->clickerInstance.Initialize(this->upgradeDefinitions);
 }

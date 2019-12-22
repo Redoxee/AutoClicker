@@ -63,7 +63,11 @@ namespace AutoClicker
 		long stock = this->data->PassiveSpeed;
 		for (int index = 0; index < this->data->NumberOfUpgrades; ++index)
 		{
-			stock += this->data->Upgrades[index].InstanceBought * this->data->Upgrades[index].Definition->ImpactValue;
+			Upgrade& upgrade = this->data->Upgrades[index];
+			if (upgrade.Definition->UpgradeType == UpgradeType::Generator)
+			{
+				stock += upgrade.InstanceBought * this->data->Upgrades[index].Definition->ImpactValue;
+			}
 		}
 
 		this->data->Score += stock;
@@ -92,6 +96,11 @@ namespace AutoClicker
 		if (this->data->Upgrades[index].Definition->Unique && this->data->Upgrades[index].InstanceBought > 0)
 		{
 			return false;
+		}
+
+		if (this->data->Upgrades[index].Definition->UpgradeType == UpgradeType::ClickValue)
+		{
+			this->data->ClickValue += this->data->Upgrades[index].Definition->ImpactValue;
 		}
 
 		++this->data->Upgrades[index].InstanceBought;
