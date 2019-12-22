@@ -28,11 +28,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
+public slots:
     void handleClick();
-    void handleHttpRequest(QNetworkReply *reply);
+    void handleHttpRequest(QNetworkReply* reply);
 
-    void refreshData(int data);
+    void refreshData(QJsonObject jsonData);
 
 private:
     Ui::MainWindow *ui;

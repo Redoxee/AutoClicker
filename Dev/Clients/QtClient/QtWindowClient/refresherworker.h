@@ -4,6 +4,10 @@
 #include <QObject>
 #include <QRunnable>
 #include <QThread>
+
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -12,36 +16,38 @@ class RefresherWorker : public QObject
 {
     Q_OBJECT
 
-    int number = 0;
-
-    bool running;
-
 public:
     RefresherWorker(){
-            this->running = false;
-        }
+        this->waitingForQuery = false;
+        this->running = false;
+    }
 
     bool isRunning() const{
         return this->running;
     }
+
     void stop(){
         this->running = false;
     }
 
 signals:
-    void refreshData(int data);
+    void refreshData(QJsonObject jsonData);
 
 public slots:
 
-    void run(){
-        this->running = true;
-        while(this->running){
-            this->number++;
-            this->refreshData(this->number);
+    void run();
+    void handleHttpRequest(QNetworkReply* reply);
 
-            QThread::msleep(10);
-        }
-    }
+private:
+    bool running;
+    bool waitingForQuery;
+
+    QNetworkAccessManager* manager;
+    QNetworkRequest request;
+
+    void ProcessReply(QNetworkReply* reply);
+    void TryRequestRefresh();
+
 };
 
 #endif // REFRESHERWORKER_H

@@ -7,10 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    manager = new QNetworkAccessManager();
-        QObject::connect(manager, SIGNAL(finished(QNetworkReply*)),
-            this,SLOT(handleHttpRequest(QNetworkReply*))
-        );
+    this->manager = new QNetworkAccessManager();
+    QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
     QPushButton* clickerButton = findChild<QPushButton*>("ClickerButton");
     QObject::connect(clickerButton, SIGNAL (released()), this, SLOT (handleClick()));
@@ -22,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     tickValueLabel->setText("0");
 
     this->refreshWorker = new RefresherWorker();
-    QObject::connect(this->refreshWorker, SIGNAL(refreshData(int)), this, SLOT(refreshData(int)));
+    QObject::connect(this->refreshWorker, SIGNAL(refreshData(QJsonObject)), this, SLOT(refreshData(QJsonObject)));
     this->workerThread = new QThread();
     this->refreshWorker->moveToThread(this->workerThread);
 
@@ -42,7 +40,7 @@ void MainWindow::handleClick()
     manager->get(request);
 }
 
-void MainWindow::handleHttpRequest(QNetworkReply *reply)
+void MainWindow::handleHttpRequest(QNetworkReply* reply)
 {
     if (reply->error()) {
         qDebug() << reply->errorString();
@@ -52,18 +50,14 @@ void MainWindow::handleHttpRequest(QNetworkReply *reply)
     QString answer = reply->readAll();
 
     qDebug() << answer;
+}
 
-    QJsonDocument jsonDocumnet = QJsonDocument::fromJson(answer.toUtf8());
-    QJsonObject jsonObject = jsonDocumnet.object();
-    int score = jsonObject["Score"].toInt();
-    int tickCount = jsonObject["TickCount"].toInt();
+void MainWindow::refreshData(QJsonObject jsonData)
+{
+    int score = jsonData["Score"].toInt();
+    int tickCount = jsonData["TickCount"].toInt();
 
     scoreValueLabel->setText(QString::number(score));
     tickValueLabel->setText(QString::number(tickCount));
-}
-
-void MainWindow::refreshData(int data)
-{
-    scoreValueLabel->setText(QString::number(data));
 }
 
