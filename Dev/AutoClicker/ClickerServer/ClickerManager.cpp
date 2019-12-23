@@ -24,6 +24,7 @@ ClickerManager::ClickerManager()
 	this->upgradeDefinitions.push_back(clickerUpgrade);
 
 	this->clickerInstance.Initialize(this->upgradeDefinitions);
+	this->paused = true;
 }
 
 ClickerManager::~ClickerManager()
@@ -83,8 +84,13 @@ void ClickerManager::ProcessNextOrder()
 	case Meta_Terminate:
 		this->isTerminated = true;
 		break;
+
 	case Meta_TickLength:
 		this->SetTickLength(order.Value);
+		break;
+
+	case Meta_PauseUpdate:
+		this->SetPause(order.Value != 0);
 		break;
 	default:
 		break;
@@ -104,10 +110,13 @@ void ClickerManager::ManagerThreadLoop()
 	{
 		this->ProcessNextOrder();
 
-		if (!this->clickerInstance.IsOver())
+		if (!this->paused)
 		{
-			this->clickerInstance.Tick();
-			this->Synchonize();
+			if (!this->clickerInstance.IsOver())
+			{
+				this->clickerInstance.Tick();
+				this->Synchonize();
+			}
 		}
 
 		if (this->tickLength > 0)

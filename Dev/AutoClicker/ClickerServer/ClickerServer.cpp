@@ -26,8 +26,8 @@ void ClickerServer::HandleGet(http_request message)
 
 	for (auto current = http_get_vars.begin(); current != http_get_vars.end(); ++current)
 	{
-		string id = utility::conversions::to_utf8string(current->first);
-		string parameter = utility::conversions::to_utf8string(current->second);
+		string id = utility::conversions::to_utf8string(web::uri::decode(current->first));
+		string parameter = utility::conversions::to_utf8string(web::uri::decode(current->second));
 		this->ParseOrderRequest(id, parameter, body);
 	}
 
@@ -36,6 +36,9 @@ void ClickerServer::HandleGet(http_request message)
 
 void ClickerServer::ParseOrderRequest(std::string& id, std::string& param, string_t& body)
 {
+	boost::trim(id);
+	boost::trim(param);
+	
 	cout << "Order : " << id << " Parameter : " << param << endl;
 
 	boost::algorithm::to_lower(id);
@@ -57,5 +60,23 @@ void ClickerServer::ParseOrderRequest(std::string& id, std::string& param, strin
 	{
 		int tickLength = std::stoi(param);
 		this->clickerManager.PostOrder(Order(OrderIdentifier::Meta_TickLength, tickLength));
+	}
+	else if (id == "set_update_pause")
+	{
+		int value = 0;
+		if (param == "true")
+		{
+			value = 1;
+		}
+		else if (param == "false")
+		{
+			value = 0;
+		}
+		else
+		{
+			value = std::stoi(param);
+		}
+
+		this->clickerManager.PostOrder(Order(OrderIdentifier::Meta_PauseUpdate, value));
 	}
 }

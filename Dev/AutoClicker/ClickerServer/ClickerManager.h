@@ -13,6 +13,7 @@ enum OrderIdentifier
 	BuyUpgrade,
 	Meta_Terminate,
 	Meta_TickLength,
+	Meta_PauseUpdate,
 };
 
 class Order
@@ -46,6 +47,16 @@ public:
 		this->tickLength = length;
 	}
 
+	bool IsPaused()
+	{
+		return this->paused;
+	}
+
+	void SetPause(bool pause)
+	{
+		this->paused = pause;
+	}
+
 private:
 	std::vector<AutoClicker::UpgradeDefinition> upgradeDefinitions;
 
@@ -61,4 +72,6 @@ private:
 	void ManagerThreadLoop();
 	void Synchonize();
 	long tickLength = 100;
+
+	bool paused;
 };

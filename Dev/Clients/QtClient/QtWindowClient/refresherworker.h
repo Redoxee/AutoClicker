@@ -48,8 +48,6 @@ private:
 
     void ProcessReply(QNetworkReply* reply);
     void TryRequestRefresh();
-
-    ulong tickLength = 100;
 };
 
 #endif // REFRESHERWORKER_H
