@@ -20,6 +20,7 @@ namespace AutoClicker
 
 		long ImpactValue;
 
+		std::string Name;
 		std::string Description;
 	};
 

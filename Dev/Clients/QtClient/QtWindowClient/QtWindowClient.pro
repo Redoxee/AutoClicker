@@ -22,9 +22,10 @@ SOURCES += \
     refresherworker.cpp
 
 HEADERS += \
-    AutoClickerConfig.h \
+    autoclickerconfig.h \
     mainwindow.h \
-    refresherworker.h
+    refresherworker.h \
+    upgrade.h
 
 FORMS += \
     mainwindow.ui
@@ -33,3 +34,5 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES +=

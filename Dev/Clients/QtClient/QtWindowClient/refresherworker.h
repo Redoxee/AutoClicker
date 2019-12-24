@@ -11,7 +11,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include "AutoClickerConfig.h"
+#include "autoclickerconfig.h"
 
 class RefresherWorker : public QObject
 {

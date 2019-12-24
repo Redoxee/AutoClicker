@@ -14,7 +14,10 @@
 
 #include <QThread>
 
+#include <vector>
+
 #include "refresherworker.h"
+#include "upgrade.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,10 +45,17 @@ private:
     QLabel* clickValueLabel;
     QLabel* targetScoreLabel;
 
+    QLayout* UpgradeLayout;
+
     QNetworkAccessManager *manager;
     QNetworkRequest request;
 
     RefresherWorker* refreshWorker;
     QThread* workerThread;
+
+    std::vector<Upgrade> Upgrades;
+
+    QPushButton CreateUpgradeButton(QString Label);
+    QString BuildUpgradeLabel(Upgrade* upgrade);
 };
 #endif // MAINWINDOW_H
