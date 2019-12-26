@@ -9,6 +9,7 @@ class UpgradeButton : public QPushButton
     Q_OBJECT
 public:
     explicit UpgradeButton(Upgrade* upgrade, QWidget *parent = nullptr);
+    void RefreshLabel();
 
     Upgrade* Upgrade;
 signals:

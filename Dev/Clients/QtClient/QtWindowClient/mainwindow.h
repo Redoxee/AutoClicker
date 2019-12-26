@@ -56,9 +56,11 @@ private:
     RefresherWorker* refreshWorker;
     QThread* workerThread;
 
-    std::vector<Upgrade*> Upgrades;
+    std::vector<UpgradeButton*> UpgradeButtons;
 
     QPushButton CreateUpgradeButton(QString Label);
+
+    bool isDirty;
 
 };
 #endif // MAINWINDOW_H

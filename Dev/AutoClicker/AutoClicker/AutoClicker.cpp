@@ -103,6 +103,7 @@ namespace AutoClicker
 			this->data->ClickValue += this->data->Upgrades[index].Definition->ImpactValue;
 		}
 
+		this->data->Score -= price;
 		++this->data->Upgrades[index].InstanceBought;
 		return true;
 	}

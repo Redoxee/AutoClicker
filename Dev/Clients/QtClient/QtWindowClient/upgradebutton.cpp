@@ -5,3 +5,8 @@ UpgradeButton::UpgradeButton(class Upgrade* upgrade, QWidget *parent) : QPushBut
     this->Upgrade = upgrade;
     this->setText(this->Upgrade->GetLabel());
 }
+
+void UpgradeButton::RefreshLabel()
+{
+    this->setText(this->Upgrade->GetLabel());
+}

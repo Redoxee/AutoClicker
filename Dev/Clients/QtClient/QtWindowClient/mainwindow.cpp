@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <string>
 
 #include <QJsonArray>
 
@@ -37,11 +38,11 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
 MainWindow::~MainWindow()
 {
     this->refreshWorker->stop();
-    for(auto current = this->Upgrades.begin(); current != this->Upgrades.end(); current++)
+    for(auto current = this->UpgradeButtons.begin(); current != this->UpgradeButtons.end(); current++)
     {
-        delete *current;
+        delete (*current)->Upgrade;
     }
-    this->Upgrades.clear();
+    this->UpgradeButtons.clear();
 
     QLayoutItem *child;
     while ((child = this->UpgradeLayout->takeAt(0)) != nullptr) {
@@ -79,30 +80,60 @@ void MainWindow::refreshData(QJsonObject jsonData)
     this->clickValueLabel->setText("+"+QString::number(clickValue) + " coins");
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
-    if(static_cast<int>(this->Upgrades.size()) != jsonUpgrades.size())
+    if(static_cast<int>(this->UpgradeButtons.size()) != jsonUpgrades.size())
     {
-        this->Upgrades.clear();
+        this->UpgradeButtons.clear();
         for(int index = 0; index < jsonUpgrades.size(); ++index)
         {
             QJsonObject jsonUpgrade = jsonUpgrades[index].toObject();
 
             QString name = jsonUpgrade["Name"].toString();
             int price = jsonUpgrade["Price"].toInt();
+            int instanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
 
-            Upgrade* upgrade = new Upgrade(index , name, price);
-
-            this->Upgrades.push_back(upgrade);
+            Upgrade* upgrade = new Upgrade(index , name, price, instanceBought);
 
             UpgradeButton* upgradeButton = new UpgradeButton(upgrade, this);
             this->UpgradeLayout->addWidget(upgradeButton);
             connect(upgradeButton, &QPushButton::clicked, [=](){ emit this->UpgradeButtonClick(upgradeButton);});
+
+            this->UpgradeButtons.push_back(upgradeButton);
         }
+
+        this->isDirty = false;
+    }
+    else if(this->isDirty)
+    {
+        for(int index = 0; index < jsonUpgrades.size(); ++index)
+        {
+            UpgradeButton* upgradeButton = this->UpgradeButtons[static_cast<unsigned long long>(index)];
+            if(upgradeButton->Upgrade->IsDirty)
+            {
+                QJsonObject jsonUpgrade = jsonUpgrades[index].toObject();
+
+                QString name = jsonUpgrade["Name"].toString();
+                int price = jsonUpgrade["Price"].toInt();
+                int instanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
+
+                upgradeButton->Upgrade->Name = name;
+                upgradeButton->Upgrade->Price = price;
+                upgradeButton->Upgrade->InstanceBought = instanceBought;
+                upgradeButton->Upgrade->IsDirty = false;
+                upgradeButton->RefreshLabel();
+            }
+        }
+
+        this->isDirty = false;
     }
 }
 
 void MainWindow::UpgradeButtonClick(UpgradeButton* upgradeButton)
 {
     qDebug() << upgradeButton->Upgrade->Name;
+    upgradeButton->Upgrade->IsDirty = true;
+    this->isDirty = true;
+    this->request.setUrl(QString::fromStdString(AutoClicker::BaseURI() + "upgrade=" + std::to_string((upgradeButton->Upgrade->Index))));
+    this->manager->get(this->request);
 }
 
 void MainWindow::aboutToQuit()

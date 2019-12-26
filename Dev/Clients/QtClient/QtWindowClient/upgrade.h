@@ -6,17 +6,19 @@
 class Upgrade
 {
 public:
-    Upgrade(int index, QString name, int price)
+    Upgrade(int index, QString name, int price, int instanceBought)
     {
         this->Index = index;
         this->Name = name;
         this->Price = price;
         this->IsDirty = false;
+        this->InstanceBought = instanceBought;
     }
 
     QString GetLabel()
     {
-        QString label = QString(this->Name + ": " + QString::number(this->Price));
+
+        QString label = QString("(%1) %2 : %3").arg(QString::number(this->InstanceBought), this->Name, QString::number(this->Price));
 
         return label;
     }
@@ -24,7 +26,10 @@ public:
     int Index;
     QString Name;
     int Price;
+    int InstanceBought;
+
     bool IsDirty;
+
 };
 
 #endif // UPGRADE_H
