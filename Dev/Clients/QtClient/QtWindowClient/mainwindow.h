@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <QCloseEvent>
 #include <QPushButton>
 #include <QLabel>
 
@@ -18,6 +18,7 @@
 
 #include "refresherworker.h"
 #include "upgrade.h"
+#include "upgradebutton.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,14 +29,16 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QApplication* application, QWidget *parent = nullptr);
     ~MainWindow();
 
 public slots:
     void handleClick();
+    void UpgradeButtonClick(UpgradeButton* button);
     void handleHttpRequest(QNetworkReply* reply);
 
     void refreshData(QJsonObject jsonData);
+    void aboutToQuit();
 
 private:
     Ui::MainWindow *ui;
@@ -53,9 +56,9 @@ private:
     RefresherWorker* refreshWorker;
     QThread* workerThread;
 
-    std::vector<Upgrade> Upgrades;
+    std::vector<Upgrade*> Upgrades;
 
     QPushButton CreateUpgradeButton(QString Label);
-    QString BuildUpgradeLabel(Upgrade* upgrade);
+
 };
 #endif // MAINWINDOW_H

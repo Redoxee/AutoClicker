@@ -42,11 +42,13 @@ public slots:
 private:
     bool running;
     bool waitingForQuery;
+    bool initialized;
 
     QNetworkAccessManager* manager;
     QNetworkRequest request;
 
     void ProcessReply(QNetworkReply* reply);
+    void TryInitialRequest();
     void TryRequestRefresh();
 };
 

@@ -19,13 +19,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    refresherworker.cpp
+    refresherworker.cpp \
+    upgradebutton.cpp
 
 HEADERS += \
     autoclickerconfig.h \
     mainwindow.h \
     refresherworker.h \
-    upgrade.h
+    upgrade.h \
+    upgradebutton.h
 
 FORMS += \
     mainwindow.ui

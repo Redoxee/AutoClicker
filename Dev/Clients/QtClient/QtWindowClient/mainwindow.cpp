@@ -3,7 +3,7 @@
 
 #include <QJsonArray>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QApplication* application, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
     QPushButton* clickerButton = findChild<QPushButton*>("ClickerButton");
-    QObject::connect(clickerButton, SIGNAL (released()), this, SLOT (handleClick()));
+    QObject::connect(clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
 
     scoreValueLabel->setText("0");
     tickValueLabel->setText("0");
@@ -30,17 +30,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this->workerThread, SIGNAL(started()), this->refreshWorker, SLOT(run()));
     this->workerThread->start();
+
+    connect(application, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 }
 
 MainWindow::~MainWindow()
 {
     this->refreshWorker->stop();
+    for(auto current = this->Upgrades.begin(); current != this->Upgrades.end(); current++)
+    {
+        delete *current;
+    }
+    this->Upgrades.clear();
+
+    QLayoutItem *child;
+    while ((child = this->UpgradeLayout->takeAt(0)) != nullptr) {
+        delete child->widget();
+        delete child;
+    }
+
     delete ui;
 }
 
 void MainWindow::handleClick()
 {
-    request.setUrl(QUrl("http://localhost:1234/AutoClicker?Click=True"));
+    request.setUrl(QUrl("http://localhost:1234/AutoClicker?click=true"));
     manager->get(request);
 }
 
@@ -75,22 +89,27 @@ void MainWindow::refreshData(QJsonObject jsonData)
             QString name = jsonUpgrade["Name"].toString();
             int price = jsonUpgrade["Price"].toInt();
 
-            Upgrade upgrade(name, price);
+            Upgrade* upgrade = new Upgrade(index , name, price);
 
             this->Upgrades.push_back(upgrade);
 
-            QString buttonLabel = this->BuildUpgradeLabel(&upgrade);
-            QPushButton* upgradeButton = new QPushButton(buttonLabel, this);
-
+            UpgradeButton* upgradeButton = new UpgradeButton(upgrade, this);
             this->UpgradeLayout->addWidget(upgradeButton);
+            connect(upgradeButton, &QPushButton::clicked, [=](){ emit this->UpgradeButtonClick(upgradeButton);});
         }
     }
 }
 
-QString MainWindow::BuildUpgradeLabel(Upgrade* upgrade)
+void MainWindow::UpgradeButtonClick(UpgradeButton* upgradeButton)
 {
-    QString label = QString(upgrade->Name + ": " + QString::number(upgrade->Price));
-
-    return label;
+    qDebug() << upgradeButton->Upgrade->Name;
 }
 
+void MainWindow::aboutToQuit()
+{
+    this->request.setUrl(QUrl("http://localhost:1234/AutoClicker?set_update_pause=true"));
+    manager->get(request);
+    qDebug() << "About to quit called.";
+    // TODO : find a way to enable one last request before quitting without waiting an arbitrary length of time.
+    QThread::sleep(1);
+}
