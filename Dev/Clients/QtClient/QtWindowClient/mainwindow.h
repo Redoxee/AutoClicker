@@ -60,6 +60,7 @@ private:
 
     QPushButton CreateUpgradeButton(QString Label);
 
+    int lastRefreshedTick;
     bool isDirty;
 
 };

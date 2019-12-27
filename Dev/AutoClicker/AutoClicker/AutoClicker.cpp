@@ -19,6 +19,7 @@ namespace AutoClicker
 			{
 				this->Upgrades[index].Definition = &definitions[index];
 				this->Upgrades[index].InstanceBought = 0;
+				this->Upgrades[index].Price = definitions[index].BasePrice;
 			}
 		}
 	}
@@ -86,7 +87,7 @@ namespace AutoClicker
 			return false;
 		}
 		
-		long price = this->data->Upgrades[index].Price();
+		long price = this->data->Upgrades[index].Price;
 
 		if (price > this->data->Score)
 		{
@@ -105,6 +106,8 @@ namespace AutoClicker
 
 		this->data->Score -= price;
 		++this->data->Upgrades[index].InstanceBought;
+
+		this->data->Upgrades[index].Price = static_cast<long>(floor(this->data->Upgrades[index].ComputeNextPrice()));
 		return true;
 	}
 

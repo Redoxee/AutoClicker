@@ -24,6 +24,8 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
     scoreValueLabel->setText("0");
     tickValueLabel->setText("0");
 
+    this->lastRefreshedTick = -1;
+
     this->refreshWorker = new RefresherWorker();
     QObject::connect(this->refreshWorker, SIGNAL(refreshData(QJsonObject)), this, SLOT(refreshData(QJsonObject)));
     this->workerThread = new QThread();
@@ -102,7 +104,7 @@ void MainWindow::refreshData(QJsonObject jsonData)
 
         this->isDirty = false;
     }
-    else if(this->isDirty)
+    else if(this->isDirty && tickCount > this->lastRefreshedTick)
     {
         for(int index = 0; index < jsonUpgrades.size(); ++index)
         {
@@ -124,6 +126,7 @@ void MainWindow::refreshData(QJsonObject jsonData)
         }
 
         this->isDirty = false;
+        this->lastRefreshedTick = tickCount;
     }
 }
 

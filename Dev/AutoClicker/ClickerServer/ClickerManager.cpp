@@ -13,6 +13,7 @@ ClickerManager::ClickerManager()
 	generator.Name = "Small clicker";
 	generator.Description = "Add two coin every tick";
 	generator.Unique = false;
+	generator.PriceIncreaseStrategy = AutoClicker::PriceIncreaseStrategy(AutoClicker::PriceIncreaseType::Exponential, 1.04);
 	this->upgradeDefinitions.push_back(generator);
 
 	AutoClicker::UpgradeDefinition clickerUpgrade;
@@ -23,6 +24,7 @@ ClickerManager::ClickerManager()
 	clickerUpgrade.Unique = false;
 	clickerUpgrade.Name = "Click upgrade";
 	clickerUpgrade.Description = "Improve each click by one";
+	clickerUpgrade.PriceIncreaseStrategy = AutoClicker::PriceIncreaseStrategy(AutoClicker::PriceIncreaseType::Factor, 2);
 	this->upgradeDefinitions.push_back(clickerUpgrade);
 
 	this->clickerInstance.Initialize(this->upgradeDefinitions);
@@ -157,7 +159,7 @@ web::json::value ClickerManager::GetDataAsJson()
 		for (int index = 0; index < data.NumberOfUpgrades; ++index)
 		{
 			auto upgrade = web::json::value::object();
-			upgrade[U("Price")] = data.Upgrades[index].Price();
+			upgrade[U("Price")] = data.Upgrades[index].Price;
 			upgrade[U("NumberOfInstanceBought")] = data.Upgrades[index].InstanceBought;
 			upgrade[U("BaseRate")] = data.Upgrades[index].Definition->ImpactValue;
 
