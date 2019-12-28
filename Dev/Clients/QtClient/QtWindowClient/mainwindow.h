@@ -44,7 +44,7 @@ private:
     Ui::MainWindow *ui;
 
     QLabel* scoreValueLabel;
-    QLabel* tickValueLabel;
+    QLabel* frameValueLabel;
     QLabel* clickValueLabel;
     QLabel* targetScoreLabel;
 
@@ -60,7 +60,7 @@ private:
 
     QPushButton CreateUpgradeButton(QString Label);
 
-    int lastRefreshedTick;
+    int lastRefreshedFrame;
     bool isDirty;
 
 };

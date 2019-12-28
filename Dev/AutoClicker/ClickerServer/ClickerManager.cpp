@@ -9,9 +9,8 @@ ClickerManager::ClickerManager()
 	generator.UpgradeType = AutoClicker::UpgradeType::Generator;
 	generator.BasePrice = 100;
 	generator.ImpactValue = 2;
-	generator.PriceRate = 2;
 	generator.Name = "Small clicker";
-	generator.Description = "Add two coin every tick";
+	generator.Description = "Add two coin every frame";
 	generator.Unique = false;
 	generator.PriceIncreaseStrategy = AutoClicker::PriceIncreaseStrategy(AutoClicker::PriceIncreaseType::Exponential, 1.04);
 	this->upgradeDefinitions.push_back(generator);
@@ -20,7 +19,6 @@ ClickerManager::ClickerManager()
 	clickerUpgrade.UpgradeType = AutoClicker::UpgradeType::ClickValue;
 	clickerUpgrade.ImpactValue = 1;
 	clickerUpgrade.BasePrice = 10;
-	clickerUpgrade.PriceRate = 2;
 	clickerUpgrade.Unique = false;
 	clickerUpgrade.Name = "Click upgrade";
 	clickerUpgrade.Description = "Improve each click by one";
@@ -28,6 +26,9 @@ ClickerManager::ClickerManager()
 	this->upgradeDefinitions.push_back(clickerUpgrade);
 
 	this->clickerInstance.Initialize(this->upgradeDefinitions);
+
+	this->lastUpdate = std::chrono::steady_clock::now();
+
 	this->paused = true;
 }
 
@@ -63,8 +64,8 @@ void ClickerManager::ProcessNextOrder()
 
 	switch (order.Identifier)
 	{
-	case Tick:
-		this->clickerInstance.Tick();
+	case DoFrame:
+		this->clickerInstance.Update();
 		break;
 
 	case Click:
@@ -89,8 +90,8 @@ void ClickerManager::ProcessNextOrder()
 		this->isTerminated = true;
 		break;
 
-	case Meta_TickLength:
-		this->SetTickLength(order.Value);
+	case Meta_FrameWait:
+		this->SetFrameWait(order.Value);
 		break;
 
 	case Meta_PauseUpdate:
@@ -116,16 +117,19 @@ void ClickerManager::ManagerThreadLoop()
 
 		if (!this->paused)
 		{
-			if (!this->clickerInstance.IsOver())
-			{
-				this->clickerInstance.Tick();
-				this->Synchonize();
-			}
-		}
+			std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+			long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->lastUpdate).count();
 
-		if (this->tickLength > 0)
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(this->tickLength));
+			if (elapsedTime >= this->frameWait)
+			{
+				if (!this->clickerInstance.IsOver())
+				{
+					this->clickerInstance.Update();
+					this->Synchonize();
+				}
+
+				this->lastUpdate = std::chrono::steady_clock::now();
+			}
 		}
 	}
 	std::cout << "Exiting the clicker manager thread loop" << std::endl;
@@ -149,7 +153,7 @@ web::json::value ClickerManager::GetDataAsJson()
 	web::json::value result;
 	result[U("Score")] = data.Score;
 	result[U("PassiveSpeed")] = data.PassiveSpeed;
-	result[U("TickCount")] = data.TickCount;
+	result[U("FrameCount")] = data.FrameCount;
 	result[U("TargetScore")] = data.TargetScore;
 	result[U("ClickValue")] = data.ClickValue;
 	

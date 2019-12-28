@@ -56,10 +56,10 @@ void ClickerServer::ParseOrderRequest(std::string& id, std::string& param, strin
 		web::json::value currentState = this->clickerManager.GetDataAsJson();
 		body = currentState.serialize();
 	}
-	else if (id == "set_ticklength")
+	else if (id == "set_frame_length")
 	{
-		int tickLength = std::stoi(param);
-		this->clickerManager.PostOrder(Order(OrderIdentifier::Meta_TickLength, tickLength));
+		int frameLength = std::stoi(param);
+		this->clickerManager.PostOrder(Order(OrderIdentifier::Meta_FrameWait, frameLength));
 	}
 	else if (id == "set_update_pause")
 	{

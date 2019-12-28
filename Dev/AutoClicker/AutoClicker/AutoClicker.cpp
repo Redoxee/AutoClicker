@@ -51,7 +51,7 @@ namespace AutoClicker
 		this->upgradeDefinitions = uDefinitions;
 		this->data = new Data(upgradeDefinitions);
 		
-		this->data->TickCount = 0;
+		this->data->FrameCount = 0;
 		this->data->Score = 0;
 
 		this->data->TargetScore = 1000000;
@@ -59,7 +59,7 @@ namespace AutoClicker
 		this->data->ClickValue = 1;
 	}
 
-	void AutoClicker::Tick()
+	void AutoClicker::Update()
 	{
 		long stock = this->data->PassiveSpeed;
 		for (int index = 0; index < this->data->NumberOfUpgrades; ++index)
@@ -72,7 +72,7 @@ namespace AutoClicker
 		}
 
 		this->data->Score += stock;
-		++this->data->TickCount;
+		++this->data->FrameCount;
 	}
 
 	void AutoClicker::Click()

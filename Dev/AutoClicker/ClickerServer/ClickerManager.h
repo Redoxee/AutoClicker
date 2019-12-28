@@ -4,15 +4,16 @@
 #include "cpprest/json.h"
 #include <thread>
 #include <mutex>
+#include <chrono>
 #include "vector"
 
 enum OrderIdentifier
 {
-	Tick,
+	DoFrame,
 	Click,
 	BuyUpgrade,
 	Meta_Terminate,
-	Meta_TickLength,
+	Meta_FrameWait,
 	Meta_PauseUpdate,
 };
 
@@ -25,7 +26,7 @@ public:
 		this->Value = value;
 	}
 
-	OrderIdentifier Identifier = OrderIdentifier::Tick;
+	OrderIdentifier Identifier = OrderIdentifier::DoFrame;
 	int Value = 0;
 };
 
@@ -42,9 +43,9 @@ public:
 	void StartClickerThread();
 	web::json::value GetDataAsJson();
 
-	void SetTickLength(long length)
+	void SetFrameWait(long length)
 	{
-		this->tickLength = length;
+		this->frameWait = length;
 	}
 
 	bool IsPaused()
@@ -68,10 +69,11 @@ private:
 	
 	std::thread clickerThread;
 	std::mutex mutex;
+	std::chrono::steady_clock::time_point lastUpdate;
 
 	void ManagerThreadLoop();
 	void Synchonize();
-	long tickLength = 100;
+	long frameWait = 100;
 
 	bool paused;
 };

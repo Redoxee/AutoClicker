@@ -12,7 +12,7 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
     this->setWindowTitle("Auto Clicker");
     this->scoreValueLabel = this->findChild<QLabel*>("ScoreValue");
     this->targetScoreLabel = this->findChild<QLabel*>("ScoreTarget");
-    this->tickValueLabel = this->findChild<QLabel*>("TickValue");
+    this->frameValueLabel = this->findChild<QLabel*>("FrameValue");
     this->clickValueLabel = this->findChild<QLabel*>("ClickValue");
     this->UpgradeLayout = this->findChild<QLayout*>("UpgradeButtonHolder");
     this->manager = new QNetworkAccessManager();
@@ -22,9 +22,9 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
     QObject::connect(clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
 
     scoreValueLabel->setText("0");
-    tickValueLabel->setText("0");
+    frameValueLabel->setText("0");
 
-    this->lastRefreshedTick = -1;
+    this->lastRefreshedFrame = -1;
 
     this->refreshWorker = new RefresherWorker();
     QObject::connect(this->refreshWorker, SIGNAL(refreshData(QJsonObject)), this, SLOT(refreshData(QJsonObject)));
@@ -72,12 +72,12 @@ void MainWindow::handleHttpRequest(QNetworkReply* reply)
 void MainWindow::refreshData(QJsonObject jsonData)
 {
     int score = jsonData["Score"].toInt();
-    int tickCount = jsonData["TickCount"].toInt();
+    int frameCount = jsonData["FrameCount"].toInt();
     int targetScore = jsonData["TargetScore"].toInt();
     int clickValue = jsonData["ClickValue"].toInt();
 
     this->scoreValueLabel->setText(QString::number(score));
-    this->tickValueLabel->setText(QString::number(tickCount));
+    this->frameValueLabel->setText(QString::number(frameCount));
     this->targetScoreLabel->setText("/" + QString::number(targetScore));
     this->clickValueLabel->setText("+"+QString::number(clickValue) + " coins");
 
@@ -104,7 +104,7 @@ void MainWindow::refreshData(QJsonObject jsonData)
 
         this->isDirty = false;
     }
-    else if(this->isDirty && tickCount > this->lastRefreshedTick)
+    else if(this->isDirty && frameCount > this->lastRefreshedFrame)
     {
         for(int index = 0; index < jsonUpgrades.size(); ++index)
         {
@@ -126,7 +126,7 @@ void MainWindow::refreshData(QJsonObject jsonData)
         }
 
         this->isDirty = false;
-        this->lastRefreshedTick = tickCount;
+        this->lastRefreshedFrame = frameCount;
     }
 }
 

@@ -541,11 +541,11 @@
      </layout>
     </item>
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="TickLayout">
+     <layout class="QHBoxLayout" name="FrameLayout">
       <item>
-       <widget class="QLabel" name="TickLabel">
+       <widget class="QLabel" name="FrameLabel">
         <property name="text">
-         <string>Tick :</string>
+         <string>Frame :</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -553,7 +553,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="TickValue">
+       <widget class="QLabel" name="FrameValue">
         <property name="text">
          <string>99999999999</string>
         </property>

@@ -12,7 +12,7 @@ namespace AutoClicker
 	public:
 		long Score;
 		long PassiveSpeed;
-		long TickCount;
+		long FrameCount;
 		long TargetScore;
 		long ClickValue;
 
@@ -27,7 +27,7 @@ namespace AutoClicker
 		{
 			c.Score = this->Score;
 			c.PassiveSpeed = this->PassiveSpeed;
-			c.TickCount = this->TickCount;
+			c.FrameCount = this->FrameCount;
 			c.TargetScore = this->TargetScore;
 			c.ClickValue = this->ClickValue;
 
@@ -53,7 +53,7 @@ namespace AutoClicker
 
 		void Initialize(std::vector<UpgradeDefinition>& upgradeDefinition);
 
-		void Tick();
+		void Update();
 		void Click();
 		bool IsOver();
 		bool BuyUpgrade(int index);
@@ -67,7 +67,6 @@ namespace AutoClicker
 
 	private:
 		std::vector<UpgradeDefinition> upgradeDefinitions;
-
 		Data* data = nullptr;
 	};
 }

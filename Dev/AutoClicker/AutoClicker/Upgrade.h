@@ -45,7 +45,6 @@ namespace AutoClicker
 		bool Unique;
 
 		long BasePrice;
-		long PriceRate;
 
 		long ImpactValue;
 
