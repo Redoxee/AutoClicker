@@ -46,7 +46,6 @@ private:
     QLabel* scoreValueLabel;
     QLabel* frameValueLabel;
     QLabel* clickValueLabel;
-    QLabel* targetScoreLabel;
 
     QLayout* UpgradeLayout;
 

@@ -15,6 +15,7 @@ namespace AutoClicker
 		long FrameCount;
 		long TargetScore;
 		long ClickValue;
+		long GlobalFactor;
 
 		size_t NumberOfUpgrades;
 		Upgrade* Upgrades;
@@ -30,6 +31,7 @@ namespace AutoClicker
 			c.FrameCount = this->FrameCount;
 			c.TargetScore = this->TargetScore;
 			c.ClickValue = this->ClickValue;
+			c.GlobalFactor = this->GlobalFactor;
 
 			if (this->NumberOfUpgrades != c.NumberOfUpgrades)
 			{

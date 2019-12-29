@@ -7,8 +7,8 @@ ClickerManager::ClickerManager()
 {
 	AutoClicker::UpgradeDefinition generator;
 	generator.UpgradeType = AutoClicker::UpgradeType::Generator;
-	generator.BasePrice = 100;
-	generator.ImpactValue = 2;
+	generator.BasePrice = 400;
+	generator.ImpactValue = 1;
 	generator.Name = "Small clicker";
 	generator.Description = "Add two coin every frame";
 	generator.Unique = false;
@@ -18,12 +18,21 @@ ClickerManager::ClickerManager()
 	AutoClicker::UpgradeDefinition clickerUpgrade;
 	clickerUpgrade.UpgradeType = AutoClicker::UpgradeType::ClickValue;
 	clickerUpgrade.ImpactValue = 1;
-	clickerUpgrade.BasePrice = 10;
+	clickerUpgrade.BasePrice = 50;
 	clickerUpgrade.Unique = false;
 	clickerUpgrade.Name = "Click upgrade";
 	clickerUpgrade.Description = "Improve each click by one";
-	clickerUpgrade.PriceIncreaseStrategy = AutoClicker::PriceIncreaseStrategy(AutoClicker::PriceIncreaseType::Factor, 2);
+	clickerUpgrade.PriceIncreaseStrategy = AutoClicker::PriceIncreaseStrategy(AutoClicker::PriceIncreaseType::Factor, 4);
 	this->upgradeDefinitions.push_back(clickerUpgrade);
+
+	AutoClicker::UpgradeDefinition prestigeUpgrade;
+	prestigeUpgrade.UpgradeType = AutoClicker::UpgradeType::Prestige;
+	prestigeUpgrade.ImpactValue = 1;
+	prestigeUpgrade.BasePrice = 1000;
+	prestigeUpgrade.Name = "Prestige";
+	prestigeUpgrade.Description = "Remove all upgrades but increase all income by two";
+	prestigeUpgrade.Unique = true;
+	this->upgradeDefinitions.push_back(prestigeUpgrade);
 
 	this->clickerInstance.Initialize(this->upgradeDefinitions);
 
@@ -156,6 +165,7 @@ web::json::value ClickerManager::GetDataAsJson()
 	result[U("FrameCount")] = data.FrameCount;
 	result[U("TargetScore")] = data.TargetScore;
 	result[U("ClickValue")] = data.ClickValue;
+	result[U("GlobalFactor")] = data.GlobalFactor;
 	
 	if (data.NumberOfUpgrades > 0)
 	{

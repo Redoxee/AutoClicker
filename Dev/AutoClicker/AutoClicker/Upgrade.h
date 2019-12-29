@@ -7,6 +7,7 @@ namespace AutoClicker
 	{
 		Generator,
 		ClickValue,
+		Prestige,
 	};
 
 	enum PriceIncreaseType
@@ -14,7 +15,6 @@ namespace AutoClicker
 		Flat,
 		Factor,
 		Exponential,
-
 	};
 
 	class PriceIncreaseStrategy

@@ -11,7 +11,6 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
     this->ui->setupUi(this);
     this->setWindowTitle("Auto Clicker");
     this->scoreValueLabel = this->findChild<QLabel*>("ScoreValue");
-    this->targetScoreLabel = this->findChild<QLabel*>("ScoreTarget");
     this->frameValueLabel = this->findChild<QLabel*>("FrameValue");
     this->clickValueLabel = this->findChild<QLabel*>("ClickValue");
     this->UpgradeLayout = this->findChild<QLayout*>("UpgradeButtonHolder");
@@ -76,10 +75,11 @@ void MainWindow::refreshData(QJsonObject jsonData)
     int targetScore = jsonData["TargetScore"].toInt();
     int clickValue = jsonData["ClickValue"].toInt();
     int passiveSpeed = jsonData["PassiveSpeed"].toInt();
+    int globalFactor = jsonData["GlobalFactor"].toInt();
 
-    this->scoreValueLabel->setText(QString::number(score));
+    QString scoreLabel = QString("Score %1 / %2 (Passive speed : %3 * %4)").arg(QString::number(score), QString::number(targetScore), QString::number(passiveSpeed), QString::number(globalFactor));
+    this->scoreValueLabel->setText(scoreLabel);
     this->frameValueLabel->setText(QString::number(frameCount));
-    this->targetScoreLabel->setText("/" + QString::number(targetScore) + " (Passive speed : " + QString::number(passiveSpeed)+")");
     this->clickValueLabel->setText("+"+QString::number(clickValue) + " coins");
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
@@ -91,12 +91,14 @@ void MainWindow::refreshData(QJsonObject jsonData)
             QJsonObject jsonUpgrade = jsonUpgrades[index].toObject();
 
             QString name = jsonUpgrade["Name"].toString();
+            QString description = jsonUpgrade["Description"].toString();
             int price = jsonUpgrade["Price"].toInt();
             int instanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
 
             Upgrade* upgrade = new Upgrade(index , name, price, instanceBought);
 
             UpgradeButton* upgradeButton = new UpgradeButton(upgrade, this);
+            upgradeButton->setToolTip(description);
             this->UpgradeLayout->addWidget(upgradeButton);
             connect(upgradeButton, &QPushButton::clicked, [=](){ emit this->UpgradeButtonClick(upgradeButton);});
 
