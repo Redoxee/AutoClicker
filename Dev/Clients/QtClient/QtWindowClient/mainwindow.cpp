@@ -75,10 +75,11 @@ void MainWindow::refreshData(QJsonObject jsonData)
     int frameCount = jsonData["FrameCount"].toInt();
     int targetScore = jsonData["TargetScore"].toInt();
     int clickValue = jsonData["ClickValue"].toInt();
+    int passiveSpeed = jsonData["PassiveSpeed"].toInt();
 
     this->scoreValueLabel->setText(QString::number(score));
     this->frameValueLabel->setText(QString::number(frameCount));
-    this->targetScoreLabel->setText("/" + QString::number(targetScore));
+    this->targetScoreLabel->setText("/" + QString::number(targetScore) + " (Passive speed : " + QString::number(passiveSpeed)+")");
     this->clickValueLabel->setText("+"+QString::number(clickValue) + " coins");
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();

@@ -61,7 +61,7 @@ namespace AutoClicker
 
 	void AutoClicker::Update()
 	{
-		long stock = this->data->PassiveSpeed;
+		long stock = 0;
 		for (int index = 0; index < this->data->NumberOfUpgrades; ++index)
 		{
 			Upgrade& upgrade = this->data->Upgrades[index];
@@ -71,6 +71,7 @@ namespace AutoClicker
 			}
 		}
 
+		this->data->PassiveSpeed = stock;
 		this->data->Score += stock;
 		++this->data->FrameCount;
 	}
