@@ -12,7 +12,7 @@ ClickerManager::ClickerManager()
 	generator.Name = "Small clicker";
 	generator.Description = "Add two coin every frame";
 	generator.Unique = false;
-	generator.PriceIncreaseStrategy = AutoClicker::PriceIncreaseStrategy(AutoClicker::PriceIncreaseType::Exponential, 1.04);
+	generator.PriceIncreaseStrategy = AutoClicker::ValueIncreaseStrategy(AutoClicker::ValueIncreaseType::Exponential, 1.04);
 	this->upgradeDefinitions.push_back(generator);
 
 	AutoClicker::UpgradeDefinition clickerUpgrade;
@@ -22,7 +22,7 @@ ClickerManager::ClickerManager()
 	clickerUpgrade.Unique = false;
 	clickerUpgrade.Name = "Click upgrade";
 	clickerUpgrade.Description = "Improve each click by one";
-	clickerUpgrade.PriceIncreaseStrategy = AutoClicker::PriceIncreaseStrategy(AutoClicker::PriceIncreaseType::Factor, 4);
+	clickerUpgrade.PriceIncreaseStrategy = AutoClicker::ValueIncreaseStrategy(AutoClicker::ValueIncreaseType::Factor, 4);
 	this->upgradeDefinitions.push_back(clickerUpgrade);
 
 	AutoClicker::UpgradeDefinition prestigeUpgrade;

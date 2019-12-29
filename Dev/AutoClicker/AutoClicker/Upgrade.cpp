@@ -5,32 +5,32 @@ namespace AutoClicker
 {
 	double Upgrade::ComputeNextPrice()
 	{
-		return this->Definition->PriceIncreaseStrategy.ComputeNextPrice(static_cast<double>(this->Definition->BasePrice), static_cast<double>(this->Price), static_cast<double>(this->InstanceBought));
+		return this->Definition->PriceIncreaseStrategy.ComputeNextValue(static_cast<double>(this->Definition->BasePrice), static_cast<double>(this->Price), static_cast<double>(this->InstanceBought));
 	}
 
-	double PriceIncreaseStrategy::ComputeNextPrice(double basePrice, double currentPrice, double instanceBought) const
+	double ValueIncreaseStrategy::ComputeNextValue(double baseValue, double currentValue, double instanceBought) const
 	{
 		double result = 0;
 		if (instanceBought < 1)
 		{
-			return basePrice;
+			return baseValue;
 		}
 
 		switch (this->Type)
 		{
-		case PriceIncreaseType::Flat:
+		case ValueIncreaseType::Flat:
 		{
-			result = currentPrice + this->Rate;
+			result = currentValue + this->Rate;
 			break;
 		}
-		case PriceIncreaseType::Factor:
+		case ValueIncreaseType::Factor:
 		{
-			result = currentPrice * this->Rate;
+			result = currentValue * this->Rate;
 			break;
 		}
-		case PriceIncreaseType::Exponential:
+		case ValueIncreaseType::Exponential:
 		{
-			result = basePrice * pow(this->Rate, instanceBought);
+			result = baseValue * pow(this->Rate, instanceBought);
 			break;
 		}
 		default:

@@ -10,32 +10,32 @@ namespace AutoClicker
 		Prestige,
 	};
 
-	enum PriceIncreaseType
+	enum ValueIncreaseType
 	{
 		Flat,
 		Factor,
 		Exponential,
 	};
 
-	class PriceIncreaseStrategy
+	class ValueIncreaseStrategy
 	{
 	public:
-		PriceIncreaseStrategy()
+		ValueIncreaseStrategy()
 		{
-			this->Type = PriceIncreaseType::Flat;
+			this->Type = ValueIncreaseType::Flat;
 			this->Rate = 0;
 		}
 
-		PriceIncreaseStrategy(PriceIncreaseType type, double rate)
+		ValueIncreaseStrategy(ValueIncreaseType type, double rate)
 		{
 			this->Type = type;
 			this->Rate = rate;
 		}
 
-		PriceIncreaseType Type;
+		ValueIncreaseType Type;
 		double Rate;
 
-		double ComputeNextPrice(double basePrice, double currentPrice, double instanceBought) const;
+		double ComputeNextValue(double baseValue, double currentValue, double instanceValue) const;
 	};
 
 	class UpgradeDefinition
@@ -51,7 +51,7 @@ namespace AutoClicker
 		std::string Name;
 		std::string Description;
 
-		PriceIncreaseStrategy PriceIncreaseStrategy;
+		ValueIncreaseStrategy PriceIncreaseStrategy;
 	};
 
 	class Upgrade
