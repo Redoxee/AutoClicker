@@ -8,6 +8,7 @@ namespace AutoClicker
 		Generator,
 		ClickValue,
 		Prestige,
+		UpgradeImprove
 	};
 
 	enum ValueIncreaseType
@@ -46,7 +47,10 @@ namespace AutoClicker
 
 		long BasePrice;
 
-		long ImpactValue;
+		long BaseImpactValue;
+		int TargetInfo;
+
+		ValueIncreaseStrategy Impact;
 
 		std::string Name;
 		std::string Description;
@@ -61,6 +65,8 @@ namespace AutoClicker
 		long InstanceBought = 0;
 
 		long Price;
+
+		long CurrentImpactValue;
 		
 		double ComputeNextPrice();
 	};

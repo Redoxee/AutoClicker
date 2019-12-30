@@ -20,6 +20,7 @@ namespace AutoClicker
 				this->Upgrades[index].Definition = &definitions[index];
 				this->Upgrades[index].InstanceBought = 0;
 				this->Upgrades[index].Price = definitions[index].BasePrice;
+				this->Upgrades[index].CurrentImpactValue = definitions[index].BaseImpactValue;
 			}
 		}
 	}
@@ -93,19 +94,13 @@ namespace AutoClicker
 			return false;
 		}
 
-		const UpgradeDefinition* upgradeDefinition = this->data->Upgrades[upgradeIndex].Definition;
+		Upgrade* upgrade = &this->data->Upgrades[upgradeIndex];
+		const UpgradeDefinition* upgradeDefinition = upgrade->Definition;
 		UpgradeType upgradeType = upgradeDefinition->UpgradeType;
-		if (upgradeType == UpgradeType::ClickValue)
+		
+		if (upgradeType == UpgradeType::Prestige)
 		{
-			this->data->ClickValue += upgradeDefinition->ImpactValue;
-		}
-		else if (upgradeType == UpgradeType::Generator)
-		{
-			this->data->PassiveSpeed += upgradeDefinition->ImpactValue;
-		}
-		else if (upgradeType == UpgradeType::Prestige)
-		{
-			int numberOfUpgrades = this->data->NumberOfUpgrades;
+			std::size_t numberOfUpgrades = this->data->NumberOfUpgrades;
 			for (int index = 0; index < numberOfUpgrades; ++index)
 			{
 				if (upgradeIndex == index)
@@ -114,22 +109,54 @@ namespace AutoClicker
 				}
 
 				this->data->Upgrades[index].InstanceBought = 0;
-				this->data->Upgrades[index].Price = this->data->Upgrades[index].ComputeNextPrice();
+				this->data->Upgrades[index].Price = static_cast<long>(this->data->Upgrades[index].ComputeNextPrice());
+				this->data->Upgrades[index].CurrentImpactValue = this->data->Upgrades[index].Definition->BaseImpactValue;
 			}
-
-			this->data->PassiveSpeed = 0;
-			this->data->ClickValue = 1;
-			this->data->GlobalFactor += upgradeDefinition->ImpactValue;
+		}
+		else if (upgradeType == UpgradeType::UpgradeImprove)
+		{
+			Upgrade* targetUpgrade = &this->data->Upgrades[upgradeDefinition->TargetInfo];
+			double nextImpactValue = upgradeDefinition->Impact.ComputeNextValue(targetUpgrade->Definition->BaseImpactValue, targetUpgrade->CurrentImpactValue, this->data->Upgrades[upgradeIndex].InstanceBought + 1);
+			targetUpgrade->CurrentImpactValue = static_cast<long>(nextImpactValue);
 		}
 
 		this->data->Score -= price;
 		++this->data->Upgrades[upgradeIndex].InstanceBought;
+
+		this->ComputeUpgradeEffects();
 
 		// TODO if doubles are used to compute the next price then there is no point in using long to store the data.
 		// I don't know how to do floating pow function to circumvent this limitation.
 		// I Don't expect the prices to go as high though.
 		this->data->Upgrades[upgradeIndex].Price = static_cast<long>(floor(this->data->Upgrades[upgradeIndex].ComputeNextPrice()));
 		return true;
+	}
+
+	void inline AutoClicker::ComputeUpgradeEffects()
+	{
+		this->data->ClickValue = 1;
+		this->data->PassiveSpeed = 0;
+		this->data->GlobalFactor = 1;
+
+		std::size_t numberOfUpgrades = this->data->NumberOfUpgrades;
+		for (int upgradeIndex = 0; upgradeIndex < numberOfUpgrades; ++upgradeIndex)
+		{
+			Upgrade* upgrade = &this->data->Upgrades[upgradeIndex];
+			const UpgradeDefinition* upgradeDefinition = upgrade->Definition;
+			UpgradeType upgradeType = upgradeDefinition->UpgradeType;
+			if (upgradeType == UpgradeType::ClickValue)
+			{
+				this->data->ClickValue += upgrade->CurrentImpactValue * upgrade->InstanceBought;
+			}
+			else if (upgradeType == UpgradeType::Generator)
+			{
+				this->data->PassiveSpeed += upgrade->CurrentImpactValue * upgrade->InstanceBought;
+			}
+			else if (upgradeType == UpgradeType::Prestige)
+			{
+				this->data->GlobalFactor += upgrade->CurrentImpactValue * upgrade->InstanceBought;
+			}
+		}
 	}
 
 	bool AutoClicker::IsOver()

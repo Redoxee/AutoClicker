@@ -70,5 +70,7 @@ namespace AutoClicker
 	private:
 		std::vector<UpgradeDefinition> upgradeDefinitions;
 		Data* data = nullptr;
+
+		void inline ComputeUpgradeEffects();
 	};
 }
