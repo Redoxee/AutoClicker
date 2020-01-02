@@ -1,0 +1,41 @@
+{
+	"InitialState" : "Paused",
+	"PassiveUpdateDelay" : 1000,
+	"InitialClickValue" : 1,
+	"InitialGlobalFactor" : 1,
+	"InitialPassiveSpeed" : 0,
+	"Upgrades" :
+	[
+		{
+			"Name" : "Enhance File bus",
+			"Description" : "Write several file with at once",
+			"UpgradeType" : "ClickValue",
+			"BaseImpactValue" : 1,
+			"BasePrice" : 100,
+			"Unique" : false,
+			"PriceStrategy" : 
+			{
+				"Type" : "Exponential",
+				"Value" : 1.05,
+			},
+		},
+		{
+			"Name" : "New file bus driver",
+			"Description" : "Upgrade your bus to the next version, improving all the precedent upgrades",
+			"UpgradeType" : "UpgradeImprovement",
+			"TargetName" : "Enhance File bus",
+			"ImpactStrategy" : 
+			{
+				"Type" : "Flat",
+				"Value" : 1,
+			},
+			"BasePrice" : 100,
+			"Unique" : false,
+			"PriceStrategy" : 
+			{
+				"Type" : "Exponential",
+				"Value" : 1.05,
+			},
+		},
+	],
+}
