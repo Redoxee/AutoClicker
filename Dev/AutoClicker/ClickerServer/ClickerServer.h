@@ -16,7 +16,7 @@ class ClickerServer
 {
 public:
 	ClickerServer() {}
-	ClickerServer(utility::string_t url);
+	ClickerServer(utility::string_t url, const utility::string_t& config_file_path);
 
 	pplx::task<void> open() { 
 		return listener.open(); 
