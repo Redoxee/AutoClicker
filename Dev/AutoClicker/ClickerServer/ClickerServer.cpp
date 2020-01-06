@@ -8,7 +8,7 @@ using namespace utility;
 using namespace http;
 using namespace web::http::experimental::listener;
 
-ClickerServer::ClickerServer(utility::string_t url, const utility::string_t& config_file_path) : listener(url)
+ClickerServer::ClickerServer(utility::string_t url) : listener(url)
 {
 	this->clickerManager.StartClickerThread();
 

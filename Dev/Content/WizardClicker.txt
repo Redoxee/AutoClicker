@@ -17,8 +17,8 @@
 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.05,
-			},
+				"Value" : 1.05
+			}
 		},
 
 		{
@@ -29,7 +29,7 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Flat",
-				"Value" : 1,
+				"Value" : 1
 			},
 
 			"BasePrice" : 100,
@@ -37,8 +37,8 @@
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.05,
-			},
+				"Value" : 1.05
+			}
 		},
 
 		{
@@ -52,8 +52,8 @@
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
-				"Value" : 2.0,
-			},
-		},
-	],
+				"Value" : 2.0
+			}
+		}
+	]
 }

@@ -16,7 +16,7 @@ class ClickerServer
 {
 public:
 	ClickerServer() {}
-	ClickerServer(utility::string_t url, const utility::string_t& config_file_path);
+	ClickerServer(utility::string_t url);
 
 	pplx::task<void> open() { 
 		return listener.open(); 
@@ -37,4 +37,3 @@ private:
 	http_listener listener;
 	ClickerManager clickerManager;
 };
-
