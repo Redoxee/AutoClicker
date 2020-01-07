@@ -15,7 +15,7 @@ using namespace http::experimental::listener;
 
 std::unique_ptr<ClickerServer> g_http;
 
-void read_config_file(const string_t& config_file_path)
+bool read_config_file(const string_t& config_file_path, json::value& result)
 {
 	try
 	{
@@ -28,22 +28,21 @@ void read_config_file(const string_t& config_file_path)
 			string_t stringContent = utility::conversions::to_string_t(sstream.str());
 			wcout << "the entire file content is in memory : " << std::endl << stringContent << std::endl;
 
-			std::error_code error;
-			json::value jsonParsed = json::value(stringContent, &error);
+			json::value jsonParsed = json::value::parse(stringContent);
 
-			if(error || jsonParsed.is_null() || jsonParsed.size() == 0)
+			if(jsonParsed.is_null() || jsonParsed.size() == 0)
 			{
-				wcout << "Error while parsing the config file to json '" << error << "'." << endl;
-				return;
+				wcout << "Error while parsing the config file to json." << endl;
+				return false;
 			}
 
-			if (jsonParsed.is_object())
+			if (jsonParsed.is_null())
 			{
-				wcout << "json is an object" << endl;
+				wcout << "json is null" << endl;
+				return false;
 			}
 
-			string_t testVal = jsonParsed[U("InitialState")].as_string();
-			wcout << testVal << std::endl;
+			return true;
 		}
 		else
 		{
@@ -54,20 +53,46 @@ void read_config_file(const string_t& config_file_path)
 	{
 		std::wcerr << e.what() << std::endl;
 	}
+
+	return false;
 }
 
-void on_initialize(const string_t& address, const string_t& config_filePath)
+void start(const string_t& config_filePath)
 {
+	json::value config;
 	if (config_filePath.size() > 0)
 	{
-		read_config_file(config_filePath);
+		if (!read_config_file(config_filePath, config))
+		{
+			return;
+		}
 	}
+	else
+	{
+		wcout << "No config file mode not implemented" << endl;
+		return;
+	}
+
+	utility::string_t address = U("http://localhost:");
+	utility::string_t port = U("1234");
+
+	if (config[U("Address")].is_string())
+	{
+		address = config[U("Address")].as_string();
+	}
+
+	if (config[U("Port")].is_string())
+	{
+		port = config[U("Port")].as_string();
+	}
+
+	address.append(port);
 
 	uri_builder uri(address);
 	uri.append_path(U("AutoClicker/"));
 
 	string_t addr = uri.to_uri().to_string();
-	g_http = std::unique_ptr<ClickerServer>(new ClickerServer(addr));
+	g_http = std::unique_ptr<ClickerServer>(new ClickerServer(addr, config));
 	g_http->open().wait();
 
 	ucout << utility::string_t(U("Listening for requests at: ")) << addr << std::endl;
@@ -75,7 +100,7 @@ void on_initialize(const string_t& address, const string_t& config_filePath)
 	return;
 }
 
-void on_shutdown()
+void stop()
 {
 	g_http->close().wait();
 	return;
@@ -101,22 +126,12 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (configPath.size() > 0)
-	{
+	start(configPath);
 
-	}
-	
-	utility::string_t port = U("1234");
-
-	utility::string_t address = U("http://localhost:");
-	address.append(port);
-
-	on_initialize(address, configPath);
 	std::wcout << "Press ENTER to exit." << std::endl;
-
 	std::string line;
 	std::getline(std::cin, line);
 
-	on_shutdown();
+	stop();
 	return 0;
 }

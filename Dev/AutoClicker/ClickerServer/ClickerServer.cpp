@@ -8,8 +8,10 @@ using namespace utility;
 using namespace http;
 using namespace web::http::experimental::listener;
 
-ClickerServer::ClickerServer(utility::string_t url) : listener(url)
+ClickerServer::ClickerServer(utility::string_t url, const json::value& configuration) : listener(url)
 {
+	this->clickerManager.Initialize(configuration);
+
 	this->clickerManager.StartClickerThread();
 
 	listener.support(methods::GET, std::bind(&ClickerServer::HandleGet, this, std::placeholders::_1));

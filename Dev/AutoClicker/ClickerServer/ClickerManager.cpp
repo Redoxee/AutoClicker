@@ -5,6 +5,10 @@
 
 ClickerManager::ClickerManager()
 {
+}
+
+void ClickerManager::Initialize(const json::value& configuration)
+{
 	AutoClicker::UpgradeDefinition generator;
 	generator.UpgradeType = AutoClicker::UpgradeType::Generator;
 	generator.BasePrice = 400;

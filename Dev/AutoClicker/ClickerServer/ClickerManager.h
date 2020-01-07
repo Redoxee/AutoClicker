@@ -7,6 +7,8 @@
 #include <chrono>
 #include "vector"
 
+using namespace web;
+
 enum OrderIdentifier
 {
 	DoFrame,
@@ -35,6 +37,8 @@ class ClickerManager
 public:
 	ClickerManager();
 	~ClickerManager();
+
+	void Initialize(const json::value& configuration);
 
 	void PostOrder(Order order);
 	void ProcessNextOrder();
