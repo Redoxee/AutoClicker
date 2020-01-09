@@ -7,7 +7,10 @@
 #include <chrono>
 #include "vector"
 
+using namespace std;
 using namespace web;
+using namespace json;
+using namespace utility;
 
 enum OrderIdentifier
 {

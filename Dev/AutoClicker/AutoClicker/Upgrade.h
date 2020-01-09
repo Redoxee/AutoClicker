@@ -52,8 +52,8 @@ namespace AutoClicker
 
 		ValueIncreaseStrategy Impact;
 
-		std::string Name;
-		std::string Description;
+		std::wstring Name;
+		std::wstring Description;
 
 		ValueIncreaseStrategy PriceIncreaseStrategy;
 	};

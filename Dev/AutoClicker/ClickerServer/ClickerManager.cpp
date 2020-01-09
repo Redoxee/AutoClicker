@@ -7,55 +7,92 @@ ClickerManager::ClickerManager()
 {
 }
 
+AutoClicker::ValueIncreaseStrategy ParseIncreaseStrategy(const json::value jsonStrategy)
+{
+	AutoClicker::ValueIncreaseStrategy strategy;
+
+	string_t type = jsonStrategy.at(U("Type")).as_string();
+	if (type == U("Flat"))
+	{
+		strategy.Type = AutoClicker::ValueIncreaseType::Flat;
+	}
+	else if (type == U("Factor"))
+	{
+		strategy.Type = AutoClicker::ValueIncreaseType::Factor;
+	}
+	else if (type == U("Exponential"))
+	{
+		strategy.Type = AutoClicker::ValueIncreaseType::Exponential;
+	}
+
+	strategy.Rate = jsonStrategy.at(U("Value")).as_number().to_int64();
+
+	return strategy;
+}
+
 void ClickerManager::Initialize(const json::value& configuration)
 {
-	AutoClicker::UpgradeDefinition generator;
-	generator.UpgradeType = AutoClicker::UpgradeType::Generator;
-	generator.BasePrice = 400;
-	generator.BaseImpactValue = 1;
-	generator.Name = "Small clicker";
-	generator.Description = "Add two coin every frame";
-	generator.Unique = false;
-	generator.PriceIncreaseStrategy = AutoClicker::ValueIncreaseStrategy(AutoClicker::ValueIncreaseType::Exponential, 1.04);
-	this->upgradeDefinitions.push_back(generator);
-
-	AutoClicker::UpgradeDefinition clickerUpgrade;
-	clickerUpgrade.UpgradeType = AutoClicker::UpgradeType::ClickValue;
-	clickerUpgrade.BaseImpactValue = 1;
-	clickerUpgrade.BasePrice = 50;
-	clickerUpgrade.Unique = false;
-	clickerUpgrade.Name = "Click upgrade";
-	clickerUpgrade.Description = "Improve each click by one";
-	clickerUpgrade.PriceIncreaseStrategy = AutoClicker::ValueIncreaseStrategy(AutoClicker::ValueIncreaseType::Factor, 2);
-	this->upgradeDefinitions.push_back(clickerUpgrade);
-
-	AutoClicker::UpgradeDefinition prestigeUpgrade;
-	prestigeUpgrade.UpgradeType = AutoClicker::UpgradeType::Prestige;
-	prestigeUpgrade.BaseImpactValue = 1;
-	prestigeUpgrade.BasePrice = 1000;
-	prestigeUpgrade.Name = "Prestige";
-	prestigeUpgrade.Description = "Remove all upgrades but increase all income by two";
-	prestigeUpgrade.Unique = true;
-	this->upgradeDefinitions.push_back(prestigeUpgrade);
-
-	AutoClicker::UpgradeDefinition upgradeImprove;
+	if (configuration.has_field(U("Upgrades")))
 	{
-		upgradeImprove.UpgradeType = AutoClicker::UpgradeType::UpgradeImprove;
-		upgradeImprove.Impact = AutoClicker::ValueIncreaseStrategy(AutoClicker::ValueIncreaseType::Flat, 2);
-		upgradeImprove.TargetInfo = 0;
-		upgradeImprove.BasePrice = 400;
-		upgradeImprove.Unique = false;
-		upgradeImprove.Name = "Small clicker improvement";
-		upgradeImprove.Description = "Small clicker gives more clicks";
-		upgradeImprove.PriceIncreaseStrategy = AutoClicker::ValueIncreaseStrategy(AutoClicker::ValueIncreaseType::Exponential, 1.5);
-		this->upgradeDefinitions.push_back(upgradeImprove);
+		json::array upgradeArray = configuration.at(U("Upgrades")).as_array();
+		size_t numberOfUpgrades = upgradeArray.size();
+		for (size_t index = 0; index < numberOfUpgrades; ++index)
+		{
+			json::value jsonUpgrade = upgradeArray.at(index);
+			AutoClicker::UpgradeDefinition upgrade;
+			upgrade.Name = jsonUpgrade[U("Name")].as_string();
+			upgrade.Description = jsonUpgrade[U("Description")].as_string();
+
+			upgrade.BasePrice = jsonUpgrade[U("BasePrice")].as_number().to_int64();
+			upgrade.Unique = jsonUpgrade[U("Unique")].as_bool();
+
+			string_t type = jsonUpgrade[U("UpgradeType")].as_string();
+			if (type == U("ClickValue"))
+			{
+				upgrade.UpgradeType = AutoClicker::UpgradeType::ClickValue;
+			}
+			else if (type == U("Generator"))
+			{
+				upgrade.UpgradeType = AutoClicker::UpgradeType::Generator;
+			}
+			else if (type == U("UpgradeImprove"))
+			{
+				upgrade.UpgradeType = AutoClicker::UpgradeType::UpgradeImprove;
+			}
+			else if (type == U("Prestige"))
+			{
+				upgrade.UpgradeType = AutoClicker::UpgradeType::Prestige;
+			}
+
+			if (jsonUpgrade.has_field(U("BaseImpactValue")))
+			{
+				upgrade.BaseImpactValue = jsonUpgrade[U("BaseImpactValue")].as_number().to_int64();
+			}
+
+			json::value jsonPriceIncrease = jsonUpgrade[U("PriceStrategy")];
+			upgrade.PriceIncreaseStrategy = ParseIncreaseStrategy(jsonPriceIncrease);
+			if (jsonUpgrade.has_object_field(U("ImpactStrategy")))
+			{
+				json::value jsonImpact = jsonUpgrade[U("ImpactStrategy")];
+				upgrade.Impact = ParseIncreaseStrategy(jsonImpact);
+			}
+
+			this->upgradeDefinitions.push_back(upgrade);
+		}
 	}
 
 	this->clickerInstance.Initialize(this->upgradeDefinitions);
 
 	this->lastUpdate = std::chrono::steady_clock::now();
 
-	this->paused = true;
+	if (configuration.has_field(U("InitialState")))
+	{
+		string_t initialState = configuration.at(U("InitialState")).as_string();
+		if (initialState == U("Paused"))
+		{
+			this->paused = true;
+		}
+	}
 }
 
 ClickerManager::~ClickerManager()

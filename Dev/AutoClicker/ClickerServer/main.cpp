@@ -28,15 +28,15 @@ bool read_config_file(const string_t& config_file_path, json::value& result)
 			string_t stringContent = utility::conversions::to_string_t(sstream.str());
 			wcout << "the entire file content is in memory : " << std::endl << stringContent << std::endl;
 
-			json::value jsonParsed = json::value::parse(stringContent);
+			result = json::value::parse(stringContent);
 
-			if(jsonParsed.is_null() || jsonParsed.size() == 0)
+			if(result.is_null() || result.size() == 0)
 			{
 				wcout << "Error while parsing the config file to json." << endl;
 				return false;
 			}
 
-			if (jsonParsed.is_null())
+			if (result.is_null())
 			{
 				wcout << "json is null" << endl;
 				return false;
@@ -72,6 +72,8 @@ void start(const string_t& config_filePath)
 		wcout << "No config file mode not implemented" << endl;
 		return;
 	}
+
+	wcout << config.size() << endl;
 
 	utility::string_t address = U("http://localhost:");
 	utility::string_t port = U("1234");
