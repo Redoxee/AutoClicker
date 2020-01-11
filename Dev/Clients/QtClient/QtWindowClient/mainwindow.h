@@ -4,7 +4,9 @@
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QPushButton>
+#include <QProgressBar>
 #include <QLabel>
+#include <QGridLayout>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -47,7 +49,8 @@ private:
     QLabel* frameValueLabel;
     QLabel* clickValueLabel;
 
-    QLayout* UpgradeLayout;
+    QGridLayout *  UpgradeLayout;
+
 
     QNetworkAccessManager *manager;
     QNetworkRequest request;
@@ -55,6 +58,7 @@ private:
     RefresherWorker* refreshWorker;
     QThread* workerThread;
 
+    QProgressBar* ProgressBar;
     std::vector<UpgradeButton*> UpgradeButtons;
 
     QPushButton CreateUpgradeButton(QString Label);

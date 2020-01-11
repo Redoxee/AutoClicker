@@ -13,7 +13,9 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
     this->scoreValueLabel = this->findChild<QLabel*>("ScoreValue");
     this->frameValueLabel = this->findChild<QLabel*>("FrameValue");
     this->clickValueLabel = this->findChild<QLabel*>("ClickValue");
-    this->UpgradeLayout = this->findChild<QLayout*>("UpgradeButtonHolder");
+    this->UpgradeLayout = this->findChild<QGridLayout*>("UpgradeButtonHolder");
+    this->ProgressBar = this->findChild<QProgressBar*>("ProgressBar");
+
     this->manager = new QNetworkAccessManager();
     QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
@@ -22,6 +24,8 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
 
     scoreValueLabel->setText("0");
     frameValueLabel->setText("0");
+
+    this->ProgressBar->setValue(0);
 
     this->lastRefreshedFrame = -1;
 
@@ -80,7 +84,10 @@ void MainWindow::refreshData(QJsonObject jsonData)
     QString scoreLabel = QString("Score %1 / %2 (Passive speed : %3 * %4)").arg(QString::number(score), QString::number(targetScore), QString::number(passiveSpeed), QString::number(globalFactor));
     this->scoreValueLabel->setText(scoreLabel);
     this->frameValueLabel->setText(QString::number(frameCount));
-    this->clickValueLabel->setText("+"+QString::number(clickValue) + " coins");
+    this->clickValueLabel->setText("+" + QString::number(clickValue) + " coins");
+
+    int progress = static_cast<int>((static_cast<double>(score) / static_cast<double>(targetScore)) * 100.0);
+    this->ProgressBar->setValue(progress);
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
     if(static_cast<int>(this->UpgradeButtons.size()) != jsonUpgrades.size())
@@ -99,7 +106,12 @@ void MainWindow::refreshData(QJsonObject jsonData)
 
             UpgradeButton* upgradeButton = new UpgradeButton(upgrade, this);
             upgradeButton->setToolTip(description);
-            this->UpgradeLayout->addWidget(upgradeButton);
+
+            int NumberColumn = 3;
+            int col = index / NumberColumn;
+            int row = index % NumberColumn;
+            this->UpgradeLayout->addWidget(upgradeButton, col, row);
+
             connect(upgradeButton, &QPushButton::clicked, [=](){ emit this->UpgradeButtonClick(upgradeButton);});
 
             this->UpgradeButtons.push_back(upgradeButton);

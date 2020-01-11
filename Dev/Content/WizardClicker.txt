@@ -4,7 +4,7 @@
 	"PassiveUpdateDelay" : 1000,
 
 	"InitialScore" : 0,
-	"TargetScore" : 1000000000,
+	"TargetScore" : 10000,
 	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
 	"InitialPassiveSpeed" : 1,
@@ -32,8 +32,8 @@
 			"TargetName" : "Enhance File bus",
 			"ImpactStrategy" : 
 			{
-				"Type" : "Flat",
-				"Value" : 1
+				"Type" : "Factor",
+				"Value" : 2
 			},
 
 			"BasePrice" : 100,
