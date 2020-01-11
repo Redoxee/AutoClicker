@@ -47,23 +47,23 @@ namespace AutoClicker
 		}
 	}
 
-	void AutoClicker::Initialize(std::vector<UpgradeDefinition>& uDefinitions)
+	void AutoClicker::Initialize(const ConfigurationData& configuration)
 	{
-		this->upgradeDefinitions = uDefinitions;
+		this->upgradeDefinitions = configuration.UpgradeDefinitions;
 		this->data = new Data(upgradeDefinitions);
 		
 		this->data->FrameCount = 0;
-		this->data->Score = 0;
-		this->data->GlobalFactor = 1;
-		this->data->TargetScore = 1000000;
+		this->data->Score = configuration.Score;
+		this->data->GlobalFactor = configuration.GlobalFactor;
+		this->data->TargetScore = configuration.TargetScore;
 
-		this->data->PassiveSpeed = 0;
-		this->data->ClickValue = 1;
+		this->data->PassiveSpeed = configuration.PassiveSpeed;
+		this->data->ClickValue = configuration.ClickValue;
 	}
 
 	void AutoClicker::Update()
 	{
-		long stock = this->data->PassiveSpeed;
+		int64_t stock = this->data->PassiveSpeed;
 		stock *= this->data->GlobalFactor;
 		this->data->Score += stock;
 		++this->data->FrameCount;
@@ -71,7 +71,7 @@ namespace AutoClicker
 
 	void AutoClicker::Click()
 	{
-		long stock = this->data->ClickValue * this->data->GlobalFactor;
+		int64_t stock = this->data->ClickValue * this->data->GlobalFactor;
 		this->data->Score += stock;
 	}
 
@@ -82,7 +82,7 @@ namespace AutoClicker
 			return false;
 		}
 		
-		long price = this->data->Upgrades[upgradeIndex].Price;
+		int64_t price = this->data->Upgrades[upgradeIndex].Price;
 
 		if (price > this->data->Score)
 		{
@@ -109,7 +109,7 @@ namespace AutoClicker
 				}
 
 				this->data->Upgrades[index].InstanceBought = 0;
-				this->data->Upgrades[index].Price = static_cast<long>(this->data->Upgrades[index].ComputeNextPrice());
+				this->data->Upgrades[index].Price = static_cast<int64_t>(this->data->Upgrades[index].ComputeNextPrice());
 				this->data->Upgrades[index].CurrentImpactValue = this->data->Upgrades[index].Definition->BaseImpactValue;
 			}
 		}
@@ -128,7 +128,7 @@ namespace AutoClicker
 		// TODO if doubles are used to compute the next price then there is no point in using long to store the data.
 		// I don't know how to do floating pow function to circumvent this limitation.
 		// I Don't expect the prices to go as high though.
-		this->data->Upgrades[upgradeIndex].Price = static_cast<long>(floor(this->data->Upgrades[upgradeIndex].ComputeNextPrice()));
+		this->data->Upgrades[upgradeIndex].Price = static_cast<int64_t>(floor(this->data->Upgrades[upgradeIndex].ComputeNextPrice()));
 		return true;
 	}
 

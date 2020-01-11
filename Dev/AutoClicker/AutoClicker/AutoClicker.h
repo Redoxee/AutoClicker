@@ -7,15 +7,26 @@
 
 namespace AutoClicker
 {
+	struct ConfigurationData
+	{
+	public:
+		int64_t Score;
+		int64_t TargetScore;
+		int64_t ClickValue;
+		int64_t PassiveSpeed;
+		int64_t GlobalFactor;
+		std::vector<UpgradeDefinition> UpgradeDefinitions;
+	};
+
 	struct Data
 	{
 	public:
-		long Score;
-		long PassiveSpeed;
-		long FrameCount;
-		long TargetScore;
-		long ClickValue;
-		long GlobalFactor;
+		int64_t Score;
+		int64_t PassiveSpeed;
+		int64_t FrameCount;
+		int64_t TargetScore;
+		int64_t ClickValue;
+		int64_t GlobalFactor;
 
 		size_t NumberOfUpgrades;
 		Upgrade* Upgrades;
@@ -53,7 +64,7 @@ namespace AutoClicker
 		AutoClicker();
 		~AutoClicker();
 
-		void Initialize(std::vector<UpgradeDefinition>& upgradeDefinition);
+		void Initialize(const ConfigurationData& configuration);
 
 		void Update();
 		void Click();

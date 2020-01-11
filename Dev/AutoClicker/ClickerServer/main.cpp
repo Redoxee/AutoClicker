@@ -105,6 +105,7 @@ void start(const string_t& config_filePath)
 void stop()
 {
 	g_http->close().wait();
+
 	return;
 }
 

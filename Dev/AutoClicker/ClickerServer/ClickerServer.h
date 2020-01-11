@@ -18,7 +18,7 @@ public:
 	ClickerServer() {}
 	ClickerServer(utility::string_t url, const json::value& configuration);
 
-	pplx::task<void> open() { 
+	pplx::task<void> open() {
 		return listener.open(); 
 	}
 	

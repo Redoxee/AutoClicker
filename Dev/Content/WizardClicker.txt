@@ -2,7 +2,10 @@
 	"Port" : "1234",
 	"InitialState" : "Paused",
 	"PassiveUpdateDelay" : 1000,
-	"InitialClickValue" : 1,
+
+	"InitialScore" : 123456,
+	"TargetScore" : 1000000000,
+	"InitialClickValue" : 100,
 	"InitialGlobalFactor" : 1,
 	"InitialPassiveSpeed" : 0,
 	"Upgrades" :

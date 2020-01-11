@@ -45,9 +45,9 @@ namespace AutoClicker
 		UpgradeType UpgradeType;
 		bool Unique;
 
-		long BasePrice;
+		int64_t BasePrice;
 
-		long BaseImpactValue;
+		int64_t BaseImpactValue;
 		int TargetInfo;
 
 		ValueIncreaseStrategy Impact;
@@ -62,11 +62,11 @@ namespace AutoClicker
 	{
 	public:
 		const UpgradeDefinition* Definition = nullptr;
-		long InstanceBought = 0;
+		int64_t InstanceBought = 0;
 
-		long Price;
+		int64_t Price;
 
-		long CurrentImpactValue;
+		int64_t CurrentImpactValue;
 		
 		double ComputeNextPrice();
 	};

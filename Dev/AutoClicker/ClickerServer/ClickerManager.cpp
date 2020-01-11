@@ -25,16 +25,48 @@ AutoClicker::ValueIncreaseStrategy ParseIncreaseStrategy(const json::value jsonS
 		strategy.Type = AutoClicker::ValueIncreaseType::Exponential;
 	}
 
-	strategy.Rate = jsonStrategy.at(U("Value")).as_number().to_int64();
+	strategy.Rate = jsonStrategy.at(U("Value")).as_number().to_double();
 
 	return strategy;
 }
 
-void ClickerManager::Initialize(const json::value& configuration)
+void ClickerManager::Initialize(const json::value& jsonConfiguration)
 {
-	if (configuration.has_field(U("Upgrades")))
+	AutoClicker::ConfigurationData configData;
+
+	configData.Score = 0;
+	if (jsonConfiguration.has_number_field(U("InitialScore")))
 	{
-		json::array upgradeArray = configuration.at(U("Upgrades")).as_array();
+		configData.Score = jsonConfiguration.at(U("InitialScore")).as_number().to_int64();
+	}
+
+	configData.ClickValue = 1;
+	if (jsonConfiguration.has_number_field(U("InitialClickValue")))
+	{
+		configData.ClickValue = jsonConfiguration.at(U("InitialClickValue")).as_number().to_int64();
+	}
+
+	configData.TargetScore = 1000000;
+	if (jsonConfiguration.has_number_field(U("TargetScore")))
+	{
+		configData.TargetScore = jsonConfiguration.at(U("TargetScore")).as_number().to_int64();
+	}
+
+	configData.PassiveSpeed = 0;
+	if (jsonConfiguration.has_number_field(U("InitialPassiveSpeed")))
+	{
+		configData.PassiveSpeed = jsonConfiguration.at(U("InitialPassiveSpeed")).as_number().to_int64();
+	}
+
+	configData.GlobalFactor = 1;
+	if (jsonConfiguration.has_number_field(U("InitialGlobalFactor")))
+	{
+		configData.GlobalFactor = jsonConfiguration.at(U("InitialGlobalFactor")).as_number().to_int64();
+	}
+
+	if (jsonConfiguration.has_field(U("Upgrades")))
+	{
+		json::array upgradeArray = jsonConfiguration.at(U("Upgrades")).as_array();
 		size_t numberOfUpgrades = upgradeArray.size();
 		for (size_t index = 0; index < numberOfUpgrades; ++index)
 		{
@@ -79,15 +111,17 @@ void ClickerManager::Initialize(const json::value& configuration)
 
 			this->upgradeDefinitions.push_back(upgrade);
 		}
+
+		configData.UpgradeDefinitions = this->upgradeDefinitions;
 	}
 
-	this->clickerInstance.Initialize(this->upgradeDefinitions);
+	this->clickerInstance.Initialize(configData);
 
 	this->lastUpdate = std::chrono::steady_clock::now();
 
-	if (configuration.has_field(U("InitialState")))
+	if (jsonConfiguration.has_field(U("InitialState")))
 	{
-		string_t initialState = configuration.at(U("InitialState")).as_string();
+		string_t initialState = jsonConfiguration.at(U("InitialState")).as_string();
 		if (initialState == U("Paused"))
 		{
 			this->paused = true;
