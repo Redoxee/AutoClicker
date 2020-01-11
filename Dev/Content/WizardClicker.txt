@@ -3,11 +3,11 @@
 	"InitialState" : "Paused",
 	"PassiveUpdateDelay" : 1000,
 
-	"InitialScore" : 123456,
+	"InitialScore" : 0,
 	"TargetScore" : 1000000000,
-	"InitialClickValue" : 100,
+	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
-	"InitialPassiveSpeed" : 0,
+	"InitialPassiveSpeed" : 1,
 	"Upgrades" :
 	[
 		{
