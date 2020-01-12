@@ -1,21 +1,21 @@
 {
-	"Port" : "1234",
+	"Port" : "1414",
 	"InitialState" : "Paused",
 	"PassiveUpdateDelay" : 1000,
 
-	"InitialScore" : 1000,
-	"TargetScore" : 10000,
+	"InitialScore" : 0,
+	"TargetScore" : 1000000,
 	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
-	"InitialPassiveSpeed" : 1,
+	"InitialPassiveSpeed" : 0,
 	"Upgrades" :
 	[
 		{
-			"Name" : "Additional bus",
-			"Description" : "More buses means more bits written at once",
+			"Name" : "Click_upgrade_1",
+			"Description" : "Increase click value",
 			"UpgradeType" : "ClickValue",
 			"BaseImpactValue" : 1,
-			"BasePrice" : 100,
+			"BasePrice" : 80,
 			"Unique" : false,
 			"PriceStrategy" : 
 
@@ -26,17 +26,31 @@
 		},
 
 		{
-			"Name" : "New file bus driver",
+			"Name" : "Improve_click_upgrade_1",
 			"Description" : "Upgrade your bus to the next version",
 			"UpgradeType" : "UpgradeImprovement",
-			"TargetName" : "Additional bus",
+			"TargetName" : "Click_upgrade_1",
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
 				"Value" : 2
 			},
 
-			"BasePrice" : 100,
+			"BasePrice" : 400,
+			"Unique" : true,
+			"PriceStrategy" : 
+			{
+				"Type" : "Exponential",
+				"Value" : 1.05
+			}
+		},
+
+		{
+			"Name" : "Generator_1",
+			"Description" : "Auto click",
+			"UpgradeType" : "Generator",
+			"BaseImpactValue" : 1,
+			"BasePrice" : 190,
 			"Unique" : false,
 			"PriceStrategy" : 
 			{
@@ -46,13 +60,67 @@
 		},
 
 		{
-			"Name" : "Disc formating",
-			"Description" : "A clean disc means faster",
+			"Name" : "Generator_2",
+			"Description" : "Auto click",
+			"UpgradeType" : "Generator",
+			"BaseImpactValue" : 300,
+			"BasePrice" : 6500,
+			"Unique" : false,
+			"PriceStrategy" : 
+			{
+				"Type" : "Exponential",
+				"Value" : 1.05
+			}
+		},
+
+		{
+			"Name" : "Improve_generator_1",
+			"Description" : "Increase the generator output",
+			"UpgradeType" : "UpgradeImprovement",
+			"TargetName" : "Generator_1",
+			"ImpactStrategy" : 
+			{
+				"Type" : "Factor",
+				"Value" : 2
+			},
+
+			"BasePrice" : 4800,
+			"Unique" : true,
+			"PriceStrategy" : 
+			{
+				"Type" : "Exponential",
+				"Value" : 1.05
+			}
+		},
+
+		{
+			"Name" : "Improve_generator_2",
+			"Description" : "Increase the generator output",
+			"UpgradeType" : "UpgradeImprovement",
+			"TargetName" : "Generator_2",
+			"ImpactStrategy" : 
+			{
+				"Type" : "Factor",
+				"Value" : 2
+			},
+
+			"BasePrice" : 35000,
+			"Unique" : true,
+			"PriceStrategy" : 
+			{
+				"Type" : "Exponential",
+				"Value" : 1.05
+			}
+		},
+
+		{
+			"Name" : "Prestige 1",
+			"Description" : "Reset the game and increase the global factor",
 			"UpgradeType" : "Prestige",
 			"BaseImpactValue" : 1,
 
-			"BasePrice" : 1000,
-			"Unique" : true,
+			"BasePrice" : 150000,
+			"Unique" : false,
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
