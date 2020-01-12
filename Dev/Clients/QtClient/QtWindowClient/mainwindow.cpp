@@ -60,7 +60,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::handleClick()
 {
-    request.setUrl(QUrl("http://localhost:1234/AutoClicker?click=true"));
+    request.setUrl(
+                QUrl(
+                    QString::fromStdString(AutoClicker::BaseURI() + "click=true")
+                    )
+                );
     manager->get(request);
 }
 
@@ -84,9 +88,14 @@ void MainWindow::refreshData(QJsonObject jsonData)
     QString scoreLabel = QString("Score %1 / %2 (Passive speed : %3 * %4)").arg(QString::number(score), QString::number(targetScore), QString::number(passiveSpeed), QString::number(globalFactor));
     this->scoreValueLabel->setText(scoreLabel);
     this->frameValueLabel->setText(QString::number(frameCount));
-    this->clickValueLabel->setText("+" + QString::number(clickValue) + " coins");
+    this->clickValueLabel->setText("+" + QString::number(clickValue) + " bytes");
 
     int progress = static_cast<int>((static_cast<double>(score) / static_cast<double>(targetScore)) * 100.0);
+    if(progress > 100)
+    {
+        progress = 100;
+    }
+
     this->ProgressBar->setValue(progress);
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
@@ -156,7 +165,7 @@ void MainWindow::UpgradeButtonClick(UpgradeButton* upgradeButton)
 
 void MainWindow::aboutToQuit()
 {
-    this->request.setUrl(QUrl("http://localhost:1234/AutoClicker?set_update_pause=true"));
+    this->request.setUrl(QUrl(QString::fromStdString( AutoClicker::BaseURI() + "set_update_pause=true")));
     manager->get(request);
     qDebug() << "About to quit called.";
     // TODO : find a way to enable one last request before quitting without waiting an arbitrary length of time.
