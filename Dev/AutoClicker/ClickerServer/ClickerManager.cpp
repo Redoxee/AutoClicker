@@ -319,6 +319,7 @@ web::json::value ClickerManager::GetDataAsJson()
 
 			utility::string_t description = utility::conversions::to_string_t(data.Upgrades[index].Definition->Description);
 			upgrade[U("Description")] = web::json::value::string(description);
+			upgrade[U("FailureFlags")] = static_cast<int>(AutoClicker::AutoClicker::GetUpgradeFailureFlags(&data ,index));
 
 			upgrades[index] = upgrade;
 		}

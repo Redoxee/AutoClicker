@@ -75,6 +75,8 @@ namespace AutoClicker
 		{
 			this->data->CopyTo(d);
 		}
+		
+		static FailureFlags GetUpgradeFailureFlags(Data* data, int index);
 
 		friend std::ostream& operator<<(std::ostream&, const AutoClicker* c);
 

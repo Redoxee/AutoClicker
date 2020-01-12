@@ -18,6 +18,21 @@ namespace AutoClicker
 		Exponential,
 	};
 
+	enum FailureFlags
+	{
+		None = 0,
+		NotEnoughMoney = 1,
+		PurchaseLimitReached = 2,
+		GameOver = 4,
+		UnknownUpgrade = 8,
+	};
+
+
+	inline FailureFlags operator|(FailureFlags a, FailureFlags b)
+	{
+		return static_cast<FailureFlags>(static_cast<int>(a) | static_cast<int>(b));
+	}
+
 	class ValueIncreaseStrategy
 	{
 	public:
@@ -63,9 +78,7 @@ namespace AutoClicker
 	public:
 		const UpgradeDefinition* Definition = nullptr;
 		int64_t InstanceBought = 0;
-
 		int64_t Price;
-
 		int64_t CurrentImpactValue;
 		
 		double ComputeNextPrice();

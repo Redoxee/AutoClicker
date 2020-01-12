@@ -66,6 +66,7 @@ namespace AutoClicker
 		int64_t stock = this->data->PassiveSpeed;
 		stock *= this->data->GlobalFactor;
 		this->data->Score += stock;
+
 		++this->data->FrameCount;
 	}
 
@@ -73,6 +74,7 @@ namespace AutoClicker
 	{
 		int64_t stock = this->data->ClickValue * this->data->GlobalFactor;
 		this->data->Score += stock;
+
 		++this->data->FrameCount;
 	}
 
@@ -131,7 +133,6 @@ namespace AutoClicker
 		// I Don't expect the prices to go as high though.
 		this->data->Upgrades[upgradeIndex].Price = static_cast<int64_t>(floor(this->data->Upgrades[upgradeIndex].ComputeNextPrice()));
 
-
 		++this->data->FrameCount;
 		return true;
 	}
@@ -166,6 +167,35 @@ namespace AutoClicker
 	bool AutoClicker::IsOver()
 	{
 		return this->data->Score >= this->data->TargetScore;
+	}
+
+	FailureFlags AutoClicker::GetUpgradeFailureFlags(Data* data, int upgradeIndex)
+	{
+		if (upgradeIndex < 0 || upgradeIndex >= data->NumberOfUpgrades)
+		{
+			return FailureFlags::UnknownUpgrade;
+		}
+
+		FailureFlags failures = FailureFlags::None;
+
+		int64_t price = data->Upgrades[upgradeIndex].Price;
+
+		if (price > data->Score)
+		{
+			failures = failures | FailureFlags::NotEnoughMoney;
+		}
+
+		if (data->Upgrades[upgradeIndex].Definition->Unique && data->Upgrades[upgradeIndex].InstanceBought > 0)
+		{
+			failures = failures | FailureFlags::PurchaseLimitReached;
+		}
+
+		if (data->Score >= data->TargetScore)
+		{
+			failures = failures | FailureFlags::GameOver;
+		}
+
+		return failures;
 	}
 
 	std::ostream& operator<<(std::ostream& stream, const AutoClicker* c)
