@@ -32,6 +32,7 @@ AutoClicker::ValueIncreaseStrategy ParseIncreaseStrategy(const json::value jsonS
 
 void ClickerManager::Initialize(const json::value& jsonConfiguration)
 {
+	wcout << "Parsing clicker configuration." << endl;
 	AutoClicker::ConfigurationData configData;
 
 	configData.Score = 0;
@@ -87,13 +88,17 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 			{
 				upgrade.UpgradeType = AutoClicker::UpgradeType::Generator;
 			}
-			else if (type == U("UpgradeImprove"))
+			else if (type == U("UpgradeImprovement"))
 			{
 				upgrade.UpgradeType = AutoClicker::UpgradeType::UpgradeImprove;
 			}
 			else if (type == U("Prestige"))
 			{
 				upgrade.UpgradeType = AutoClicker::UpgradeType::Prestige;
+			}
+			else
+			{
+				wcout << "Unknown improvement type : " << type << "." << endl;
 			}
 
 			if (jsonUpgrade.has_field(U("BaseImpactValue")))
@@ -112,6 +117,32 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 			this->upgradeDefinitions.push_back(upgrade);
 		}
 
+		for (size_t index = 0; index < numberOfUpgrades; ++index)
+		{
+			json::value jsonUpgrade = upgradeArray.at(index);
+			
+			if (jsonUpgrade.has_field(U("TargetName")))
+			{
+				string_t targetName = jsonUpgrade.at(U("TargetName")).as_string();
+
+				int targetIndex = -1;
+
+				for (int jndex = 0; jndex < numberOfUpgrades; ++jndex)
+				{
+					if (this->upgradeDefinitions[jndex].Name == targetName)
+					{
+						targetIndex = jndex;
+						break;
+					}
+				}
+
+				if (targetIndex > -1)
+				{
+					this->upgradeDefinitions[index].TargetInfo = targetIndex;
+				}
+			}
+		}
+
 		configData.UpgradeDefinitions = this->upgradeDefinitions;
 	}
 
@@ -127,6 +158,8 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 			this->paused = true;
 		}
 	}
+
+	wcout << "Clicker configuration parsed." << endl;
 }
 
 ClickerManager::~ClickerManager()
@@ -162,19 +195,35 @@ void ClickerManager::ProcessNextOrder()
 	switch (order.Identifier)
 	{
 	case DoFrame:
+		if (this->clickerInstance.IsOver())
+		{
+			break;
+		}
+
 		this->clickerInstance.Update();
+		
 		break;
 
 	case Click:
+		if (this->clickerInstance.IsOver())
+		{
+			break;
+		}
+		
 		this->clickerInstance.Click();
 		break;
 
 	case BuyUpgrade:
 	{
+		if (this->clickerInstance.IsOver())
+		{
+			break;
+		}
+
 		int index = order.Value;
 		if (index < 0 || index >= this->upgradeDefinitions.size())
 		{
-			std::cerr << "when buyting generator index out of range " << order.Value << std::endl;
+			wcerr << "When buyting generator index out of range " << order.Value << endl;
 		}
 		else
 		{
@@ -225,11 +274,11 @@ void ClickerManager::ManagerThreadLoop()
 					this->Synchonize();
 				}
 
-				this->lastUpdate = std::chrono::steady_clock::now();
+				this->lastUpdate = chrono::steady_clock::now();
 			}
 		}
 	}
-	std::cout << "Exiting the clicker manager thread loop" << std::endl;
+	wcout << "Exiting the clicker manager thread loop" << endl;
 }
 
 void ClickerManager::Synchonize()

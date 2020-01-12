@@ -3,7 +3,7 @@
 	"InitialState" : "Paused",
 	"PassiveUpdateDelay" : 1000,
 
-	"InitialScore" : 0,
+	"InitialScore" : 1000,
 	"TargetScore" : 10000,
 	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
@@ -29,7 +29,7 @@
 			"Name" : "New file bus driver",
 			"Description" : "Upgrade your bus to the next version",
 			"UpgradeType" : "UpgradeImprovement",
-			"TargetName" : "Enhance File bus",
+			"TargetName" : "Additional bus",
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",

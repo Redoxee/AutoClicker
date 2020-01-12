@@ -73,6 +73,7 @@ namespace AutoClicker
 	{
 		int64_t stock = this->data->ClickValue * this->data->GlobalFactor;
 		this->data->Score += stock;
+		++this->data->FrameCount;
 	}
 
 	bool AutoClicker::BuyUpgrade(int upgradeIndex)
@@ -129,6 +130,9 @@ namespace AutoClicker
 		// I don't know how to do floating pow function to circumvent this limitation.
 		// I Don't expect the prices to go as high though.
 		this->data->Upgrades[upgradeIndex].Price = static_cast<int64_t>(floor(this->data->Upgrades[upgradeIndex].ComputeNextPrice()));
+
+
+		++this->data->FrameCount;
 		return true;
 	}
 

@@ -26,7 +26,7 @@ bool read_config_file(const string_t& config_file_path, json::value& result)
 			sstream << file.rdbuf();
 
 			string_t stringContent = utility::conversions::to_string_t(sstream.str());
-			wcout << "the entire file content is in memory : " << std::endl << stringContent << std::endl;
+			wcout << "Configuration loaded." << endl;
 
 			result = json::value::parse(stringContent);
 
@@ -46,12 +46,12 @@ bool read_config_file(const string_t& config_file_path, json::value& result)
 		}
 		else
 		{
-			wcout << "failed to read config file : \"" << config_file_path << "\"" << std::endl;
+			wcout << "failed to read config file : \"" << config_file_path << "\"" << endl;
 		}
 	}
 	catch (exception& e)
 	{
-		std::wcerr << e.what() << std::endl;
+		wcerr << e.what() << endl;
 	}
 
 	return false;
@@ -73,8 +73,6 @@ void start(const string_t& config_filePath)
 		return;
 	}
 
-	wcout << config.size() << endl;
-
 	utility::string_t address = U("http://localhost:");
 	utility::string_t port = U("1234");
 
@@ -95,6 +93,9 @@ void start(const string_t& config_filePath)
 
 	string_t addr = uri.to_uri().to_string();
 	g_http = std::unique_ptr<ClickerServer>(new ClickerServer(addr, config));
+
+	wcout << "Initialization done." << endl;
+
 	g_http->open().wait();
 
 	ucout << utility::string_t(U("Listening for requests at: ")) << addr << std::endl;
