@@ -152,6 +152,15 @@ void MainWindow::refreshData(QJsonObject jsonData)
         this->isDirty = false;
         this->lastRefreshedFrame = frameCount;
     }
+    else
+    {
+        for(int index = 0; index < jsonUpgrades.size(); ++index)
+        {
+            UpgradeButton* upgradeButton = this->UpgradeButtons[static_cast<unsigned long long>(index)];
+            int failureFlags = jsonUpgrades[index].toObject()["FailureFlags"].toInt();
+            upgradeButton->setEnabled(failureFlags == 0);
+        }
+    }
 }
 
 void MainWindow::UpgradeButtonClick(UpgradeButton* upgradeButton)
