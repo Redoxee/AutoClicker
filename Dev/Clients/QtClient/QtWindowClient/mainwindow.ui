@@ -6,14 +6,30 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
-    <height>632</height>
+    <width>400</width>
+    <height>600</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="13" column="0">
      <layout class="QHBoxLayout" name="FrameLayout">
+      <item>
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item>
        <widget class="QLabel" name="FrameLabel">
         <property name="text">
@@ -242,8 +258,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>369</width>
-     <height>21</height>
+     <width>400</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
