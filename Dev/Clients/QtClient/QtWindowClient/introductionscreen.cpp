@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QWidget>
 #include <QPixmap>
+#include <QSpacerItem>
+#include <QDialogButtonBox>
 
 IntroductionScreen::IntroductionScreen(QApplication* application, QWidget *parent)
     : QMainWindow(parent)
@@ -16,31 +18,44 @@ IntroductionScreen::IntroductionScreen(QApplication* application, QWidget *paren
 
 void IntroductionScreen::SetupUi()
 {
-    this->setWindowTitle("Auto Clicker");
-    this->setFixedSize(600,800);
+    this->setWindowTitle("Shitty Wizzard Installer");
+    this->setFixedSize(500,600);
 
     QWidget* centralWidget = new QWidget(this);
     this->setCentralWidget(centralWidget);
 
-    QHBoxLayout* mainLayout = new QHBoxLayout(centralWidget);
+    QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
+    QHBoxLayout* horizontalLayout = new QHBoxLayout();
 
     QPixmap image("Ressources/Gradient.png");
-    image.scaled(300,800,Qt::IgnoreAspectRatio);
-
     QLabel* imageHolder = new QLabel(centralWidget);
     imageHolder->setPixmap(image);
-
-    mainLayout->addWidget(imageHolder);
+    imageHolder->setStyleSheet("background: red");
+    imageHolder->setScaledContents(true);
+    imageHolder->setMaximumWidth(200);
+    horizontalLayout->addWidget(imageHolder);
 
     QVBoxLayout* vBoxLayout = new QVBoxLayout(centralWidget);
-    mainLayout->addItem(vBoxLayout);
+    vBoxLayout->setMargin(15);
 
-    QLabel* introLabel = new QLabel("Welcome to the Shitty Wizzard Installer.", centralWidget);
-    introLabel->setAlignment(Qt::AlignCenter);
-    vBoxLayout->addWidget(introLabel);
+    horizontalLayout->addItem(vBoxLayout);
+
+    QLabel* titleLabel = new QLabel("Welcome to the Shitty Wizzard Installer(SWI).", centralWidget);
+    titleLabel->setAlignment(Qt::AlignLeft);
+    vBoxLayout->addWidget(titleLabel);
+
+    QLabel* subTitleLabel = new QLabel("We will guide you through the installation of DotGobbler.exe", centralWidget);
+    vBoxLayout->addWidget(subTitleLabel);
+    mainLayout->addItem(horizontalLayout);
+
+    vBoxLayout->addStretch(0);
 
     QPushButton* startButton = new QPushButton(centralWidget);
-    startButton->setText("Start Installation");
+    startButton->setText("Start Installation!");
+    QDialogButtonBox* buttonBox = new QDialogButtonBox();
+    buttonBox->addButton(startButton, QDialogButtonBox::ButtonRole::YesRole);
 
-    vBoxLayout->addWidget(startButton);
+    mainLayout->addWidget(buttonBox);
+
+    this->setLayout(mainLayout);
 }
