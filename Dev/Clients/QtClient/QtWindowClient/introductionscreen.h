@@ -7,6 +7,9 @@
 
 class IntroductionScreen : public QMainWindow
 {
+public slots:
+    void StartPressed();
+
 public:
     IntroductionScreen(QApplication* application, QWidget *parent = nullptr);
 private:

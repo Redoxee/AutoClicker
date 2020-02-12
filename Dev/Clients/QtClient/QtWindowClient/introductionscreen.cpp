@@ -9,6 +9,8 @@
 #include <QSpacerItem>
 #include <QDialogButtonBox>
 
+#include "mainwindow.h"
+
 IntroductionScreen::IntroductionScreen(QApplication* application, QWidget *parent)
     : QMainWindow(parent)
 {
@@ -58,4 +60,14 @@ void IntroductionScreen::SetupUi()
     mainLayout->addWidget(buttonBox);
 
     this->setLayout(mainLayout);
+
+    QObject::connect(startButton, &QPushButton::clicked, this, &IntroductionScreen::StartPressed);
+}
+
+void IntroductionScreen::StartPressed()
+{
+    qDebug() << "Coucou";
+    MainWindow* mainWindow = new MainWindow(this->qApplication);
+    mainWindow->show();
+    this->close();
 }
