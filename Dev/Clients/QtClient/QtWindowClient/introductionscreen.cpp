@@ -8,8 +8,9 @@
 #include <QPixmap>
 #include <QSpacerItem>
 #include <QDialogButtonBox>
-
+#include "autoclickerconfig.h"
 #include "mainwindow.h"
+#include "introanimationwindow.h"
 
 IntroductionScreen::IntroductionScreen(QApplication* application, QWidget *parent)
     : QMainWindow(parent)
@@ -21,7 +22,7 @@ IntroductionScreen::IntroductionScreen(QApplication* application, QWidget *paren
 void IntroductionScreen::SetupUi()
 {
     this->setWindowTitle("Shitty Wizzard Installer");
-    this->setFixedSize(500,600);
+    this->setFixedSize(AutoClicker::WindowWidth, AutoClicker::WindowHeight);
 
     QWidget* centralWidget = new QWidget(this);
     this->setCentralWidget(centralWidget);
@@ -66,8 +67,7 @@ void IntroductionScreen::SetupUi()
 
 void IntroductionScreen::StartPressed()
 {
-    qDebug() << "Coucou";
-    MainWindow* mainWindow = new MainWindow(this->qApplication);
-    mainWindow->show();
+    IntroAnimationWindow* cinematic = new IntroAnimationWindow(this->qApplication);
+    cinematic->show();
     this->close();
 }
