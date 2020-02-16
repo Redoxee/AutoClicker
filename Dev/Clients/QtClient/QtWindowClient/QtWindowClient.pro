@@ -19,7 +19,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     introanimationwindow.cpp \
     introductionscreen.cpp \
+    introscreenwidget.cpp \
     main.cpp \
+    maingamewidget.cpp \
     mainwindow.cpp \
     refresherworker.cpp \
     upgradebutton.cpp
@@ -28,6 +30,8 @@ HEADERS += \
     autoclickerconfig.h \
     introanimationwindow.h \
     introductionscreen.h \
+    introscreenwidget.h \
+    maingamewidget.h \
     mainwindow.h \
     refresherworker.h \
     upgrade.h \

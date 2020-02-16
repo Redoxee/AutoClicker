@@ -27,8 +27,8 @@ void IntroductionScreen::SetupUi()
     QWidget* centralWidget = new QWidget(this);
     this->setCentralWidget(centralWidget);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
-    QHBoxLayout* horizontalLayout = new QHBoxLayout();
+    this->mainLayout = new QVBoxLayout(centralWidget);
+    this->mainHorizontalLayout = new QHBoxLayout();
 
     QPixmap image("Ressources/Gradient.png");
     QLabel* imageHolder = new QLabel(centralWidget);
@@ -36,38 +36,25 @@ void IntroductionScreen::SetupUi()
     imageHolder->setStyleSheet("background: red");
     imageHolder->setScaledContents(true);
     imageHolder->setMaximumWidth(200);
-    horizontalLayout->addWidget(imageHolder);
+    this->mainHorizontalLayout->addWidget(imageHolder);
 
-    QVBoxLayout* vBoxLayout = new QVBoxLayout(centralWidget);
-    vBoxLayout->setMargin(15);
+    this->introScreenWidget = new IntroScreenWidget(this);
+    this->mainHorizontalLayout->addWidget(this->introScreenWidget);
 
-    horizontalLayout->addItem(vBoxLayout);
-
-    QLabel* titleLabel = new QLabel("Welcome to the Shitty Wizzard Installer(SWI).", centralWidget);
-    titleLabel->setAlignment(Qt::AlignLeft);
-    vBoxLayout->addWidget(titleLabel);
-
-    QLabel* subTitleLabel = new QLabel("We will guide you through the installation of DotGobbler.exe", centralWidget);
-    vBoxLayout->addWidget(subTitleLabel);
-    mainLayout->addItem(horizontalLayout);
-
-    vBoxLayout->addStretch(0);
+    this->mainLayout->addItem(this->mainHorizontalLayout);
 
     QPushButton* startButton = new QPushButton(centralWidget);
     startButton->setText("Start Installation!");
     QDialogButtonBox* buttonBox = new QDialogButtonBox();
     buttonBox->addButton(startButton, QDialogButtonBox::ButtonRole::YesRole);
 
-    mainLayout->addWidget(buttonBox);
-
-    this->setLayout(mainLayout);
+    this->mainLayout->addWidget(buttonBox);
 
     QObject::connect(startButton, &QPushButton::clicked, this, &IntroductionScreen::StartPressed);
 }
 
 void IntroductionScreen::StartPressed()
 {
-    IntroAnimationWindow* cinematic = new IntroAnimationWindow(this->qApplication);
-    cinematic->show();
-    this->close();
+    this->mainHorizontalLayout->removeWidget(this->introScreenWidget);
+    delete this->introScreenWidget;
 }
