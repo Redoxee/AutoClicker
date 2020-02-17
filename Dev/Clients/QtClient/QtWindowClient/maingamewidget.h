@@ -1,6 +1,7 @@
 #ifndef MAINGAMEWIDGET_H
 #define MAINGAMEWIDGET_H
 
+#include <QApplication>
 #include <QObject>
 #include <QWidget>
 #include <QCloseEvent>
@@ -14,6 +15,7 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 #include <QThread>
 
@@ -27,7 +29,7 @@
 class MainGameWidget : public QWidget
 {
 public:
-    MainGameWidget(QWidget* parent);
+    MainGameWidget(QWidget* parent, QApplication* application);
     ~MainGameWidget();
 
 public slots:
@@ -39,12 +41,14 @@ public slots:
     void aboutToQuit();
 
 private:
+    void SetupUI();
 
     QLabel* scoreValueLabel;
     QLabel* frameValueLabel;
     QLabel* clickValueLabel;
+    QPushButton* clickerButton;
 
-    QGridLayout *  UpgradeLayout;
+    QGridLayout*  UpgradeLayout;
 
 
     QNetworkAccessManager *manager;

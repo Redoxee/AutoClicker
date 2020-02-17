@@ -8,7 +8,7 @@
 #include <QtDebug>
 
 #include "introscreenwidget.h"
-
+#include "maingamewidget.h"
 class IntroductionScreen : public QMainWindow
 {
 public slots:
@@ -20,9 +20,13 @@ private:
     void SetupUi();
     QApplication* qApplication;
 
-    IntroScreenWidget* introScreenWidget;
     QLayout* mainLayout;
     QLayout* mainHorizontalLayout;
+    QWidget* mainWidget;
+
+
+    IntroScreenWidget* introScreenWidget;
+    MainGameWidget* mainGameWidget;
 };
 
 #endif // INTRODUCTIONSCREEN_H
