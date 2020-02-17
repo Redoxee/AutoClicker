@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QObject>
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QPushButton>
@@ -18,53 +19,28 @@
 
 #include <vector>
 
-#include "refresherworker.h"
-#include "upgrade.h"
-#include "upgradebutton.h"
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include "introscreenwidget.h"
+#include "maingamewidget.h"
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     MainWindow(QApplication* application, QWidget *parent = nullptr);
-    ~MainWindow();
 
 public slots:
-    void handleClick();
-    void UpgradeButtonClick(UpgradeButton* button);
-    void handleHttpRequest(QNetworkReply* reply);
+    void StartPressed();
 
-    void refreshData(QJsonObject jsonData);
-    void aboutToQuit();
+private :
+    void SetupUi();
+    QApplication* qApplication;
 
-private:
-    Ui::MainWindow *ui;
-
-    QLabel* scoreValueLabel;
-    QLabel* frameValueLabel;
-    QLabel* clickValueLabel;
-
-    QGridLayout *  UpgradeLayout;
+    QLayout* mainLayout;
+    QLayout* mainHorizontalLayout;
+    QWidget* mainWidget;
 
 
-    QNetworkAccessManager *manager;
-    QNetworkRequest request;
-
-    RefresherWorker* refreshWorker;
-    QThread* workerThread;
-
-    QProgressBar* ProgressBar;
-    std::vector<UpgradeButton*> UpgradeButtons;
-
-    QPushButton CreateUpgradeButton(QString Label);
-
-    int lastRefreshedFrame;
-    bool isDirty;
-
+    IntroScreenWidget* introScreenWidget;
+    MainGameWidget* mainGameWidget;
 };
 #endif // MAINWINDOW_H
