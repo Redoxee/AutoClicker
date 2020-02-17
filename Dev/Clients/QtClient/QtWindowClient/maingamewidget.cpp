@@ -5,9 +5,9 @@ MainGameWidget::MainGameWidget(QWidget* parent, QApplication* application) : QWi
     this->SetupUI();
 
     this->manager = new QNetworkAccessManager();
-    QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(MainGameWidget::handleHttpRequest(QNetworkReply*)));
+    QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
-    QObject::connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (MainGameWidget::handleClick()));
+    QObject::connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
 
     scoreValueLabel->setText("0");
     frameValueLabel->setText("0");
@@ -17,14 +17,14 @@ MainGameWidget::MainGameWidget(QWidget* parent, QApplication* application) : QWi
     this->lastRefreshedFrame = -1;
 
     this->refreshWorker = new RefresherWorker();
-    QObject::connect(this->refreshWorker, SIGNAL(refreshData(QJsonObject)), this, SLOT(MainGameWidget::refreshData(QJsonObject)));
+    QObject::connect(this->refreshWorker, SIGNAL(refreshData(QJsonObject)), this, SLOT(refreshData(QJsonObject)));
     this->workerThread = new QThread();
     this->refreshWorker->moveToThread(this->workerThread);
 
     connect(this->workerThread, SIGNAL(started()), this->refreshWorker, SLOT(run()));
     this->workerThread->start();
 
-    connect(application, SIGNAL(QApplication::aboutToQuit), this, SLOT(MainGameWidget::aboutToQuit));
+    connect(application, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 
 }
 
@@ -60,7 +60,7 @@ void MainGameWidget::SetupUI()
 
     this->ProgressBar = new QProgressBar(this);
     vBoxLayout->addWidget(this->ProgressBar);
-    this->UpgradeLayout = new QGridLayout(this);
+    this->UpgradeLayout = new QGridLayout();
     vBoxLayout->addLayout(this->UpgradeLayout);
 
     this->clickerButton = new QPushButton("Click", this);
@@ -69,7 +69,6 @@ void MainGameWidget::SetupUI()
 
 void MainGameWidget::handleClick()
 {
-    qDebug() << "CouCou";
     request.setUrl(
                 QUrl(
                     QString::fromStdString(AutoClicker::BaseURI() + "click=true")

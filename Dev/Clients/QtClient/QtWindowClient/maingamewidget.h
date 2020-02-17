@@ -28,6 +28,7 @@
 
 class MainGameWidget : public QWidget
 {
+    Q_OBJECT
 public:
     MainGameWidget(QWidget* parent, QApplication* application);
     ~MainGameWidget();

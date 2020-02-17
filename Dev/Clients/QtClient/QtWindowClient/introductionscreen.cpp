@@ -39,6 +39,7 @@ void IntroductionScreen::SetupUi()
     imageHolder->setStyleSheet("background: red");
     imageHolder->setScaledContents(true);
     imageHolder->setMaximumWidth(200);
+    imageHolder->setMinimumWidth(200);
     this->mainHorizontalLayout->addWidget(imageHolder);
 
     this->mainLayout->addItem(this->mainHorizontalLayout);
