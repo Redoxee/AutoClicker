@@ -10,7 +10,8 @@
 #include <QDialogButtonBox>
 #include "autoclickerconfig.h"
 #include "mainwindow.h"
-#include "introanimationwindow.h"
+#include "gamecinematic.h"
+#include "windowshakeanimation.h"
 
 MainWindow::MainWindow(QApplication* application, QWidget *parent)
     : QMainWindow(parent)
@@ -56,12 +57,22 @@ void MainWindow::SetupUi()
 
 void MainWindow::StartPressed()
 {
+    /*
     this->mainHorizontalLayout->removeWidget(this->introScreenWidget);
     this->introScreenWidget->hide();
     delete this->introScreenWidget;
-
+*/
+/*
     this->mainGameWidget = new MainGameWidget(this->mainWidget, this->qApplication);
     this->mainHorizontalLayout->addWidget(this->mainGameWidget);
     this->mainGameWidget->show();
+*/
+/*
+    this->gameCinematic = new GameCinematic(this->mainWidget, this);
+    this->mainHorizontalLayout->addWidget(this->gameCinematic);
+    this->gameCinematic->show();
+*/
+    WindowShakeAnimation* anim = new WindowShakeAnimation(this, 1000,20,.5);
+    anim->start();
 }
 

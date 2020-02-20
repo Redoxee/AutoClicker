@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "introscreenwidget.h"
+#include "gamecinematic.h"
 #include "maingamewidget.h"
 
 class MainWindow : public QMainWindow
@@ -39,8 +40,8 @@ private :
     QLayout* mainHorizontalLayout;
     QWidget* mainWidget;
 
-
     IntroScreenWidget* introScreenWidget;
+    GameCinematic* gameCinematic;
     MainGameWidget* mainGameWidget;
 };
 #endif // MAINWINDOW_H
