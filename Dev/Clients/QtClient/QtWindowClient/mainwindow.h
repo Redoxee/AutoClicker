@@ -39,6 +39,7 @@ private :
     QLayout* mainLayout;
     QLayout* mainHorizontalLayout;
     QWidget* mainWidget;
+    QDialogButtonBox* bottomBox;
 
     IntroScreenWidget* introScreenWidget;
     GameCinematic* gameCinematic;

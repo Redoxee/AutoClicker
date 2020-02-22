@@ -19,7 +19,7 @@ MainWindow::MainWindow(QApplication* application, QWidget *parent)
     this->qApplication = application;
     this->SetupUi();
 
-    this->introScreenWidget = new IntroScreenWidget(this->mainWidget);
+    this->introScreenWidget = new IntroScreenWidget(this->mainWidget, this->bottomBox);
     this->mainHorizontalLayout->addWidget(this->introScreenWidget);
 }
 
@@ -45,34 +45,28 @@ void MainWindow::SetupUi()
 
     this->mainLayout->addItem(this->mainHorizontalLayout);
 
-    QPushButton* startButton = new QPushButton(this->mainWidget);
-    startButton->setText("Start Installation!");
-    QDialogButtonBox* buttonBox = new QDialogButtonBox();
-    buttonBox->addButton(startButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->bottomBox = new QDialogButtonBox();
 
-    this->mainLayout->addWidget(buttonBox);
+    this->mainLayout->addWidget(this->bottomBox);
 
-    QObject::connect(startButton, &QPushButton::clicked, this, &MainWindow::StartPressed);
+//    QObject::connect(startButton, &QPushButton::clicked, this, &MainWindow::StartPressed);
 }
 
 void MainWindow::StartPressed()
 {
-    /*
     this->mainHorizontalLayout->removeWidget(this->introScreenWidget);
     this->introScreenWidget->hide();
     delete this->introScreenWidget;
-*/
+
 /*
     this->mainGameWidget = new MainGameWidget(this->mainWidget, this->qApplication);
     this->mainHorizontalLayout->addWidget(this->mainGameWidget);
     this->mainGameWidget->show();
 */
-/*
+
     this->gameCinematic = new GameCinematic(this->mainWidget, this);
     this->mainHorizontalLayout->addWidget(this->gameCinematic);
     this->gameCinematic->show();
-*/
-    WindowShakeAnimation* anim = new WindowShakeAnimation(this, 1000,20,.5);
-    anim->start();
+    this->gameCinematic->StartCinematic();
 }
 
