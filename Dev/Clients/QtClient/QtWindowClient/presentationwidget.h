@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QProcess>
 #include <QDir>
+#include <QString>
 
 #include "gamewindow.h"
 

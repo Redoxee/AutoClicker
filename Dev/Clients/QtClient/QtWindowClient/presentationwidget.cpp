@@ -5,6 +5,17 @@ PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) 
     this->gameWindow = gameWindow;
 
     this->SetupUI();
+
+    QString coreGameProcessPath = QDir::currentPath() + "/CoreGame/ClickerServer.exe";
+    qDebug() << coreGameProcessPath;
+    if(QProcess::startDetached(coreGameProcessPath))
+    {
+        qDebug() << "Server process started.";
+    }
+    else
+    {
+        qDebug() << "Server process failed!";
+    }
 }
 
 void PresentationWidget::SetupUI()
