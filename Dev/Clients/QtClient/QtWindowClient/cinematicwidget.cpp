@@ -1,6 +1,6 @@
-#include "gamecinematic.h"
+#include "cinematicwidget.h"
 
-GameCinematic::GameCinematic(QWidget *parent, QMainWindow* mainWindow) : QWidget(parent)
+CinematicWidget::CinematicWidget(QWidget *parent, QMainWindow* mainWindow) : QWidget(parent)
 {
     this->SetupUI();
 
@@ -8,22 +8,24 @@ GameCinematic::GameCinematic(QWidget *parent, QMainWindow* mainWindow) : QWidget
 
     QPropertyAnimation* progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
     progressBarAnimation->setStartValue(0);
-    progressBarAnimation->setEndValue(100);
+    progressBarAnimation->setEndValue(99);
     progressBarAnimation->setDuration(1000);
     this->animationSequence->addAnimation(progressBarAnimation);
 
     this->windowShakeAnimation = new WindowShakeAnimation(mainWindow, 1000, 15.0f, 0.05f);
     this->animationSequence->addAnimation(this->windowShakeAnimation);
+
+    this->StartCinematic();
 }
 
-void GameCinematic::SetupUI()
+void CinematicWidget::SetupUI()
 {
     QVBoxLayout* vLayout = new QVBoxLayout(this);
     this->progressBar = new QProgressBar();
     vLayout->addWidget(this->progressBar);
 }
 
-void GameCinematic::StartCinematic()
+void CinematicWidget::StartCinematic()
 {
     this->animationSequence->start();
 }

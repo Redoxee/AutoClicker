@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef GAMEWINDOW_H
+#define GAMEWINDOW_H
 
 #include <QObject>
 #include <QMainWindow>
@@ -8,6 +8,7 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QGridLayout>
+#include <QDialogButtonBox>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -19,19 +20,30 @@
 
 #include <vector>
 
+class GameWindow;
+
 #include "introscreenwidget.h"
-#include "gamecinematic.h"
+#include "presentationwidget.h"
+#include "cinematicwidget.h"
 #include "maingamewidget.h"
 
-class MainWindow : public QMainWindow
+enum Screens
+{
+    IntroScreen,
+    PresentationScreen,
+    CinematicScreen,
+    GameScreen,
+};
+
+class GameWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow(QApplication* application, QWidget *parent = nullptr);
+    GameWindow(QApplication* application, QWidget *parent = nullptr);
+    void GotToScreen(Screens nextScreen);
+    QDialogButtonBox* BottomBox;
 
 public slots:
-    void StartPressed();
-
 private :
     void SetupUi();
     QApplication* qApplication;
@@ -39,10 +51,7 @@ private :
     QLayout* mainLayout;
     QLayout* mainHorizontalLayout;
     QWidget* mainWidget;
-    QDialogButtonBox* bottomBox;
 
-    IntroScreenWidget* introScreenWidget;
-    GameCinematic* gameCinematic;
-    MainGameWidget* mainGameWidget;
+    QWidget* CurrentDisplayedScreen;
 };
-#endif // MAINWINDOW_H
+#endif // GAMEWINDOW_H

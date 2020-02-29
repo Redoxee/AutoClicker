@@ -9,15 +9,22 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
+#include "gamewindow.h"
+
 class IntroScreenWidget : public QWidget
 {
     Q_OBJECT
 public:
-    IntroScreenWidget(QWidget* parent, QDialogButtonBox* bottomButtonHolder);
+    IntroScreenWidget(QWidget* parent, GameWindow* mainWindow);
+
+public slots:
+    void StartButtonPressed();
 
 private:
     void SetupUI();
-    QDialogButtonBox* bottomBox;
+    GameWindow* mainWindow;
+
+    QPushButton* startButton;
 };
 
 #endif // INTROSCREENWIDGET_H

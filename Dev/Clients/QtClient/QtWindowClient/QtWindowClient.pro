@@ -17,21 +17,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    gamecinematic.cpp \
+    cinematicwidget.cpp \
+    gamewindow.cpp \
     introscreenwidget.cpp \
     main.cpp \
     maingamewidget.cpp \
-    mainwindow.cpp \
+    presentationwidget.cpp \
     refresherworker.cpp \
     upgradebutton.cpp \
     windowshakeanimation.cpp
 
 HEADERS += \
     autoclickerconfig.h \
-    gamecinematic.h \
+    gamewindow.h \
     introscreenwidget.h \
+    presentationwidget.h \
+    cinematicwidget.h \
     maingamewidget.h \
-    mainwindow.h \
     refresherworker.h \
     upgrade.h \
     upgradebutton.h \

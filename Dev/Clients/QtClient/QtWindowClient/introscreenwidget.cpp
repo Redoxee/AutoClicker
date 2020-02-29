@@ -1,8 +1,8 @@
 #include "introscreenwidget.h"
 
-IntroScreenWidget::IntroScreenWidget(QWidget* parent, QDialogButtonBox* bottomBox) : QWidget(parent)
+IntroScreenWidget::IntroScreenWidget(QWidget* parent, GameWindow* mainWindow) : QWidget(parent)
 {
-    this->bottomBox = bottomBox;
+    this->mainWindow = mainWindow;
     this->SetupUI();
 }
 
@@ -19,7 +19,17 @@ void IntroScreenWidget::SetupUI()
     QLabel* subTitleLabel = new QLabel("We will guide you through the installation of DotGobbler.exe", this);
     vBoxLayout->addWidget(subTitleLabel);
 
-    QPushButton* startButton = new QPushButton(this);
-    startButton->setText("Next");
-    this->bottomBox->addButton(startButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->startButton = new QPushButton(this);
+    this->startButton->setText("Next");
+    this->mainWindow->BottomBox->addButton(startButton, QDialogButtonBox::ButtonRole::YesRole);
+
+    connect(this->startButton, SIGNAL(clicked()), this, SLOT(StartButtonPressed()));
+}
+
+void IntroScreenWidget::StartButtonPressed()
+{
+    this->mainWindow->BottomBox->removeButton(this->startButton);
+    delete this->startButton;
+
+    this->mainWindow->GotToScreen(Screens::PresentationScreen);
 }
