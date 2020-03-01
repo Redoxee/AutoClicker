@@ -6,16 +6,12 @@ PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) 
 
     this->SetupUI();
 
-    QString coreGameProcessPath = QDir::currentPath() + "/CoreGame/ClickerServer.exe";
-    qDebug() << coreGameProcessPath;
-    if(QProcess::startDetached(coreGameProcessPath))
-    {
-        qDebug() << "Server process started.";
-    }
-    else
-    {
-        qDebug() << "Server process failed!";
-    }
+    this->checkerThread = new QThread();
+    this->coreChecker = new CoreChecker(this->checkerThread);
+    connect(this->coreChecker, SIGNAL(Reply()), this, SLOT(CoreCheckerReply()));
+    this->checkerThread->start();
+
+    this->bottomButton->hide();
 }
 
 void PresentationWidget::SetupUI()
@@ -24,13 +20,22 @@ void PresentationWidget::SetupUI()
     this->bottomButton->setText("Begin installation");
     this->gameWindow->BottomBox->addButton(this->bottomButton, QDialogButtonBox::ButtonRole::YesRole);
 
-    connect(this->bottomButton, SIGNAL(clicked()), this, SLOT(startButtonClicked()));
+    connect(this->bottomButton, SIGNAL(clicked()), this, SLOT(StartButtonClicked()));
 }
 
-void PresentationWidget::startButtonClicked()
+void PresentationWidget::StartButtonClicked()
 {
     this->gameWindow->BottomBox->removeButton(this->bottomButton);
     delete this->bottomButton;
 
     this->gameWindow->GotToScreen(Screens::CinematicScreen);
+}
+
+void PresentationWidget::CoreCheckerReply()
+{
+    this->bottomButton->show();
+    if(this->coreChecker->CurrentState() != CoreCheckerState::Sucess)
+    {
+        this->bottomButton->setDisabled(true);
+    }
 }

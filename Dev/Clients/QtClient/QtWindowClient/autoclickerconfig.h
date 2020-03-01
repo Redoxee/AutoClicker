@@ -8,7 +8,8 @@ namespace AutoClicker {
     static const int WindowHeight = 600;
     inline unsigned long FrameLength() { return 1000;}
     inline unsigned long RefreshRate() { return 250;}
-    inline std::string BaseURI() { return "http://localhost:1414/AutoClicker?";}
+    inline std::string BaseURI() { return "http://localhost:1414/AutoClicker?"; }
+    inline std::string RelativeCoreServerpath() { return "/../../../Content/WizardClicker.txt"; }
 }
 
 #endif // AUTOCLICKERCONFIG_H

@@ -5,11 +5,13 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
-#include <QProcess>
-#include <QDir>
-#include <QString>
+
+#include <QThread>
+
+#include "windows.h"
 
 #include "gamewindow.h"
+#include "corechecker.h"
 
 class PresentationWidget : public QWidget
 {
@@ -19,11 +21,14 @@ public:
 private:
     GameWindow* gameWindow;
     QPushButton* bottomButton;
+    QThread* checkerThread;
+    CoreChecker* coreChecker;
 
     void SetupUI();
 
 private slots:
-    void startButtonClicked();
+    void StartButtonClicked();
+    void CoreCheckerReply();
 };
 
 #endif // PRESENTATIONWIDGET_H

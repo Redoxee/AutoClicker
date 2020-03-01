@@ -9,7 +9,6 @@ void RefresherWorker::run()
     QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
     this->TryInitialRequest();
-
 }
 
 void RefresherWorker::TryInitialRequest()
