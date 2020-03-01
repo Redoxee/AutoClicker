@@ -6,24 +6,32 @@
 #include <QSequentialAnimationGroup>
 #include <QPropertyAnimation>
 
+#include <QDialogButtonBox>
 #include <QProgressBar>
 #include <QVBoxLayout>
 
+#include "gamewindow.h"
 #include "windowshakeanimation.h"
 
 class CinematicWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CinematicWidget(QWidget *parent = nullptr, QMainWindow* window = nullptr);
+    explicit CinematicWidget(QWidget *parent, GameWindow* window);
 
     void StartCinematic();
+public slots:
+    void MainSequenceFinished();
+    void GameStartPressed();
 
 private:
+    GameWindow* gameWindow;
+
     QSequentialAnimationGroup* animationSequence;
     WindowShakeAnimation* windowShakeAnimation;
 
     QProgressBar* progressBar;
+    QPushButton* bottomButton;
 
     void SetupUI();
 };
