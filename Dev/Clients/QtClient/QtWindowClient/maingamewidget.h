@@ -58,9 +58,10 @@ private:
     RefresherWorker* refreshWorker;
     QThread* workerThread;
 
-    QProgressBar* ProgressBar;
+    QProgressBar* ProgressBar[4];
     std::vector<UpgradeButton*> UpgradeButtons;
 
+    void RefreshProgressBars(int score);
     QPushButton CreateUpgradeButton(QString Label);
 
     int lastRefreshedFrame;

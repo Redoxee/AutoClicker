@@ -12,7 +12,7 @@ MainGameWidget::MainGameWidget(QWidget* parent, QApplication* application) : QWi
     scoreValueLabel->setText("0");
     frameValueLabel->setText("0");
 
-    this->ProgressBar->setValue(0);
+    this->RefreshProgressBars(0);
 
     this->lastRefreshedFrame = -1;
 
@@ -58,8 +58,11 @@ void MainGameWidget::SetupUI()
     this->clickValueLabel = new QLabel(this);
     vBoxLayout->addWidget(this->clickValueLabel);
 
-    this->ProgressBar = new QProgressBar(this);
-    vBoxLayout->addWidget(this->ProgressBar);
+    for(int index = 0; index < 4; ++index)
+    {
+        this->ProgressBar[index] = new QProgressBar(this);
+        vBoxLayout->addWidget(this->ProgressBar[index]);
+    }
     this->UpgradeLayout = new QGridLayout();
     vBoxLayout->addLayout(this->UpgradeLayout);
 
@@ -105,7 +108,7 @@ void MainGameWidget::refreshData(QJsonObject jsonData)
         progress = 100;
     }
 
-    this->ProgressBar->setValue(progress);
+    this->RefreshProgressBars(score);
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
     if(static_cast<int>(this->UpgradeButtons.size()) != jsonUpgrades.size())
@@ -188,4 +191,29 @@ void MainGameWidget::aboutToQuit()
     qDebug() << "About to quit called.";
     // TODO : find a way to enable one last request before quitting without waiting an arbitrary length of time.
     QThread::sleep(1);
+}
+
+void MainGameWidget::RefreshProgressBars(int score)
+{
+    int numberOfbars = 4;
+    if(score >= 1000000000)
+    {
+        for(int index = 0; index < numberOfbars; ++index)
+        {
+            this->ProgressBar[index]->setValue(100);
+        }
+
+        return;
+    }
+
+    int firstBarScore = (score % 1000) / 10;
+    this->ProgressBar[0]->setValue(firstBarScore);
+    for(int index = 1; index < numberOfbars; ++index)
+    {
+        double order = pow(10,3 + 2*index);
+        double denominator = pow(10,1 + 2 * index);
+        int barScore = score % static_cast<int>(order) / static_cast<int>(denominator);
+
+        this->ProgressBar[index]->setValue(barScore);
+    }
 }
