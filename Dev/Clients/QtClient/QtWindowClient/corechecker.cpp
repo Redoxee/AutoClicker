@@ -82,7 +82,7 @@ void CoreChecker::ProcessWaitingReply(QNetworkReply* reply)
 
 void CoreChecker::StartCorServerProcess()
 {
-    QString coreGameProcessPath = QDir::currentPath() + "/CoreGame/ClickerServer.exe";
+    QString coreGameProcessPath = QDir::currentPath() + QString::fromStdString(AutoClicker::RelativeCoreServerPath());
     qDebug() << coreGameProcessPath;
     QProcess qProcess;
 
@@ -94,7 +94,7 @@ void CoreChecker::StartCorServerProcess()
     });
 
     qProcess.setProgram(coreGameProcessPath);
-    qProcess.setArguments({QDir::currentPath() + QString::fromStdString(AutoClicker::RelativeCoreServerpath())});
+    qProcess.setArguments({QDir::currentPath() + QString::fromStdString(AutoClicker::RelativeConfigPath())});
 
     qProcess.startDetached();
 }
