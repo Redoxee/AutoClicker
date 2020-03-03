@@ -46,12 +46,12 @@ public:
 public slots:
 private :
     void SetupUi();
-    QApplication* qApplication;
+    QApplication* qApplication = nullptr;
 
-    QLayout* mainLayout;
-    QLayout* mainHorizontalLayout;
-    QWidget* mainWidget;
+    QLayout* mainLayout = nullptr;
+    QLayout* mainHorizontalLayout = nullptr;
+    QWidget* mainWidget = nullptr;
 
-    QWidget* CurrentDisplayedScreen;
+    QWidget* CurrentDisplayedScreen = nullptr;
 };
 #endif // GAMEWINDOW_H
