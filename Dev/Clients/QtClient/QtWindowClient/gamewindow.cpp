@@ -6,6 +6,12 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
     this->qApplication = application;
     this->SetupUi();
 
+    QThread* workerThread = new QThread();
+    this->serverWorker = new class::ServerWorker(application, workerThread);
+
+    connect(workerThread, SIGNAL(started()), this->serverWorker, SLOT(onThreadStart()));
+    workerThread->start();
+
     this->GotToScreen(Screens::IntroScreen);
 }
 

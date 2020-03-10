@@ -26,6 +26,7 @@ class GameWindow;
 #include "presentationwidget.h"
 #include "cinematicwidget.h"
 #include "maingamewidget.h"
+#include "serverworker.h"
 
 enum Screens
 {
@@ -43,6 +44,8 @@ public:
     void GotToScreen(Screens nextScreen);
     QDialogButtonBox* BottomBox;
 
+    ServerWorker* ServerWorker() { return this->serverWorker; };
+
 public slots:
 private :
     void SetupUi();
@@ -53,5 +56,6 @@ private :
     QWidget* mainWidget = nullptr;
 
     QWidget* CurrentDisplayedScreen = nullptr;
+    class::ServerWorker* serverWorker = nullptr;
 };
 #endif // GAMEWINDOW_H

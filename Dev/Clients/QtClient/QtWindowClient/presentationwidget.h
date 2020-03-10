@@ -9,9 +9,9 @@
 #include <QThread>
 
 #include "windows.h"
+#include "serverworker.h"
 
 #include "gamewindow.h"
-#include "corechecker.h"
 
 class PresentationWidget : public QWidget
 {
@@ -21,14 +21,16 @@ public:
 private:
     GameWindow* gameWindow;
     QPushButton* bottomButton;
-    QThread* checkerThread;
-    CoreChecker* coreChecker;
 
     void SetupUI();
 
 private slots:
     void StartButtonClicked();
-    void CoreCheckerReply();
+    void serverWorkerReply();
+    void serverReady();
+
+signals:
+    void OrderSignal();
 };
 
 #endif // PRESENTATIONWIDGET_H

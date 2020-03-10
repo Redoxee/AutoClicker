@@ -29,7 +29,7 @@ class CoreChecker : public QObject
 {
     Q_OBJECT
 public:
-    CoreChecker(QThread* targetThread);
+    CoreChecker(QThread* targetThread, QString applicationPath);
 
     CoreCheckerState CurrentState(){ return this->currentState; };
 
@@ -42,6 +42,7 @@ signals:
     void Reply();
 
 private:
+    QString applicationPath;
     CoreCheckerState currentState;
 
     QNetworkAccessManager* manager;

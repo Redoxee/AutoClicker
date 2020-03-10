@@ -6,12 +6,24 @@ PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) 
 
     this->SetupUI();
 
-    this->checkerThread = new QThread();
-    this->coreChecker = new CoreChecker(this->checkerThread);
-    connect(this->coreChecker, SIGNAL(Reply()), this, SLOT(CoreCheckerReply()));
-    this->checkerThread->start();
-
-    this->bottomButton->hide();
+    // This might not work with thread, need lock of some kind.
+    ServerWorker::State currentState = gameWindow->ServerWorker()->CurrentState();
+    if(currentState == ServerWorker::State::WaitingForGame)
+    {
+        qDebug() << "Server ready";
+        this->serverReady();
+    }
+    else if(currentState == ServerWorker::NoServerFound)
+    {
+        qDebug() << "No server found";
+        connect(this, &PresentationWidget::OrderSignal, gameWindow->ServerWorker(), [=](){gameWindow->ServerWorker()->RequestOrder(ServerWorker::OrderStartNewServer);});
+        emit this->OrderSignal();
+    }
+    else
+    {
+        qDebug() << "Waiting for response";
+        connect(gameWindow->ServerWorker(), &ServerWorker::InitialServerResponse, this, &PresentationWidget::serverWorkerReply);
+    }
 }
 
 void PresentationWidget::SetupUI()
@@ -19,6 +31,7 @@ void PresentationWidget::SetupUI()
     this->bottomButton = new QPushButton(this);
     this->bottomButton->setText("Begin installation");
     this->gameWindow->BottomBox->addButton(this->bottomButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->bottomButton->hide();
 
     connect(this->bottomButton, SIGNAL(clicked()), this, SLOT(StartButtonClicked()));
 }
@@ -31,11 +44,27 @@ void PresentationWidget::StartButtonClicked()
     this->gameWindow->GotToScreen(Screens::CinematicScreen);
 }
 
-void PresentationWidget::CoreCheckerReply()
+
+void PresentationWidget::serverWorkerReply()
+{
+    // This might not work with thread, need lock of some kind.
+    ServerWorker::State currentState = gameWindow->ServerWorker()->CurrentState();
+    if(currentState == ServerWorker::State::WaitingForGame)
+    {
+        this->serverReady();
+    }
+    else if(currentState == ServerWorker::NoServerFound)
+    {
+        connect(this, &PresentationWidget::OrderSignal, gameWindow->ServerWorker(), [=](){gameWindow->ServerWorker()->RequestOrder(ServerWorker::OrderStartNewServer);});
+        emit this->OrderSignal();
+    }
+    else
+    {
+        qDebug() << "Something's wrong.";
+    }
+}
+
+void PresentationWidget::serverReady()
 {
     this->bottomButton->show();
-    if(this->coreChecker->CurrentState() != CoreCheckerState::Sucess)
-    {
-        this->bottomButton->setDisabled(true);
-    }
 }

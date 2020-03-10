@@ -1,8 +1,10 @@
 #include "corechecker.h"
 
-CoreChecker::CoreChecker(QThread* targetThread)
+CoreChecker::CoreChecker(QThread* targetThread, QString applicationPath)
 {
     this->currentState = CoreCheckerState::NotStarted;
+    this->applicationPath = applicationPath;
+
     connect(targetThread, SIGNAL(started()), this, SLOT(Run()));
 }
 
@@ -82,7 +84,7 @@ void CoreChecker::ProcessWaitingReply(QNetworkReply* reply)
 
 void CoreChecker::StartCorServerProcess()
 {
-    QString coreGameProcessPath = QDir::currentPath() + QString::fromStdString(AutoClicker::RelativeCoreServerPath());
+    QString coreGameProcessPath = this->applicationPath + QString::fromStdString(AutoClicker::RelativeCoreServerPath());
     qDebug() << coreGameProcessPath;
     QProcess qProcess;
 
@@ -94,7 +96,7 @@ void CoreChecker::StartCorServerProcess()
     });
 
     qProcess.setProgram(coreGameProcessPath);
-    qProcess.setArguments({QDir::currentPath() + QString::fromStdString(AutoClicker::RelativeConfigPath())});
+    qProcess.setArguments({this->applicationPath + QString::fromStdString(AutoClicker::RelativeConfigPath())});
 
     qProcess.startDetached();
 }

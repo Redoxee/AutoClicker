@@ -25,6 +25,7 @@ SOURCES += \
     maingamewidget.cpp \
     presentationwidget.cpp \
     refresherworker.cpp \
+    serverworker.cpp \
     upgradebutton.cpp \
     windowshakeanimation.cpp
 
@@ -37,6 +38,7 @@ HEADERS += \
     cinematicwidget.h \
     maingamewidget.h \
     refresherworker.h \
+    serverworker.h \
     upgrade.h \
     upgradebutton.h \
     windowshakeanimation.h
