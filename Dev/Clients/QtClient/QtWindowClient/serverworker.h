@@ -48,7 +48,7 @@ public slots:
 
 signals:
     void InitialServerResponse();
-
+    void ServerStarted();
 
 private:
     State currentState = State::None;
@@ -68,6 +68,7 @@ private:
 private slots:
     void onThreadStart();
     void initialServerRequestResponse(QNetworkReply* httpResponse);
+    void startServerRequest(QNetworkReply* httpResponse);
 };
 
 #endif // SERVERWORKER_H

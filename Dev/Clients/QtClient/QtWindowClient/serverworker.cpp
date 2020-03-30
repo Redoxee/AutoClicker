@@ -10,7 +10,8 @@ ServerWorker::ServerWorker(QApplication* application, QThread* thread)
 
 void ServerWorker::initialServerRequestResponse(QNetworkReply* httpResponse)
 {
-    qDebug() << "a response has arrived " << httpResponse->error() <<".";
+    qDebug() << "a response has arrived" << httpResponse->error() <<"(" << static_cast<int>(httpResponse->error()) << ").";
+    disconnect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(initialServerRequestResponse(QNetworkReply*)));
 
     if(httpResponse->error() == 0)
     {
@@ -19,25 +20,37 @@ void ServerWorker::initialServerRequestResponse(QNetworkReply* httpResponse)
         emit this->InitialServerResponse();
         return;
     }
-    else if(httpResponse->error() > 99)
+
+    qDebug() << "No server error  : " + httpResponse->errorString();
+    this->currentState = State::NoServerFound;
+    emit this->InitialServerResponse();
+}
+
+void ServerWorker::startServerRequest(QNetworkReply* httpResponse)
+{
+    qDebug() << "a response has arrived" << httpResponse->error() <<"(" << static_cast<int>(httpResponse->error()) << ").";
+
+    if(httpResponse->error() == 0)
+    {
+        qDebug() << "Core game server found.";
+        this->currentState = State::WaitingForGame;
+        emit this->ServerStarted();
+        return;
+    }
+
+    if(httpResponse->error() >= 99)
     {
         qDebug() << "Unhandled error  : " + httpResponse->errorString();
         this->currentState = State::NoServerFound;
-        emit this->InitialServerResponse();
-        return;
+        emit this->ServerStarted();
     }
 
-    if(this->attemptCount >= ServerWorker::maxAttemptCount)
+    if(this->attemptCount < ServerWorker::maxAttemptCount)
     {
-        qDebug() << "Start server failed, no respons after " << ServerWorker::maxAttemptCount << " tries.";
-        this->currentState = State::NoServerFound;
-        emit this->InitialServerResponse();
-        return;
+        QThread::msleep(AutoClicker::RefreshRate());
+        this->attemptCount++;
+        this->manager->get(this->request);
     }
-
-    QThread::msleep(AutoClicker::RefreshRate());
-    this->attemptCount++;
-    this->manager->get(this->request);
 }
 
 void ServerWorker::onThreadStart()
@@ -56,12 +69,20 @@ void ServerWorker::RequestOrder(ServerWorker::Order order)
     qDebug() << "New order";
     if(order == Order::OrderStartNewServer)
     {
-        this->StartNewServer();
+        if(this->currentState == State::NoServerFound)
+        {
+            this->StartNewServer();
+        }
+        else if(this->currentState == State::WaitingForGame)
+        {
+            emit this->ServerStarted();
+        }
     }
 }
 
 void ServerWorker::StartNewServer()
 {
+    this->currentState = State::StartingNewServerInstance;
 
     QString coreGameProcessPath = this->applicationPath + QString::fromStdString(AutoClicker::RelativeCoreServerPath());
     qDebug() << coreGameProcessPath;
@@ -77,6 +98,8 @@ void ServerWorker::StartNewServer()
     qProcess.setProgram(coreGameProcessPath);
     qProcess.setArguments({this->applicationPath + QString::fromStdString(AutoClicker::RelativeConfigPath())});
     qProcess.startDetached();
+
+    connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(startServerRequest(QNetworkReply*)));
 
     this->manager->get(this->request);
 }

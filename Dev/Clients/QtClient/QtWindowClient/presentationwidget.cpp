@@ -6,6 +6,8 @@ PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) 
 
     this->SetupUI();
 
+    connect(this, &PresentationWidget::OrderSignal, gameWindow->ServerWorker(), [=](){gameWindow->ServerWorker()->RequestOrder(ServerWorker::OrderStartNewServer);});
+
     // This might not work with thread, need lock of some kind.
     ServerWorker::State currentState = gameWindow->ServerWorker()->CurrentState();
     if(currentState == ServerWorker::State::WaitingForGame)
@@ -15,14 +17,13 @@ PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) 
     }
     else if(currentState == ServerWorker::NoServerFound)
     {
-        qDebug() << "No server found";
-        connect(this, &PresentationWidget::OrderSignal, gameWindow->ServerWorker(), [=](){gameWindow->ServerWorker()->RequestOrder(ServerWorker::OrderStartNewServer);});
+        connect(gameWindow->ServerWorker(), &ServerWorker::ServerStarted, this, &PresentationWidget::serverWorkerReply);
         emit this->OrderSignal();
     }
     else
     {
-        qDebug() << "Waiting for response";
         connect(gameWindow->ServerWorker(), &ServerWorker::InitialServerResponse, this, &PresentationWidget::serverWorkerReply);
+        qDebug() << "Waiting for response";
     }
 }
 
@@ -55,7 +56,8 @@ void PresentationWidget::serverWorkerReply()
     }
     else if(currentState == ServerWorker::NoServerFound)
     {
-        connect(this, &PresentationWidget::OrderSignal, gameWindow->ServerWorker(), [=](){gameWindow->ServerWorker()->RequestOrder(ServerWorker::OrderStartNewServer);});
+        disconnect(gameWindow->ServerWorker(), &ServerWorker::ServerStarted, this, &PresentationWidget::serverWorkerReply);
+        connect(gameWindow->ServerWorker(), &ServerWorker::InitialServerResponse, this, &PresentationWidget::serverWorkerReply);
         emit this->OrderSignal();
     }
     else
