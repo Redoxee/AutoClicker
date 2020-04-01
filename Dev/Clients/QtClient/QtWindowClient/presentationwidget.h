@@ -28,9 +28,6 @@ private slots:
     void StartButtonClicked();
     void serverWorkerReply();
     void serverReady();
-
-signals:
-    void OrderSignal();
 };
 
 #endif // PRESENTATIONWIDGET_H

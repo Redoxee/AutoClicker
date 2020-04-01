@@ -8,6 +8,9 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <QThread>
 
 #include <QProcess>
@@ -37,18 +40,19 @@ public:
     enum Order
     {
         OrderStartNewServer,
+        OrderStartGameplayRefresh,
     };
 
-    ServerWorker(QApplication* application, QThread* thread);
-
+    ServerWorker(QApplication* application);
     State CurrentState() {return this->currentState;}
-
-public slots:
     void RequestOrder(Order order);
 
 signals:
     void InitialServerResponse();
     void ServerStarted();
+    void RefreshGameData(QJsonObject gameData);
+
+    void PostOrderSignal(ServerWorker::Order order);
 
 private:
     State currentState = State::None;
@@ -69,6 +73,9 @@ private slots:
     void onThreadStart();
     void initialServerRequestResponse(QNetworkReply* httpResponse);
     void startServerRequest(QNetworkReply* httpResponse);
+    void gameplayServerResponse(QNetworkReply* reply);
+    void orderSlot(ServerWorker::Order order);
+    void aboutToQuit();
 };
 
 #endif // SERVERWORKER_H

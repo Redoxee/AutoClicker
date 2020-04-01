@@ -1,13 +1,14 @@
 #include "maingamewidget.h"
 
-MainGameWidget::MainGameWidget(QWidget* parent, QApplication* application) : QWidget(parent)
+MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
+    this->gameWindow = gameWindow;
     this->SetupUI();
 
     this->manager = new QNetworkAccessManager();
-    QObject::connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
+    connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
-    QObject::connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
+    connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
 
     scoreValueLabel->setText("0");
     frameValueLabel->setText("0");
@@ -16,21 +17,16 @@ MainGameWidget::MainGameWidget(QWidget* parent, QApplication* application) : QWi
 
     this->lastRefreshedFrame = -1;
 
-    this->refreshWorker = new RefresherWorker();
-    QObject::connect(this->refreshWorker, SIGNAL(refreshData(QJsonObject)), this, SLOT(refreshData(QJsonObject)));
-    this->workerThread = new QThread();
-    this->refreshWorker->moveToThread(this->workerThread);
 
-    connect(this->workerThread, SIGNAL(started()), this->refreshWorker, SLOT(run()));
-    this->workerThread->start();
-
-    connect(application, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
-
+    connect(gameWindow->ServerWorker(), SIGNAL(RefreshGameData(QJsonObject)),this, SLOT(refreshData(QJsonObject)));
+    gameWindow->ServerWorker()->RequestOrder(ServerWorker::Order::OrderStartGameplayRefresh);
 }
 
 MainGameWidget::~MainGameWidget()
 {
-    this->refreshWorker->stop();
+
+    disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(QJsonObject)),this, SLOT(refreshData(QJsonObject)));
+
     for(auto current = this->UpgradeButtons.begin(); current != this->UpgradeButtons.end(); current++)
     {
         delete (*current)->Upgrade;
@@ -182,15 +178,6 @@ void MainGameWidget::UpgradeButtonClick(UpgradeButton* upgradeButton)
     this->isDirty = true;
     this->request.setUrl(QString::fromStdString(AutoClicker::BaseURI() + "upgrade=" + std::to_string((upgradeButton->Upgrade->Index))));
     this->manager->get(this->request);
-}
-
-void MainGameWidget::aboutToQuit()
-{
-    this->request.setUrl(QUrl(QString::fromStdString( AutoClicker::BaseURI() + "set_update_pause=true")));
-    manager->get(request);
-    qDebug() << "About to quit called.";
-    // TODO : find a way to enable one last request before quitting without waiting an arbitrary length of time.
-    QThread::sleep(1);
 }
 
 void MainGameWidget::RefreshProgressBars(int score)

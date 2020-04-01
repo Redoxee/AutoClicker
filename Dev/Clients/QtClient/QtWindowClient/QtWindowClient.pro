@@ -18,26 +18,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     cinematicwidget.cpp \
-    corechecker.cpp \
     gamewindow.cpp \
     introscreenwidget.cpp \
     main.cpp \
     maingamewidget.cpp \
     presentationwidget.cpp \
-    refresherworker.cpp \
     serverworker.cpp \
     upgradebutton.cpp \
     windowshakeanimation.cpp
 
 HEADERS += \
     autoclickerconfig.h \
-    corechecker.h \
     gamewindow.h \
     introscreenwidget.h \
     presentationwidget.h \
     cinematicwidget.h \
     maingamewidget.h \
-    refresherworker.h \
     serverworker.h \
     upgrade.h \
     upgradebutton.h \

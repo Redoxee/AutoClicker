@@ -21,7 +21,7 @@
 
 #include <vector>
 
-#include "refresherworker.h"
+#include "gamewindow.h"
 #include "upgrade.h"
 #include "upgradebutton.h"
 
@@ -30,7 +30,7 @@ class MainGameWidget : public QWidget
 {
     Q_OBJECT
 public:
-    MainGameWidget(QWidget* parent, QApplication* application);
+    MainGameWidget(GameWindow* gameWindow);
     ~MainGameWidget();
 
 public slots:
@@ -39,7 +39,6 @@ public slots:
     void handleHttpRequest(QNetworkReply* reply);
 
     void refreshData(QJsonObject jsonData);
-    void aboutToQuit();
 
 private:
     void SetupUI();
@@ -55,9 +54,6 @@ private:
     QNetworkAccessManager *manager;
     QNetworkRequest request;
 
-    RefresherWorker* refreshWorker;
-    QThread* workerThread;
-
     QProgressBar* ProgressBar[4];
     std::vector<UpgradeButton*> UpgradeButtons;
 
@@ -67,6 +63,7 @@ private:
     int lastRefreshedFrame;
     bool isDirty;
 
+    GameWindow* gameWindow;
 };
 
 #endif // MAINGAMEWIDGET_H
