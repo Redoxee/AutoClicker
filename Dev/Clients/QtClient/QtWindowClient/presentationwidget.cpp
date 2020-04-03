@@ -50,12 +50,13 @@ void PresentationWidget::serverWorkerReply()
     ServerWorker::State currentState = gameWindow->ServerWorker()->CurrentState();
     if(currentState == ServerWorker::State::WaitingForGame)
     {
+        disconnect(gameWindow->ServerWorker(), &ServerWorker::ServerStarted, this, &PresentationWidget::serverWorkerReply);
         this->serverReady();
     }
     else if(currentState == ServerWorker::NoServerFound)
     {
-        disconnect(gameWindow->ServerWorker(), &ServerWorker::ServerStarted, this, &PresentationWidget::serverWorkerReply);
-        connect(gameWindow->ServerWorker(), &ServerWorker::InitialServerResponse, this, &PresentationWidget::serverWorkerReply);
+        disconnect(gameWindow->ServerWorker(), &ServerWorker::InitialServerResponse, this, &PresentationWidget::serverWorkerReply);
+        connect(gameWindow->ServerWorker(), &ServerWorker::ServerStarted, this, &PresentationWidget::serverWorkerReply);
         this->gameWindow->ServerWorker()->RequestOrder(ServerWorker::Order::OrderStartNewServer);
     }
     else
