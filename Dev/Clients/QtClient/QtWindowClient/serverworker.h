@@ -5,6 +5,8 @@
 
 #include <QApplication>
 
+#include <QNetworkConfigurationManager>
+#include <QNetworkConfiguration>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 
@@ -57,10 +59,13 @@ signals:
 private:
     State currentState = State::None;
 
-    QNetworkAccessManager* manager;
-    QNetworkRequest request;
+    QApplication* application = nullptr;
 
-    QThread* workerThread;
+    QNetworkAccessManager* manager = nullptr;
+    QNetworkRequest request;
+    QNetworkReply* reply = nullptr;
+
+    QThread* workerThread = nullptr;
 
     QString applicationPath;
 

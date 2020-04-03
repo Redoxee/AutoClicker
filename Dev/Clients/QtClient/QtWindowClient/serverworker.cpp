@@ -2,14 +2,14 @@
 
 ServerWorker::ServerWorker(QApplication* application)
 {
+    this->currentState = State::Initializing;
+    this->application = application;
     this->applicationPath = application->applicationDirPath();
 
     this->workerThread = new QThread();
     connect(this->workerThread, SIGNAL(started()), this, SLOT(onThreadStart()));
     this->workerThread->start();
     this->moveToThread(this->workerThread);
-
-    connect(application, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 }
 
 void ServerWorker::onThreadStart()
@@ -20,10 +20,16 @@ void ServerWorker::onThreadStart()
 
     this->manager = new QNetworkAccessManager();
     connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(initialServerRequestResponse(QNetworkReply*)));
-
+    QNetworkConfigurationManager configurationManager;
+    QNetworkConfiguration configuration = configurationManager.defaultConfiguration();
+    configuration.setConnectTimeout(100);
+    this->manager->setConfiguration(configuration);
     QString uri = QString::fromStdString(AutoClicker::BaseURI() + "get_state = full");
     this->request.setUrl(QUrl(uri));
+    this->currentState = State::SearchingPreexistingServerInstance;
     this->manager->get(this->request);
+
+    connect(this->application, SIGNAL(lastWindowClosed()), this, SLOT(aboutToQuit()));
 }
 
 void ServerWorker::initialServerRequestResponse(QNetworkReply* httpResponse)
@@ -51,7 +57,6 @@ void ServerWorker::RequestOrder(Order order)
 
 void ServerWorker::orderSlot(ServerWorker::Order order)
 {
-    qDebug() << "New order";
     if(order == Order::OrderStartNewServer)
     {
         if(this->currentState == State::NoServerFound)
@@ -69,9 +74,10 @@ void ServerWorker::orderSlot(ServerWorker::Order order)
         if(this->currentState != State::ActiveRefresh)
         {
             this->currentState = State::ActiveRefresh;
-            this->request.setUrl(QUrl(QString::fromStdString(AutoClicker::BaseURI() + "get_state=full")));
+            this->request.setUrl(QUrl(QString::fromStdString(AutoClicker::BaseURI() + "get_state=full&set_frame_length = " + std::to_string(AutoClicker::FrameLength()) + "& set_update_pause = false")));
             connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(gameplayServerResponse(QNetworkReply*)));
             this->manager->get(this->request);
+            this->request.setUrl(QUrl(QString::fromStdString(AutoClicker::BaseURI() + "get_state=full")));
         }
     }
 }
@@ -97,7 +103,7 @@ void ServerWorker::StartNewServer()
 
     connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(startServerRequest(QNetworkReply*)));
 
-    this->manager->get(this->request);
+    this->reply = this->manager->get(this->request);
 }
 
 void ServerWorker::startServerRequest(QNetworkReply* httpResponse)
@@ -123,7 +129,7 @@ void ServerWorker::startServerRequest(QNetworkReply* httpResponse)
     {
         QThread::msleep(AutoClicker::RefreshRate());
         this->attemptCount++;
-        this->manager->get(this->request);
+        this->reply = this->manager->get(this->request);
     }
 }
 
@@ -146,22 +152,22 @@ void ServerWorker::gameplayServerResponse(QNetworkReply* reply)
     if(this->currentState == State::ActiveRefresh)
     {
         QThread::msleep(AutoClicker::RefreshRate());
-        this->manager->get(this->request);
+        this->reply = this->manager->get(this->request);
     }
 }
 
 
 void ServerWorker::aboutToQuit()
 {
+    qDebug() << "About to quit";
     if(this->currentState == State::ActiveRefresh)
     {
         disconnect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(gameplayServerResponse(QNetworkReply*)));
     }
 
     this->currentState = State::Stopping;
-
     this->request.setUrl(QUrl(QString::fromStdString( AutoClicker::BaseURI() + "set_update_pause=true")));
-    manager->get(request);
+    this->reply = manager->get(this->request);
     qDebug() << "About to quit called.";
     // TODO : find a way to enable one last request before quitting without waiting an arbitrary length of time.
     QThread::sleep(1);
