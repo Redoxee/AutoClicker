@@ -57,8 +57,14 @@ void MainGameWidget::SetupUI()
     for(int index = 0; index < 4; ++index)
     {
         this->ProgressBar[index] = new QProgressBar(this);
+        this->ProgressBar[index]->setTextVisible(false);
+
         vBoxLayout->addWidget(this->ProgressBar[index]);
     }
+
+    this->ProgressBar[1]->setOrientation(Qt::Orientation::Vertical);
+    this->ProgressBar[3]->setInvertedAppearance(true);
+
     this->UpgradeLayout = new QGridLayout();
     vBoxLayout->addLayout(this->UpgradeLayout);
 
