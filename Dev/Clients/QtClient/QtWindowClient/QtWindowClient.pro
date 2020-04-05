@@ -23,7 +23,9 @@ SOURCES += \
     main.cpp \
     maingamewidget.cpp \
     presentationwidget.cpp \
+    scaledprogressbar.cpp \
     serverworker.cpp \
+    updateworker.cpp \
     upgradebutton.cpp \
     windowshakeanimation.cpp
 
@@ -34,7 +36,9 @@ HEADERS += \
     presentationwidget.h \
     cinematicwidget.h \
     maingamewidget.h \
+    scaledprogressbar.h \
     serverworker.h \
+    updateworker.h \
     upgrade.h \
     upgradebutton.h \
     windowshakeanimation.h

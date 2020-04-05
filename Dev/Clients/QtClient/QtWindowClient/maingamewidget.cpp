@@ -3,6 +3,8 @@
 MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
     this->gameWindow = gameWindow;
+    this->updateWorker = new UpdateWorker();
+
     this->SetupUI();
 
     this->manager = new QNetworkAccessManager();
@@ -17,9 +19,10 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
     this->lastRefreshedFrame = -1;
 
-
     connect(gameWindow->ServerWorker(), SIGNAL(RefreshGameData(QJsonObject)),this, SLOT(refreshData(QJsonObject)));
     gameWindow->ServerWorker()->RequestOrder(ServerWorker::Order::OrderStartGameplayRefresh);
+
+    connect(this->updateWorker, &UpdateWorker::Update, this, &MainGameWidget::Update);
 }
 
 MainGameWidget::~MainGameWidget()
@@ -54,16 +57,18 @@ void MainGameWidget::SetupUI()
     this->clickValueLabel = new QLabel(this);
     vBoxLayout->addWidget(this->clickValueLabel);
 
-    for(int index = 0; index < 4; ++index)
+    this->ProgressBar[0] = new ScaledProgressBar(1000, this);
+    vBoxLayout->addWidget(this->ProgressBar[0]);
+
+    for(int index = 1; index < 4; ++index)
     {
-        this->ProgressBar[index] = new QProgressBar(this);
+        float scale = pow(10, 3 + 2 * index);
+
+        this->ProgressBar[index] = new ScaledProgressBar(scale, this);
         this->ProgressBar[index]->setTextVisible(false);
 
         vBoxLayout->addWidget(this->ProgressBar[index]);
     }
-
-    this->ProgressBar[1]->setOrientation(Qt::Orientation::Vertical);
-    this->ProgressBar[3]->setInvertedAppearance(true);
 
     this->UpgradeLayout = new QGridLayout();
     vBoxLayout->addLayout(this->UpgradeLayout);
@@ -110,7 +115,7 @@ void MainGameWidget::refreshData(QJsonObject jsonData)
         progress = 100;
     }
 
-    this->RefreshProgressBars(score);
+    this->realCurrentScore = score;
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
     if(static_cast<int>(this->UpgradeButtons.size()) != jsonUpgrades.size())
@@ -199,14 +204,38 @@ void MainGameWidget::RefreshProgressBars(int score)
         return;
     }
 
-    int firstBarScore = (score % 1000) / 10;
-    this->ProgressBar[0]->setValue(firstBarScore);
-    for(int index = 1; index < numberOfbars; ++index)
+    for(int index = 0; index < numberOfbars; ++index)
     {
-        double order = pow(10,3 + 2*index);
-        double denominator = pow(10,1 + 2 * index);
-        int barScore = score % static_cast<int>(order) / static_cast<int>(denominator);
-
-        this->ProgressBar[index]->setValue(barScore);
+        this->ProgressBar[index]->SetScaledValue(displayedScore);
     }
+}
+
+double damping(double pos, double target, double k,double dt)
+{
+    return pos + ((target - pos) / k * dt);
+}
+
+void MainGameWidget::Update(int dt)
+{
+    if(this->displayedScore == this->realCurrentScore)
+    {
+        return;
+    }
+
+    else if(abs(this->displayedScore - this->realCurrentScore) <= 10)
+    {
+        this->displayedScore = this->realCurrentScore;
+    }
+    else
+    {
+        double damp = 8;
+        if(this->displayedScore > this->realCurrentScore)
+        {
+            damp = 4;
+        }
+
+        this->displayedScore = damping(this->displayedScore, this->realCurrentScore, damp, 1);
+    }
+
+    this->RefreshProgressBars(this->displayedScore);
 }

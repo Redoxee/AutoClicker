@@ -24,7 +24,8 @@
 #include "gamewindow.h"
 #include "upgrade.h"
 #include "upgradebutton.h"
-
+#include "updateworker.h"
+#include "scaledprogressbar.h"
 
 class MainGameWidget : public QWidget
 {
@@ -50,11 +51,12 @@ private:
 
     QGridLayout*  UpgradeLayout;
 
+    UpdateWorker* updateWorker;
 
     QNetworkAccessManager *manager;
     QNetworkRequest request;
 
-    QProgressBar* ProgressBar[4];
+    ScaledProgressBar* ProgressBar[4];
     std::vector<UpgradeButton*> UpgradeButtons;
 
     void RefreshProgressBars(int score);
@@ -64,6 +66,12 @@ private:
     bool isDirty;
 
     GameWindow* gameWindow;
+
+    int realCurrentScore = 0;
+    int displayedScore = 0;
+
+private slots:
+    void Update(int dt);
 };
 
 #endif // MAINGAMEWIDGET_H
