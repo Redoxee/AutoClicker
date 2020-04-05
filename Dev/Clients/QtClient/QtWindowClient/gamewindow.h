@@ -45,6 +45,7 @@ public:
     QDialogButtonBox* BottomBox;
 
     ServerWorker* ServerWorker() { return this->serverWorker; };
+    QLayout* LeftLayout = nullptr;
 
 public slots:
 private :
@@ -54,6 +55,8 @@ private :
     QLayout* mainLayout = nullptr;
     QLayout* mainHorizontalLayout = nullptr;
     QWidget* mainWidget = nullptr;
+
+    QWidget* leftWidget = nullptr;
 
     QWidget* CurrentDisplayedScreen = nullptr;
     class::ServerWorker* serverWorker = nullptr;

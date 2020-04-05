@@ -51,8 +51,12 @@ void MainGameWidget::SetupUI()
     this->scoreValueLabel = new QLabel(this);
     vBoxLayout->addWidget(this->scoreValueLabel);
 
+
+    QSpacerItem* spacer = new QSpacerItem(1,1,QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->gameWindow->LeftLayout->addItem(spacer);
+
     this->frameValueLabel = new QLabel(this);
-    vBoxLayout->addWidget(this->frameValueLabel);
+    this->gameWindow->LeftLayout->addWidget(this->frameValueLabel);
 
     this->clickValueLabel = new QLabel(this);
     vBoxLayout->addWidget(this->clickValueLabel);

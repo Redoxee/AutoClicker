@@ -22,19 +22,20 @@ void GameWindow::SetupUi()
     this->mainLayout = new QVBoxLayout(this->mainWidget);
     this->mainHorizontalLayout = new QHBoxLayout();
 
-    QPixmap image("Ressources/Gradient.png");
-    QLabel* imageHolder = new QLabel(this->mainWidget);
-    imageHolder->setPixmap(image);
-    imageHolder->setStyleSheet("background: red");
-    imageHolder->setScaledContents(true);
-    imageHolder->setMaximumWidth(200);
-    imageHolder->setMinimumWidth(200);
-    this->mainHorizontalLayout->addWidget(imageHolder);
+    this->leftWidget = new QWidget(this);
+    this->leftWidget->setObjectName("LeftWidget");
+    this->leftWidget->setMaximumWidth(200);
+    this->leftWidget->setMinimumWidth(200);
+    this->leftWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
+    this->leftWidget->setStyleSheet("QWidget#LeftWidget {border-image: url(Ressources/Gradient.png)} .QLabel {color : white}");
 
+    this->LeftLayout = new QVBoxLayout(this->leftWidget);
+    this->LeftLayout->setParent(this->leftWidget);
+
+    this->mainHorizontalLayout->addWidget(this->leftWidget);
     this->mainLayout->addItem(this->mainHorizontalLayout);
 
     this->BottomBox = new QDialogButtonBox();
-
     this->mainLayout->addWidget(this->BottomBox);
 }
 
