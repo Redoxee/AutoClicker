@@ -69,7 +69,7 @@ void MainGameWidget::SetupUI()
         float scale = pow(10, 3 + 2 * index);
 
         this->ProgressBar[index] = new ScaledProgressBar(scale, this);
-        this->ProgressBar[index]->setTextVisible(false);
+       // this->ProgressBar[index]->setTextVisible(false);
 
         vBoxLayout->addWidget(this->ProgressBar[index]);
     }
