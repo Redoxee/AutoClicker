@@ -36,6 +36,8 @@ void GameWindow::SetupUi()
     QPixmap* logo = new QPixmap("Ressources/SWI_logo.png");
     logoLabel->setPixmap(*logo);
     this->LeftLayout->addWidget(logoLabel);
+    QSpacerItem* spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->LeftLayout->addItem(spacer);
 
     this->mainHorizontalLayout->addWidget(this->leftWidget);
     this->mainLayout->addItem(this->mainHorizontalLayout);

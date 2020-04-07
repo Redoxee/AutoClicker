@@ -2,6 +2,7 @@
 #define UPGRADE_H
 
 #include <QString>
+#include "SWIUtils.h"
 
 class Upgrade
 {
@@ -18,7 +19,7 @@ public:
     QString GetLabel()
     {
 
-        QString label = QString("(%1) %2 : %3").arg(QString::number(this->InstanceBought), this->Name, QString::number(this->Price));
+        QString label = QString("(%1) %2 :\n %3").arg(FormatDownQuantity(this->InstanceBought), this->Name, FormatDownQuantity(this->Price));
 
         return label;
     }

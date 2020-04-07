@@ -1,4 +1,5 @@
 #include "maingamewidget.h"
+#include "SWIUtils.h"
 
 MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
@@ -50,10 +51,6 @@ void MainGameWidget::SetupUI()
 
     this->scoreValueLabel = new QLabel(this);
     vBoxLayout->addWidget(this->scoreValueLabel);
-
-
-    QSpacerItem* spacer = new QSpacerItem(1,1,QSizePolicy::Fixed, QSizePolicy::Expanding);
-    this->gameWindow->LeftLayout->addItem(spacer);
 
     this->frameValueLabel = new QLabel(this);
     this->gameWindow->LeftLayout->addWidget(this->frameValueLabel);
@@ -108,10 +105,10 @@ void MainGameWidget::refreshData(QJsonObject jsonData)
     int passiveSpeed = jsonData["PassiveSpeed"].toInt();
     int globalFactor = jsonData["GlobalFactor"].toInt();
 
-    QString scoreLabel = QString("Score %1 / %2 (Passive speed : %3 * %4)").arg(QString::number(score), QString::number(targetScore), QString::number(passiveSpeed), QString::number(globalFactor));
+    QString scoreLabel = QString("Score %1 / %2 \n(Passive speed : %3 * %4)").arg(QString::number(score), QString::number(targetScore), FormatDownQuantity(passiveSpeed), FormatDownQuantity(globalFactor));
     this->scoreValueLabel->setText(scoreLabel);
     this->frameValueLabel->setText(QString::number(frameCount));
-    this->clickValueLabel->setText("+" + QString::number(clickValue) + " bytes");
+    this->clickValueLabel->setText("+" + FormatDownQuantity(clickValue) + " bytes");
 
     int progress = static_cast<int>((static_cast<double>(score) / static_cast<double>(targetScore)) * 100.0);
     if(progress > 100)

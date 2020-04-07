@@ -70,6 +70,8 @@ private:
     int realCurrentScore = 0;
     int displayedScore = 0;
 
+    int timeAccumulator = 0;
+
 private slots:
     void Update(int dt);
 };
