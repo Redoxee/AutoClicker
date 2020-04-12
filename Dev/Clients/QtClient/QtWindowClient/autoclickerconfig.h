@@ -9,7 +9,7 @@ namespace AutoClicker {
     inline unsigned long FrameLength() { return 1000;}
     inline unsigned long RefreshRate() { return 500;}
     inline std::string BaseURI() { return "http://localhost:1414/AutoClicker?"; }
-    inline std::string RelativeCoreServerPath() { return "/../CoreGame/ClickerServer.exe"; }
+    inline std::string RelativeCoreServerPath() { return "/../Server/ClickerServer.exe"; }
     inline std::string RelativeConfigPath() { return "/../Content/WizardClicker.txt"; }
 }
 
