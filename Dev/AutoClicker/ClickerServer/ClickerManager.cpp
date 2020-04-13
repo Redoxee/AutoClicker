@@ -24,6 +24,10 @@ AutoClicker::ValueIncreaseStrategy ParseIncreaseStrategy(const json::value jsonS
 	{
 		strategy.Type = AutoClicker::ValueIncreaseType::Exponential;
 	}
+	else if (type == U("Overwrite"))
+	{
+		strategy.Type = AutoClicker::ValueIncreaseType::Overwrite;
+	}
 
 	strategy.Rate = jsonStrategy.at(U("Value")).as_number().to_double();
 
@@ -65,6 +69,11 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 		configData.GlobalFactor = jsonConfiguration.at(U("InitialGlobalFactor")).as_number().to_int64();
 	}
 
+	if (jsonConfiguration.has_number_field(U("InitialTemporaryBoostDuration")))
+	{
+		configData.TempBoostDuration =  jsonConfiguration.at(U("InitialTemporaryBoostDuration")).as_number().to_uint64();
+	}
+
 	if (jsonConfiguration.has_field(U("Upgrades")))
 	{
 		json::array upgradeArray = jsonConfiguration.at(U("Upgrades")).as_array();
@@ -95,6 +104,14 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 			else if (type == U("Prestige"))
 			{
 				upgrade.UpgradeType = AutoClicker::UpgradeType::Prestige;
+			}
+			else if (type == U("ClickTemporaryBoostDuration"))
+			{
+				upgrade.UpgradeType = AutoClicker::UpgradeType::ClickTemporaryBoostDuration;
+			}
+			else if (type == U("ClickTemporaryBoostStrength"))
+			{
+				upgrade.UpgradeType = AutoClicker::UpgradeType::ClickTemporaryBoostFactor;
 			}
 			else
 			{
@@ -139,6 +156,39 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 				if (targetIndex > -1)
 				{
 					this->upgradeDefinitions[index].TargetInfo = targetIndex;
+				}
+			}
+
+			if (jsonUpgrade.has_field(U("Lock")))
+			{
+				json::value jsonLock = jsonUpgrade.at(U("Lock"));
+				this->upgradeDefinitions[index].Lock.targetValue = jsonLock.at(U("Value")).as_number().to_int64();
+				string_t comparer = jsonLock.at(U("Comparer")).as_string();
+				if (comparer == U("SmallerThan"))
+				{
+					this->upgradeDefinitions[index].Lock.Comparer = AutoClicker::Comparer::Smaller;
+				}
+				else
+				{
+					this->upgradeDefinitions[index].Lock.Comparer = AutoClicker::Comparer::Greater;
+				}
+
+				string_t targetName = jsonLock.at(U("TargetName")).as_string();
+
+				int targetIndex = -1;
+
+				for (int jndex = 0; jndex < numberOfUpgrades; ++jndex)
+				{
+					if (this->upgradeDefinitions[jndex].Name == targetName)
+					{
+						targetIndex = jndex;
+						break;
+					}
+				}
+
+				if (targetIndex > -1)
+				{
+					this->upgradeDefinitions[index].Lock.LockIndex = targetIndex;
 				}
 			}
 		}
@@ -304,6 +354,9 @@ web::json::value ClickerManager::GetDataAsJson()
 	result[U("ClickValue")] = data.ClickValue;
 	result[U("GlobalFactor")] = data.GlobalFactor;
 	
+	result[U("TemporaryBonusTimer")] = data.ClickTemporaryBonusTimer;
+	result[U("TemporaryBonusFactor")] = data.ClickTemporaryBonusFactor;
+
 	if (data.NumberOfUpgrades > 0)
 	{
 		auto upgrades = web::json::value::array();

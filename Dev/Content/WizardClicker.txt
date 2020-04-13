@@ -8,6 +8,9 @@
 	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
 	"InitialPassiveSpeed" : 0,
+
+	"InitialTemporaryBoostDuration" : 3,
+
 	"Upgrades" :
 	[
 		{
@@ -125,6 +128,32 @@
 			{
 				"Type" : "Exponential",
 				"Value" : 2.0
+			}
+		},
+
+		{
+			"Name" : "ClickBonus",
+			"Description" : "Click Bonus",
+			"UpgradeType" : "ClickTemporaryBoostStrength",
+			"Unique" : true,
+			"ImpactStrategy" : 
+			{
+				"Type" : "Flat",
+				"Value" : 3
+			},
+
+			"BasePrice" : 100,
+			"PriceStrategy":
+			{
+				"Type":"Exponential",
+				"Value":1.9
+			},
+
+			"Lock":
+			{
+				"TargetName" : "Click_upgrade_1",
+				"Comparer" : "SmallerThan",
+				"Value" : 10
 			}
 		}
 	]

@@ -59,12 +59,21 @@ namespace AutoClicker
 
 		this->data->PassiveSpeed = configuration.PassiveSpeed;
 		this->data->ClickValue = configuration.ClickValue;
+
+		this->data->ClickTemporaryBonusDuration = configuration.TempBoostDuration;
 	}
 
 	void AutoClicker::Update()
 	{
 		int64_t stock = this->data->PassiveSpeed;
 		stock *= this->data->GlobalFactor;
+
+		if (this->data->ClickTemporaryBonusFactor > 1 && this->data->ClickTemporaryBonusTimer > 0)
+		{
+			stock *= this->data->ClickTemporaryBonusFactor;
+			--this->data->ClickTemporaryBonusTimer;
+		}
+
 		this->data->Score += stock;
 
 		++this->data->FrameCount;
@@ -72,6 +81,11 @@ namespace AutoClicker
 
 	void AutoClicker::Click()
 	{
+		if (this->data->ClickTemporaryBonusFactor > 1 && this->data->ClickTemporaryBonusDuration)
+		{
+			this->data->ClickTemporaryBonusTimer = this->data->ClickTemporaryBonusDuration;
+		}
+
 		int64_t stock = this->data->ClickValue * this->data->GlobalFactor;
 		this->data->Score += stock;
 
@@ -142,6 +156,7 @@ namespace AutoClicker
 		this->data->ClickValue = 1;
 		this->data->PassiveSpeed = 0;
 		this->data->GlobalFactor = 1;
+		this->data->ClickTemporaryBonusFactor = 1;
 
 		std::size_t numberOfUpgrades = this->data->NumberOfUpgrades;
 		for (int upgradeIndex = 0; upgradeIndex < numberOfUpgrades; ++upgradeIndex)
@@ -161,12 +176,33 @@ namespace AutoClicker
 			{
 				this->data->GlobalFactor += upgrade->CurrentImpactValue * upgrade->InstanceBought;
 			}
+			else if (upgradeType == UpgradeType::ClickTemporaryBoostDuration)
+			{
+				this->data->ClickTemporaryBonusDuration = upgrade->CurrentImpactValue;
+			}
+			else if (upgradeType == UpgradeType::ClickTemporaryBoostFactor)
+			{
+				this->data->ClickTemporaryBonusFactor += upgrade->CurrentImpactValue * upgrade->InstanceBought;
+			}
 		}
 	}
 
 	bool AutoClicker::IsOver()
 	{
 		return this->data->Score >= this->data->TargetScore;
+	}
+
+	bool Compare(int64_t a, Comparer sigil, int64_t b)
+	{
+		switch (sigil)
+		{
+		case Comparer::Smaller:
+			return a < b;
+		case Comparer::Greater:
+			return a > b;
+		default:
+			return false;
+		}
 	}
 
 	FailureFlags AutoClicker::GetUpgradeFailureFlags(Data* data, int upgradeIndex)
@@ -193,6 +229,16 @@ namespace AutoClicker
 		if (data->Score >= data->TargetScore)
 		{
 			failures = failures | FailureFlags::GameOver;
+		}
+
+		if (data->Upgrades[upgradeIndex].Definition->Lock.LockIndex > -1)
+		{
+			int64_t currentValue = data->Upgrades[data->Upgrades[upgradeIndex].Definition->Lock.LockIndex].InstanceBought;
+			int64_t targetValue = data->Upgrades[upgradeIndex].Definition->Lock.targetValue;
+			if (!Compare(currentValue, data->Upgrades[upgradeIndex].Definition->Lock.Comparer, targetValue))
+			{
+				failures = failures | FailureFlags::LockedByAnOtherPurchase;
+			}
 		}
 
 		return failures;

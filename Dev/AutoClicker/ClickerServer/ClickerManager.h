@@ -69,6 +69,7 @@ private:
 	std::vector<AutoClicker::UpgradeDefinition> upgradeDefinitions;
 
 	bool isTerminated = false;
+	bool paused = false;
 
 	AutoClicker::AutoClicker clickerInstance;
 	std::queue<Order> pendingOrder;
@@ -82,5 +83,4 @@ private:
 	void Synchonize();
 	long frameWait = 100;
 
-	bool paused;
 };

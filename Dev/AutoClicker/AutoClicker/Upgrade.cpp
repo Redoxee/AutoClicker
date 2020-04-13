@@ -33,6 +33,8 @@ namespace AutoClicker
 			result = baseValue * pow(this->Rate, instanceBought);
 			break;
 		}
+		case ValueIncreaseType::Overwrite:
+			result = this->Rate;
 		default:
 			break;
 		}

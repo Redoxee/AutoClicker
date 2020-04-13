@@ -3,30 +3,40 @@
 
 namespace AutoClicker
 {
-	enum UpgradeType
+	enum class UpgradeType
 	{
 		Generator,
 		ClickValue,
 		Prestige,
-		UpgradeImprove
+		UpgradeImprove,
+
+		ClickTemporaryBoostFactor,
+		ClickTemporaryBoostDuration,
 	};
 
-	enum ValueIncreaseType
+	enum class ValueIncreaseType
 	{
 		Flat,
 		Factor,
 		Exponential,
+		Overwrite,
 	};
 
-	enum FailureFlags
+	enum class Comparer
+	{
+		Smaller,
+		Greater,
+	};
+
+	enum class FailureFlags
 	{
 		None = 0,
 		NotEnoughMoney = 1,
 		PurchaseLimitReached = 2,
 		GameOver = 4,
 		UnknownUpgrade = 8,
+		LockedByAnOtherPurchase = 16,
 	};
-
 
 	inline FailureFlags operator|(FailureFlags a, FailureFlags b)
 	{
@@ -54,6 +64,14 @@ namespace AutoClicker
 		double ComputeNextValue(double baseValue, double currentValue, double instanceValue) const;
 	};
 
+	class UpgradeLock
+	{
+	public :
+		int LockIndex = -1;
+		int64_t targetValue = -1;
+		Comparer Comparer;
+	};
+
 	class UpgradeDefinition
 	{
 	public:
@@ -69,6 +87,8 @@ namespace AutoClicker
 
 		std::wstring Name;
 		std::wstring Description;
+
+		UpgradeLock Lock;
 
 		ValueIncreaseStrategy PriceIncreaseStrategy;
 	};

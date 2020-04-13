@@ -15,6 +15,7 @@ namespace AutoClicker
 		int64_t ClickValue;
 		int64_t PassiveSpeed;
 		int64_t GlobalFactor;
+		int64_t TempBoostDuration;
 		std::vector<UpgradeDefinition> UpgradeDefinitions;
 	};
 
@@ -28,8 +29,12 @@ namespace AutoClicker
 		int64_t ClickValue;
 		int64_t GlobalFactor;
 
+		int64_t ClickTemporaryBonusFactor;
+		int64_t ClickTemporaryBonusDuration;
+		int64_t ClickTemporaryBonusTimer;
+
 		size_t NumberOfUpgrades;
-		Upgrade* Upgrades;
+		Upgrade* Upgrades = nullptr;
 
 		Data();
 		Data(const std::vector<UpgradeDefinition>& upgradeDefinitions);
@@ -43,10 +48,17 @@ namespace AutoClicker
 			c.TargetScore = this->TargetScore;
 			c.ClickValue = this->ClickValue;
 			c.GlobalFactor = this->GlobalFactor;
+			c.ClickTemporaryBonusFactor = this->ClickTemporaryBonusFactor;
+			c.ClickTemporaryBonusDuration = this->ClickTemporaryBonusDuration;
+			c.ClickTemporaryBonusTimer = this->ClickTemporaryBonusTimer;
 
 			if (this->NumberOfUpgrades != c.NumberOfUpgrades)
 			{
-				delete[] c.Upgrades;
+				if (c.Upgrades != nullptr)
+				{
+					delete[] c.Upgrades;
+				}
+				
 				c.NumberOfUpgrades = this->NumberOfUpgrades;
 				c.Upgrades = new Upgrade[c.NumberOfUpgrades];
 			}
