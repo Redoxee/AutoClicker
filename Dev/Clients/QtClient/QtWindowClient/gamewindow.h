@@ -27,6 +27,7 @@ class GameWindow;
 #include "cinematicwidget.h"
 #include "maingamewidget.h"
 #include "serverworker.h"
+#include "endgamewidget.h"
 
 enum Screens
 {
@@ -34,6 +35,7 @@ enum Screens
     PresentationScreen,
     CinematicScreen,
     GameScreen,
+    EndGameScreen,
 };
 
 class GameWindow : public QMainWindow

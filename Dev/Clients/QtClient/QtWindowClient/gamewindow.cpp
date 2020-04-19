@@ -8,7 +8,8 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
 
     this->serverWorker = new class::ServerWorker(application);
 
-    this->GotToScreen(Screens::IntroScreen);
+//    this->GotToScreen(Screens::IntroScreen);
+    this->GotToScreen(Screens::EndGameScreen);
 }
 
 void GameWindow::SetupUi()
@@ -17,10 +18,15 @@ void GameWindow::SetupUi()
     this->setFixedSize(AutoClicker::WindowWidth, AutoClicker::WindowHeight);
 
     this->mainWidget = new QWidget(this);
+    this->mainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setCentralWidget(this->mainWidget);
 
     this->mainLayout = new QVBoxLayout(this->mainWidget);
+    this->mainLayout->setMargin(2);
+
     this->mainHorizontalLayout = new QHBoxLayout();
+    this->mainHorizontalLayout->setSpacing(2);
+    this->mainHorizontalLayout->setMargin(0);
 
     this->leftWidget = new QWidget(this);
     this->leftWidget->setObjectName("LeftWidget");
@@ -68,6 +74,8 @@ void GameWindow::GotToScreen(Screens nextScreen)
     case GameScreen:
         this->CurrentDisplayedScreen = new MainGameWidget(this);
         break;
+    case EndGameScreen:
+        this->CurrentDisplayedScreen = new EndGameWidget(this);
     }
 
     this->mainHorizontalLayout->addWidget(this->CurrentDisplayedScreen);

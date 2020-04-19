@@ -19,13 +19,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     SWIUtils.cpp \
     cinematicwidget.cpp \
+    endgamewidget.cpp \
     gamewindow.cpp \
+    gridprogressbar.cpp \
     introscreenwidget.cpp \
     main.cpp \
     maingamewidget.cpp \
     presentationwidget.cpp \
     scaledprogressbar.cpp \
     serverworker.cpp \
+    spiralprogressbar.cpp \
     updateworker.cpp \
     upgradebutton.cpp \
     windowshakeanimation.cpp
@@ -33,13 +36,16 @@ SOURCES += \
 HEADERS += \
     SWIUtils.h \
     autoclickerconfig.h \
+    endgamewidget.h \
     gamewindow.h \
+    gridprogressbar.h \
     introscreenwidget.h \
     presentationwidget.h \
     cinematicwidget.h \
     maingamewidget.h \
     scaledprogressbar.h \
     serverworker.h \
+    spiralprogressbar.h \
     updateworker.h \
     upgrade.h \
     upgradebutton.h \
