@@ -29,6 +29,7 @@ SOURCES += \
     scaledprogressbar.cpp \
     serverworker.cpp \
     spiralprogressbar.cpp \
+    tiledprogressbar.cpp \
     updateworker.cpp \
     upgradebutton.cpp \
     windowshakeanimation.cpp
@@ -46,6 +47,7 @@ HEADERS += \
     scaledprogressbar.h \
     serverworker.h \
     spiralprogressbar.h \
+    tiledprogressbar.h \
     updateworker.h \
     upgrade.h \
     upgradebutton.h \

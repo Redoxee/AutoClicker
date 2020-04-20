@@ -20,17 +20,24 @@ void EndGameWidget::SetupUI()
     this->gridProgressBar = new GridProgressBar(this,8, 12);
     this->gridProgressBar->hide();
 
+    /*
     this->spiralProgressBar = new SpiralProgressBar(this);
     vboxLayout->addWidget(this->spiralProgressBar);
     this->spiralProgressBar->SetValue(0);
     QWidget* placeHolderWidget = new QWidget(this->spiralProgressBar);
     this->spiralProgressBar->CentralLayout->addWidget(placeHolderWidget);
+    */
+
+    this->tiledProgressbar = new TiledProgressBar(this);
+    vboxLayout->addWidget(this->tiledProgressbar);
+    this->tiledProgressbar->SetValue(0);
 }
 
 void EndGameWidget::Update(float dt)
 {
     this->time += dt;
 
-    float animTime = pow(this->time * .00005, 4.);
-    this->spiralProgressBar->SetValue(animTime);
+    float animTime = pow(this->time * .00005, 2.);
+    //this->spiralProgressBar->SetValue(animTime);
+    this->tiledProgressbar->SetValue(animTime);
 }

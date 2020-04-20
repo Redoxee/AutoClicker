@@ -12,6 +12,7 @@
 #include "updateworker.h"
 #include "gridprogressbar.h"
 #include "spiralprogressbar.h"
+#include "tiledprogressbar.h"
 
 class EndGameWidget : public QWidget
 {
@@ -25,11 +26,12 @@ private slots:
     void Update(float dt);
 
 private:
-    GameWindow* gameWindow;
-    UpdateWorker* updateWorker;
+    GameWindow* gameWindow = nullptr;
+    UpdateWorker* updateWorker = nullptr;
 
-    GridProgressBar* gridProgressBar;
-    SpiralProgressBar* spiralProgressBar;
+    GridProgressBar* gridProgressBar = nullptr;
+    SpiralProgressBar* spiralProgressBar = nullptr;
+    TiledProgressBar* tiledProgressbar = nullptr;
 
     void SetupUI();
 
