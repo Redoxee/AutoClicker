@@ -35,8 +35,10 @@ void GameWindow::SetupUi()
     this->leftWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
     this->leftWidget->setStyleSheet("QWidget#LeftWidget {border-image: url(Ressources/Gradient.png)} .QLabel {color : white}");
 
-    this->LeftLayout = new QVBoxLayout(this->leftWidget);
-    this->LeftLayout->setParent(this->leftWidget);
+    this->LeftGLayout = new QGridLayout(this->leftWidget);
+    this->LeftGLayout->setMargin(0);
+    this->LeftLayout = new QVBoxLayout();
+    this->LeftGLayout->addLayout(this->LeftLayout, 0, 0);
     this->LeftLayout->setMargin(0);
     QLabel* logoLabel = new QLabel(this);
     QPixmap* logo = new QPixmap("Ressources/SWI_logo.png");

@@ -48,7 +48,7 @@ public:
 
     ServerWorker* ServerWorker() { return this->serverWorker; };
     QLayout* LeftLayout = nullptr;
-
+    QGridLayout* LeftGLayout = nullptr;
 public slots:
 private :
     void SetupUi();

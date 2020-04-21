@@ -35,6 +35,7 @@ void EndGameWidget::SetupUI()
     */
 
     this->crissCrossProgressBar = new CrissCrossProgressBar(30, 15, 8, this);
+    //this->gameWindow->LeftGLayout->addWidget(this->crissCrossProgressBar, 0,0);
     vboxLayout->addWidget(this->crissCrossProgressBar);
     this->crissCrossProgressBar->SetValue(0);
 }
