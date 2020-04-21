@@ -19,6 +19,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     SWIUtils.cpp \
     cinematicwidget.cpp \
+    crisscrossprogressbar.cpp \
     endgamewidget.cpp \
     gamewindow.cpp \
     gridprogressbar.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
 HEADERS += \
     SWIUtils.h \
     autoclickerconfig.h \
+    crisscrossprogressbar.h \
     endgamewidget.h \
     gamewindow.h \
     gridprogressbar.h \

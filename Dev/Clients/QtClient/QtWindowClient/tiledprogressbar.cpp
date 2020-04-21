@@ -59,7 +59,6 @@ TiledProgressBar::TiledProgressBar(QWidget *parent) : QWidget(parent)
     }
 }
 
-
 void TiledProgressBar::SetValue(float value)
 {
     int numberOfBars = this->row * this->column * this->barPerTile;

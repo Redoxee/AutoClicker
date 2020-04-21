@@ -13,6 +13,7 @@
 #include "gridprogressbar.h"
 #include "spiralprogressbar.h"
 #include "tiledprogressbar.h"
+#include "crisscrossprogressbar.h"
 
 class EndGameWidget : public QWidget
 {
@@ -31,7 +32,8 @@ private:
 
     GridProgressBar* gridProgressBar = nullptr;
     SpiralProgressBar* spiralProgressBar = nullptr;
-    TiledProgressBar* tiledProgressbar = nullptr;
+    TiledProgressBar* tiledProgressBar = nullptr;
+    CrissCrossProgressBar* crissCrossProgressBar = nullptr;
 
     void SetupUI();
 

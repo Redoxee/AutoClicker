@@ -28,9 +28,15 @@ void EndGameWidget::SetupUI()
     this->spiralProgressBar->CentralLayout->addWidget(placeHolderWidget);
     */
 
-    this->tiledProgressbar = new TiledProgressBar(this);
-    vboxLayout->addWidget(this->tiledProgressbar);
-    this->tiledProgressbar->SetValue(0);
+    /*
+    this->tiledProgressBar = new TiledProgressBar(this);
+    vboxLayout->addWidget(this->tiledProgressBar);
+    this->tiledProgressBar->SetValue(0);
+    */
+
+    this->crissCrossProgressBar = new CrissCrossProgressBar(30, 15, 8, this);
+    vboxLayout->addWidget(this->crissCrossProgressBar);
+    this->crissCrossProgressBar->SetValue(0);
 }
 
 void EndGameWidget::Update(float dt)
@@ -39,5 +45,6 @@ void EndGameWidget::Update(float dt)
 
     float animTime = pow(this->time * .00005, 2.);
     //this->spiralProgressBar->SetValue(animTime);
-    this->tiledProgressbar->SetValue(animTime);
+    //this->tiledProgressBar->SetValue(animTime);
+    this->crissCrossProgressBar->SetValue(animTime);
 }
