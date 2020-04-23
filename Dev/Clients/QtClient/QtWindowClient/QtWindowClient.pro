@@ -20,6 +20,7 @@ SOURCES += \
     SWIUtils.cpp \
     cinematicwidget.cpp \
     crisscrossprogressbar.cpp \
+    doorstyleprogressbar.cpp \
     endgamewidget.cpp \
     gamewindow.cpp \
     gridprogressbar.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     SWIUtils.h \
     autoclickerconfig.h \
     crisscrossprogressbar.h \
+    doorstyleprogressbar.h \
     endgamewidget.h \
     gamewindow.h \
     gridprogressbar.h \

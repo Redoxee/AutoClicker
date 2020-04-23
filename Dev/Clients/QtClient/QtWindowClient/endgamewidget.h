@@ -7,6 +7,9 @@
 #include <QWidget>
 #include <QLabel>
 #include <QSpacerItem>
+#include <QGraphicsScene>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsView>
 
 #include "gamewindow.h"
 #include "updateworker.h"
@@ -14,6 +17,7 @@
 #include "spiralprogressbar.h"
 #include "tiledprogressbar.h"
 #include "crisscrossprogressbar.h"
+#include "doorstyleprogressbar.h"
 
 class EndGameWidget : public QWidget
 {
@@ -34,6 +38,7 @@ private:
     SpiralProgressBar* spiralProgressBar = nullptr;
     TiledProgressBar* tiledProgressBar = nullptr;
     CrissCrossProgressBar* crissCrossProgressBar = nullptr;
+    DoorStyleProgressBar* doorStyleProgressBar = nullptr;
 
     void SetupUI();
 

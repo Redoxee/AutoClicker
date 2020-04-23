@@ -34,10 +34,26 @@ void EndGameWidget::SetupUI()
     this->tiledProgressBar->SetValue(0);
     */
 
-    this->crissCrossProgressBar = new CrissCrossProgressBar(30, 15, 8, this);
+    this->doorStyleProgressBar = new DoorStyleProgressBar(40, this);
+    vboxLayout->addWidget(this->doorStyleProgressBar);
+
+    //this->crissCrossProgressBar = new CrissCrossProgressBar(30, 15, 8, this);
     //this->gameWindow->LeftGLayout->addWidget(this->crissCrossProgressBar, 0,0);
-    vboxLayout->addWidget(this->crissCrossProgressBar);
-    this->crissCrossProgressBar->SetValue(0);
+    //vboxLayout->addWidget(this->crissCrossProgressBar);
+    //this->crissCrossProgressBar->SetValue(0);
+
+    /*
+    QGraphicsScene* grScene = new QGraphicsScene(this);
+    QProgressBar* rotatedPB = new QProgressBar();
+    QGraphicsView* grView = new QGraphicsView(grScene);
+    QGraphicsProxyWidget* proxyWidget = grScene->addWidget(rotatedPB);
+    grView->setBackgroundBrush(Qt::BrushStyle::CrossPattern);
+    QWidget* vp = grView->viewport();
+    proxyWidget->setRotation(0);
+    grScene->setSceneRect(0,0,vp->width(), vp->height());
+    proxyWidget->setPos(200, 300);
+    vboxLayout->addWidget(vp);
+    */
 }
 
 void EndGameWidget::Update(float dt)
@@ -47,5 +63,6 @@ void EndGameWidget::Update(float dt)
     float animTime = pow(this->time * .00005, 2.);
     //this->spiralProgressBar->SetValue(animTime);
     //this->tiledProgressBar->SetValue(animTime);
-    this->crissCrossProgressBar->SetValue(animTime);
+    //this->crissCrossProgressBar->SetValue(animTime);
+    this->doorStyleProgressBar->SetValue(animTime);
 }
