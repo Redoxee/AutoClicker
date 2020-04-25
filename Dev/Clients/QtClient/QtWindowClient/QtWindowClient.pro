@@ -1,4 +1,5 @@
 QT       += core gui
+QT       += charts
 QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -31,6 +32,7 @@ SOURCES += \
     scaledprogressbar.cpp \
     serverworker.cpp \
     spiralprogressbar.cpp \
+    testinggraph.cpp \
     tiledprogressbar.cpp \
     updateworker.cpp \
     upgradebutton.cpp \
@@ -51,6 +53,7 @@ HEADERS += \
     scaledprogressbar.h \
     serverworker.h \
     spiralprogressbar.h \
+    testinggraph.h \
     tiledprogressbar.h \
     updateworker.h \
     upgrade.h \
