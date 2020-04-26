@@ -1,9 +1,6 @@
 #ifndef ENDGAMEWIDGET_H
 #define ENDGAMEWIDGET_H
 
-// TODO Remove the full module include to speed up compilation (but that mean finding the recursive include shenanigan).
-#include <QtCharts>
-
 #include <QObject>
 #include <QWidget>
 #include <QLabel>

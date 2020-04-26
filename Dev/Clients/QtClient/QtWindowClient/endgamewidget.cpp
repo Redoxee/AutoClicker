@@ -54,34 +54,6 @@ void EndGameWidget::SetupUI()
     proxyWidget->setPos(200, 300);
     vboxLayout->addWidget(vp);
     */
-
-    QtCharts::QLineSeries *series = new QtCharts::QLineSeries();
-    series->append(0, 5);
-    series->append(2, 50);
-    series->append(3, 75);
-    series->append(7, 100);
-    series->append(10, 1000);
-    *series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
-    QtCharts::QChart *chart = new QtCharts::QChart();
-    chart->legend()->hide();
-    chart->addSeries(series);
-
-    QtCharts::QValueAxis *axisX = new QtCharts::QValueAxis();
-    axisX->setLabelFormat("%i");
-    axisX->setTickCount(series->count());
-    chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
-
-    QtCharts::QLogValueAxis *axisY = new QtCharts::QLogValueAxis();
-    axisY->setLabelFormat("%g");
-    axisY->setBase(10.0);
-    axisY->setMinorTickCount(-1);
-    chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisY);
-
-    QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    vboxLayout->addWidget(chartView);
 }
 
 void EndGameWidget::Update(float dt)

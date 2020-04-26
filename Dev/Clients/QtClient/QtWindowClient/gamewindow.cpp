@@ -8,8 +8,9 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
 
     this->serverWorker = new class::ServerWorker(application);
 
-//    this->GotToScreen(Screens::IntroScreen);
-    this->GotToScreen(Screens::EndGameScreen);
+    this->GotToScreen(Screens::IntroScreen);
+//    this->GotToScreen(Screens::EndGameScreen);
+//    this->GotToScreen(Screens::GameScreen);
 }
 
 void GameWindow::SetupUi()

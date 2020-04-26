@@ -6,6 +6,14 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->gameWindow = gameWindow;
     this->updateWorker = new UpdateWorker();
 
+    this->scoreHistory = new int[this->historySize];
+    for(int i = 0; i < this->historySize; ++i)
+    {
+        this->scoreHistory[i] = 0;
+    }
+
+    this->historyCursor = 0;
+
     this->SetupUI();
 
     this->manager = new QNetworkAccessManager();
@@ -58,18 +66,44 @@ void MainGameWidget::SetupUI()
     this->clickValueLabel = new QLabel(this);
     vBoxLayout->addWidget(this->clickValueLabel);
 
+
+    QVBoxLayout* progressLayout = new QVBoxLayout();
+    progressLayout->setMargin(0);
+
     this->ProgressBar[0] = new ScaledProgressBar(1000, this);
-    vBoxLayout->addWidget(this->ProgressBar[0]);
+    progressLayout->addWidget(this->ProgressBar[0]);
 
     for(int index = 1; index < 4; ++index)
     {
         float scale = pow(10, 3 + 2 * index);
 
         this->ProgressBar[index] = new ScaledProgressBar(scale, this);
-       // this->ProgressBar[index]->setTextVisible(false);
 
-        vBoxLayout->addWidget(this->ProgressBar[index]);
+        progressLayout->addWidget(this->ProgressBar[index]);
     }
+
+    this->historySeries = new QtCharts::QLineSeries();
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    chart->legend()->hide();
+    chart->addSeries(this->historySeries);
+    chart->setMargins(QMargins(0, 0, 0, 0));
+    chart->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    this->historyYAxis = new QtCharts::QLogValueAxis();
+    this->historyYAxis->setMin(1);
+    this->historyYAxis->setLabelFormat("%g");
+    this->historyYAxis->setBase(10.0);
+    this->historyYAxis->setMinorTickCount(0);
+
+    chart->addAxis(this->historyYAxis, Qt::AlignLeft);
+    this->historySeries->attachAxis(this->historyYAxis);
+    this->historyChartView = new QtCharts::QChartView(chart);
+    this->historyChartView->setRenderHint(QPainter::Antialiasing);
+    this->historyChartView->setMinimumHeight(220);
+    this->historyChartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    vBoxLayout->addWidget(this->historyChartView);
+
+    vBoxLayout->addLayout(progressLayout);
 
     this->UpgradeLayout = new QGridLayout();
     vBoxLayout->addLayout(this->UpgradeLayout);
@@ -181,6 +215,9 @@ void MainGameWidget::refreshData(QJsonObject jsonData)
             upgradeButton->setEnabled(failureFlags == 0);
         }
     }
+
+    this->pushToScoreHistory(score);
+    this->refreshHistory();
 }
 
 void MainGameWidget::UpgradeButtonClick(UpgradeButton* upgradeButton)
@@ -239,4 +276,35 @@ void MainGameWidget::Update(int dt)
     }
 
     this->RefreshProgressBars(this->displayedScore);
+}
+
+void MainGameWidget::pushToScoreHistory(int score)
+{
+    this->scoreHistory[this->historyCursor++] = score;
+    this->historyCursor = this->historyCursor % this->historySize;
+}
+
+void MainGameWidget::refreshHistory()
+{
+    this->historySeries->clear();
+    int maxValue = 100;
+
+    for(int i = 0; i < this->historySize; ++i)
+    {
+        int index = (this->historyCursor + i) % this->historySize;
+        int score = this->scoreHistory[index];
+        if(score < 1)
+        {
+            score = 1;
+        }
+
+        float xPos = static_cast<float>(i) / static_cast<float>(this->historySize);
+        this->historySeries->append(xPos, score);
+        if(score > maxValue)
+        {
+            maxValue = score;
+        }
+    }
+
+    this->historyYAxis->setMax(maxValue * 1.1);
 }

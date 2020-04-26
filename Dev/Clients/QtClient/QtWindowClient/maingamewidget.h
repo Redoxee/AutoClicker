@@ -1,8 +1,6 @@
 #ifndef MAINGAMEWIDGET_H
 #define MAINGAMEWIDGET_H
 
-#include <QApplication>
-#include <QObject>
 #include <QWidget>
 #include <QCloseEvent>
 #include <QPushButton>
@@ -17,7 +15,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-#include <QThread>
+// TODO Remove the full module include to speed up compilation (but that mean finding the recursive include shenanigan).
+#include <QtCharts>
 
 #include <vector>
 
@@ -72,7 +71,16 @@ private:
 
     int timeAccumulator = 0;
 
-private slots:
+    const int historySize = 200;
+    int historyCursor;
+    int* scoreHistory = nullptr;
+    QtCharts::QLineSeries* historySeries = nullptr;
+    QtCharts::QChartView* historyChartView = nullptr;
+    QtCharts::QLogValueAxis* historyYAxis = nullptr;
+
+    void pushToScoreHistory(int score);
+    void refreshHistory();
+
     void Update(int dt);
 };
 
