@@ -129,6 +129,9 @@ namespace AutoClicker
 				this->data->Upgrades[index].Price = static_cast<int64_t>(this->data->Upgrades[index].ComputeNextPrice());
 				this->data->Upgrades[index].CurrentImpactValue = this->data->Upgrades[index].Definition->BaseImpactValue;
 			}
+
+			this->data->Score = 0;
+			price = 0;
 		}
 		else if (upgradeType == UpgradeType::UpgradeImprove)
 		{
