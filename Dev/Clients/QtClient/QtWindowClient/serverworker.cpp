@@ -6,10 +6,18 @@ ServerWorker::ServerWorker(QApplication* application)
     this->application = application;
     this->applicationPath = application->applicationDirPath();
 
+    this->data = new ServerGameplayState();
+
     this->workerThread = new QThread();
     connect(this->workerThread, SIGNAL(started()), this, SLOT(onThreadStart()));
     this->workerThread->start();
     this->moveToThread(this->workerThread);
+}
+
+ServerWorker::~ServerWorker()
+{
+    delete this->data;
+    delete this->workerThread;
 }
 
 void ServerWorker::onThreadStart()
@@ -145,8 +153,8 @@ void ServerWorker::gameplayServerResponse(QNetworkReply* reply)
 
         QJsonDocument jsonDocumnet = QJsonDocument::fromJson(answer.toUtf8());
         QJsonObject jsonObject = jsonDocumnet.object();
-
-        emit RefreshGameData(jsonObject);
+        this->data->SetDataData(jsonObject);
+        emit RefreshGameData(this->data);
     }
 
     if(this->currentState == State::ActiveRefresh)

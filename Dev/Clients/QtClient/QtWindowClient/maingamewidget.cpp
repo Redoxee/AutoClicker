@@ -17,7 +17,7 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->SetupUI();
 
     this->manager = new QNetworkAccessManager();
-    connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
+    connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(ServerGameplayState*)));
 
     connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
 
@@ -43,6 +43,7 @@ MainGameWidget::~MainGameWidget()
     {
         delete (*current)->Upgrade;
     }
+
     this->UpgradeButtons.clear();
 
     QLayoutItem *child;
@@ -130,27 +131,30 @@ void MainGameWidget::handleHttpRequest(QNetworkReply* reply)
     }
 }
 
-void MainGameWidget::refreshData(QJsonObject jsonData)
+void MainGameWidget::refreshData(ServerGameplayState* serverData)
 {
-    int score = jsonData["Score"].toInt();
-    int frameCount = jsonData["FrameCount"].toInt();
-    int targetScore = jsonData["TargetScore"].toInt();
-    int clickValue = jsonData["ClickValue"].toInt();
-    int passiveSpeed = jsonData["PassiveSpeed"].toInt();
-    int globalFactor = jsonData["GlobalFactor"].toInt();
-
-    QString scoreLabel = QString("Score %1 / %2 \n(Passive speed : %3 * %4)").arg(QString::number(score), QString::number(targetScore), FormatDownQuantity(passiveSpeed), FormatDownQuantity(globalFactor));
+    QString scoreLabel = QString("Score %1 / %2 \n(Passive speed : %3 * %4)").arg(QString::number(serverData->Score), QString::number(serverData->TargetScore), FormatDownQuantity(serverData->PassiveSpeed), FormatDownQuantity(serverData->GlobalFactor));
     this->scoreValueLabel->setText(scoreLabel);
-    this->frameValueLabel->setText(QString::number(frameCount));
-    this->clickValueLabel->setText("+" + FormatDownQuantity(clickValue) + " bytes");
+    this->frameValueLabel->setText(QString::number(serverData->FrameCount));
+    this->clickValueLabel->setText("+" + FormatDownQuantity(serverData->ClickValue) + " bytes");
 
-    int progress = static_cast<int>((static_cast<double>(score) / static_cast<double>(targetScore)) * 100.0);
-    if(progress > 100)
+    this->realCurrentScore = serverData->Score;
+    if(serverData->NumberOfUpgrades != this->UpgradeButtons.size())
     {
-        progress = 100;
+        if(serverData->NumberOfUpgrades > this->UpgradeButtons.size())
+        {
+            int buttonToAdd = serverData->NumberOfUpgrades -this->UpgradeButtons.size();
+            for(int i = 0; i < buttonToAdd; ++i)
+            {
+                UpgradeButton* btn = new UpgradeButton();
+                this->UpgradeButtons.push_back(btn);
+            }
+        }
+        else
+        {
+            serverData
+        }
     }
-
-    this->realCurrentScore = score;
 
     QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
     if(static_cast<int>(this->UpgradeButtons.size()) != jsonUpgrades.size())

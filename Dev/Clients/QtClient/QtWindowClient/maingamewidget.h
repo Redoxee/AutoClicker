@@ -11,10 +11,6 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-
 // TODO Remove the full module include to speed up compilation (but that mean finding the recursive include shenanigan).
 #include <QtCharts>
 
@@ -38,7 +34,7 @@ public slots:
     void UpgradeButtonClick(UpgradeButton* button);
     void handleHttpRequest(QNetworkReply* reply);
 
-    void refreshData(QJsonObject jsonData);
+    void refreshData(ServerGameplayState* serverData);
 
 private:
     void SetupUI();

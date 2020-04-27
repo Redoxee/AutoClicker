@@ -51,6 +51,7 @@ HEADERS += \
     cinematicwidget.h \
     maingamewidget.h \
     scaledprogressbar.h \
+    servergameplaystate.h \
     serverworker.h \
     spiralprogressbar.h \
     testinggraph.h \

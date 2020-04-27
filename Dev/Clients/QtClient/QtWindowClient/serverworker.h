@@ -22,6 +22,8 @@
 
 #include "autoclickerconfig.h"
 
+#include "servergameplaystate.h"
+
 class ServerWorker : public QObject
 {   
     Q_OBJECT
@@ -46,13 +48,15 @@ public:
     };
 
     ServerWorker(QApplication* application);
+    virtual ~ServerWorker();
+
     State CurrentState() {return this->currentState;}
     void RequestOrder(Order order);
 
 signals:
     void InitialServerResponse();
     void ServerStarted();
-    void RefreshGameData(QJsonObject gameData);
+    void RefreshGameData(ServerGameplayState* gameData);
 
     void PostOrderSignal(ServerWorker::Order order);
 
@@ -68,6 +72,8 @@ private:
     QThread* workerThread = nullptr;
 
     QString applicationPath;
+
+    ServerGameplayState* data = nullptr;
 
     int attemptCount;
     const int maxAttemptCount = 100;
