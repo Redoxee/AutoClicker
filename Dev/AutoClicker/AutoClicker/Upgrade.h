@@ -98,8 +98,8 @@ namespace AutoClicker
 	public:
 		const UpgradeDefinition* Definition = nullptr;
 		int64_t InstanceBought = 0;
-		int64_t Price;
-		int64_t CurrentImpactValue;
+		int64_t Price = 0;
+		int64_t CurrentImpactValue = 0;
 		
 		double ComputeNextPrice();
 	};

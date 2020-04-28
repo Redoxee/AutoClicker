@@ -3,13 +3,7 @@
 
 namespace AutoClicker
 {
-	Data::Data()
-	{
-		this->NumberOfUpgrades = 0;
-		this->Upgrades = nullptr;
-	}
-
-	Data::Data(const std::vector<UpgradeDefinition>& definitions)
+	Data::Data(const std::vector<UpgradeDefinition>& definitions) : Data()
 	{
 		this->NumberOfUpgrades = definitions.size();
 		if (this->NumberOfUpgrades > 0)

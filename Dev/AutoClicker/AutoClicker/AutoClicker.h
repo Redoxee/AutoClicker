@@ -36,7 +36,21 @@ namespace AutoClicker
 		size_t NumberOfUpgrades;
 		Upgrade* Upgrades = nullptr;
 
-		Data();
+		Data()
+		{
+			this->Score = 0;
+			this->PassiveSpeed = 0;
+			this->FrameCount = 0;
+			this->TargetScore = 0;
+			this->ClickValue = 0;
+			this->GlobalFactor = 0;
+			this->ClickTemporaryBonusFactor = 0;
+			this->ClickTemporaryBonusDuration = 0;
+			this->ClickTemporaryBonusTimer = 0;
+			this->NumberOfUpgrades = 0;
+			this->Upgrades = nullptr;
+		};
+
 		Data(const std::vector<UpgradeDefinition>& upgradeDefinitions);
 		~Data();
 
