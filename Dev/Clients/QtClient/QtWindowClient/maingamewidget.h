@@ -17,10 +17,11 @@
 #include <vector>
 
 #include "gamewindow.h"
-#include "upgrade.h"
 #include "upgradebutton.h"
 #include "updateworker.h"
 #include "scaledprogressbar.h"
+
+using namespace SWIUtils;
 
 class MainGameWidget : public QWidget
 {
@@ -31,7 +32,7 @@ public:
 
 public slots:
     void handleClick();
-    void UpgradeButtonClick(UpgradeButton* button);
+    void UpgradeButtonClick(int buttonIndex);
     void handleHttpRequest(QNetworkReply* reply);
 
     void refreshData(ServerGameplayState* serverData);
@@ -52,7 +53,7 @@ private:
     QNetworkRequest request;
 
     ScaledProgressBar* ProgressBar[4];
-    std::vector<UpgradeButton*> UpgradeButtons;
+    std::vector<QPushButton*> UpgradeButtons;
 
     void RefreshProgressBars(int score);
     QPushButton CreateUpgradeButton(QString Label);

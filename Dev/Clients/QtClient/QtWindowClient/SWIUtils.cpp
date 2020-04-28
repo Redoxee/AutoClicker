@@ -3,7 +3,7 @@
 
 #include "SWIUtils.h"
 
-QString FormatDownQuantity(int quantity)
+QString SWIUtils::FormatDownQuantity(int quantity)
 {
     QString result;
 

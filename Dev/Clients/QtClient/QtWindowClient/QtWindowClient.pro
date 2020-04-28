@@ -57,7 +57,6 @@ HEADERS += \
     testinggraph.h \
     tiledprogressbar.h \
     updateworker.h \
-    upgrade.h \
     upgradebutton.h \
     windowshakeanimation.h
 

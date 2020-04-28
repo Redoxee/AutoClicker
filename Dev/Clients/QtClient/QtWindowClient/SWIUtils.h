@@ -3,6 +3,8 @@
 #include <QString>
 #include <QTextStream>
 
-QString FormatDownQuantity(int quantity);
+namespace  SWIUtils {
+    QString FormatDownQuantity(int quantity);
+}
 
 #endif // SWIUTILS_H

@@ -7,15 +7,24 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include "SWIUtils.h"
+
 struct ServerGameplayState
 {
     struct Upgrade
     {
         QString Name = "";
         QString Description = "";
-        QString Price = "";
+        int Price = 0;
         int InstanceBought = 0;
         int FailureFlags = 0;
+
+        QString GetLabel()
+        {
+            QString label = QString("(%1) %2 :\n %3").arg(SWIUtils::FormatDownQuantity(this->InstanceBought), this->Name, SWIUtils::FormatDownQuantity(this->Price));
+
+            return label;
+        }
     };
 
     int Score = 0;
@@ -26,7 +35,7 @@ struct ServerGameplayState
     int GlobalFactor = 0;
 
     Upgrade* Upgrades = nullptr;
-    int NumberOfUpgrades = 0;
+    size_t NumberOfUpgrades = 0;
 
     void SetDataData(QJsonObject jsonData)
     {

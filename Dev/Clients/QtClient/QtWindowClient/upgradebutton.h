@@ -2,16 +2,16 @@
 #define UPGRADEBUTTON_H
 
 #include <QPushButton>
-#include "upgrade.h"
+#include "servergameplaystate.h"
 
 class UpgradeButton : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit UpgradeButton(Upgrade* upgrade, QWidget *parent = nullptr);
+    explicit UpgradeButton(ServerGameplayState::Upgrade* upgrade, QWidget *parent = nullptr);
     void RefreshLabel();
 
-    Upgrade* Upgrade;
+    ServerGameplayState::Upgrade* Upgrade;
 signals:
 
 public slots:

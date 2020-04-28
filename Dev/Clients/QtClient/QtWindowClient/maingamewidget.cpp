@@ -17,7 +17,7 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->SetupUI();
 
     this->manager = new QNetworkAccessManager();
-    connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(ServerGameplayState*)));
+    connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
     connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
 
@@ -28,7 +28,7 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
     this->lastRefreshedFrame = -1;
 
-    connect(gameWindow->ServerWorker(), SIGNAL(RefreshGameData(QJsonObject)),this, SLOT(refreshData(QJsonObject)));
+    connect(gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
     gameWindow->ServerWorker()->RequestOrder(ServerWorker::Order::OrderStartGameplayRefresh);
 
     connect(this->updateWorker, &UpdateWorker::Update, this, &MainGameWidget::Update);
@@ -37,11 +37,11 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 MainGameWidget::~MainGameWidget()
 {
 
-    disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(QJsonObject)),this, SLOT(refreshData(QJsonObject)));
+    disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
 
     for(auto current = this->UpgradeButtons.begin(); current != this->UpgradeButtons.end(); current++)
     {
-        delete (*current)->Upgrade;
+        delete (*current);
     }
 
     this->UpgradeButtons.clear();
@@ -91,17 +91,21 @@ void MainGameWidget::SetupUI()
     chart->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     this->historyYAxis = new QtCharts::QLogValueAxis();
-    this->historyYAxis->setMin(1);
+    this->historyYAxis->setMin(0);
     this->historyYAxis->setLabelFormat("%g");
+    QFont font = this->historyYAxis->labelsFont();
+    font.setPointSize(6);
+    this->historyYAxis->setLabelsFont(font);
     this->historyYAxis->setBase(10.0);
     this->historyYAxis->setMinorTickCount(0);
 
     chart->addAxis(this->historyYAxis, Qt::AlignLeft);
     this->historySeries->attachAxis(this->historyYAxis);
     this->historyChartView = new QtCharts::QChartView(chart);
-    this->historyChartView->setRenderHint(QPainter::Antialiasing);
-    this->historyChartView->setMinimumHeight(220);
+    this->historyChartView->setRenderHint(QPainter::Antialiasing, true);
+    this->historyChartView->setMinimumHeight(90);
     this->historyChartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
     vBoxLayout->addWidget(this->historyChartView);
 
     vBoxLayout->addLayout(progressLayout);
@@ -115,6 +119,7 @@ void MainGameWidget::SetupUI()
 
 void MainGameWidget::handleClick()
 {
+    this->isDirty = true;
     request.setUrl(
                 QUrl(
                     QString::fromStdString(AutoClicker::BaseURI() + "click=true")
@@ -143,93 +148,59 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     {
         if(serverData->NumberOfUpgrades > this->UpgradeButtons.size())
         {
-            int buttonToAdd = serverData->NumberOfUpgrades -this->UpgradeButtons.size();
+            size_t buttonToAdd = serverData->NumberOfUpgrades - this->UpgradeButtons.size();
             for(int i = 0; i < buttonToAdd; ++i)
             {
-                UpgradeButton* btn = new UpgradeButton();
+                QPushButton* btn = new QPushButton;
                 this->UpgradeButtons.push_back(btn);
+                int index = this->UpgradeButtons.size() - 1;
+                int col = index % 3;
+                int row = index / 3;
+                this->UpgradeLayout->addWidget(btn, row, col);
+                connect(btn, &QPushButton::clicked, [=](){ emit this->UpgradeButtonClick(index);});
             }
         }
         else
         {
-            serverData
-        }
-    }
-
-    QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
-    if(static_cast<int>(this->UpgradeButtons.size()) != jsonUpgrades.size())
-    {
-        this->UpgradeButtons.clear();
-        for(int index = 0; index < jsonUpgrades.size(); ++index)
-        {
-            QJsonObject jsonUpgrade = jsonUpgrades[index].toObject();
-
-            QString name = jsonUpgrade["Name"].toString();
-            QString description = jsonUpgrade["Description"].toString();
-            int price = jsonUpgrade["Price"].toInt();
-            int instanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
-
-            Upgrade* upgrade = new Upgrade(index , name, price, instanceBought);
-
-            UpgradeButton* upgradeButton = new UpgradeButton(upgrade, this);
-            upgradeButton->setToolTip(description);
-
-            int NumberColumn = 3;
-            int col = index / NumberColumn;
-            int row = index % NumberColumn;
-            this->UpgradeLayout->addWidget(upgradeButton, col, row);
-
-            connect(upgradeButton, &QPushButton::clicked, [=](){ emit this->UpgradeButtonClick(upgradeButton);});
-
-            this->UpgradeButtons.push_back(upgradeButton);
-        }
-
-        this->isDirty = false;
-    }
-    else if(this->isDirty && frameCount > this->lastRefreshedFrame)
-    {
-        for(int index = 0; index < jsonUpgrades.size(); ++index)
-        {
-            UpgradeButton* upgradeButton = this->UpgradeButtons[static_cast<unsigned long long>(index)];
-            if(upgradeButton->Upgrade->IsDirty)
+            size_t buttonToRemove = this->UpgradeButtons.size() - serverData->NumberOfUpgrades;
+            for(int i = 0; i < buttonToRemove; ++i)
             {
-                QJsonObject jsonUpgrade = jsonUpgrades[index].toObject();
-
-                QString name = jsonUpgrade["Name"].toString();
-                int price = jsonUpgrade["Price"].toInt();
-                int instanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
-
-                upgradeButton->Upgrade->Name = name;
-                upgradeButton->Upgrade->Price = price;
-                upgradeButton->Upgrade->InstanceBought = instanceBought;
-                upgradeButton->Upgrade->IsDirty = false;
-                upgradeButton->RefreshLabel();
+                QPushButton* btn = this->UpgradeButtons[this->UpgradeButtons.size() - 1];
+                delete btn;
+                this->UpgradeButtons.pop_back();
             }
         }
 
+        this->isDirty = true;
+    }
+
+    if(this->isDirty)
+    {
+        for(int index = 0; index < serverData->NumberOfUpgrades; ++index)
+        {
+            this->UpgradeButtons[index]->setText(serverData->Upgrades[index].GetLabel());
+            this->UpgradeButtons[index]->setEnabled(serverData->Upgrades[index].FailureFlags == 0);
+        }
+
         this->isDirty = false;
-        this->lastRefreshedFrame = frameCount;
+        this->lastRefreshedFrame = serverData->FrameCount;
     }
     else
     {
-        for(int index = 0; index < jsonUpgrades.size(); ++index)
+        for(int index = 0; index < serverData->NumberOfUpgrades; ++index)
         {
-            UpgradeButton* upgradeButton = this->UpgradeButtons[static_cast<unsigned long long>(index)];
-            int failureFlags = jsonUpgrades[index].toObject()["FailureFlags"].toInt();
-            upgradeButton->setEnabled(failureFlags == 0);
+            this->UpgradeButtons[index]->setEnabled(serverData->Upgrades[index].FailureFlags == 0);
         }
     }
 
-    this->pushToScoreHistory(score);
+    this->pushToScoreHistory(serverData->Score);
     this->refreshHistory();
 }
 
-void MainGameWidget::UpgradeButtonClick(UpgradeButton* upgradeButton)
+void MainGameWidget::UpgradeButtonClick(int buttonIndex)
 {
-    qDebug() << upgradeButton->Upgrade->Name;
-    upgradeButton->Upgrade->IsDirty = true;
     this->isDirty = true;
-    this->request.setUrl(QString::fromStdString(AutoClicker::BaseURI() + "upgrade=" + std::to_string((upgradeButton->Upgrade->Index))));
+    this->request.setUrl(QString::fromStdString(AutoClicker::BaseURI() + "upgrade=" + std::to_string(buttonIndex)));
     this->manager->get(this->request);
 }
 
@@ -297,6 +268,15 @@ void MainGameWidget::refreshHistory()
     {
         int index = (this->historyCursor + i) % this->historySize;
         int score = this->scoreHistory[index];
+
+        if(i > 0 && i < (this->historySize - 1))
+        {
+            if(score == this->scoreHistory[index - 1] && score == this->scoreHistory[index + 1])
+            {
+                continue;
+            }
+        }
+
         if(score < 1)
         {
             score = 1;
@@ -310,5 +290,13 @@ void MainGameWidget::refreshHistory()
         }
     }
 
-    this->historyYAxis->setMax(maxValue * 1.1);
+    maxValue *= 1.1;
+    int minValue = 0;
+    if(maxValue > 1000)
+    {
+        minValue = maxValue / 1000;
+    }
+
+    this->historyYAxis->setMax(maxValue);
+    this->historyYAxis->setMin(minValue);
 }
