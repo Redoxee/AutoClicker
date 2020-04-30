@@ -11,6 +11,8 @@
 
 	"InitialTemporaryBoostDuration" : 3,
 
+	"InitialWakeDuration" : 400,
+
 	"Upgrades" :
 	[
 		{

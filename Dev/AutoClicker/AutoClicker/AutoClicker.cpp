@@ -64,7 +64,7 @@ namespace AutoClicker
 	{
 		if (this->data->WakeDuration > 0)
 		{
-			if (this->data->WakeTimer > 0)
+			if (this->data->WakeTimer < 1)
 			{
 				return;
 			}
