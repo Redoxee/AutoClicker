@@ -12,6 +12,8 @@ namespace AutoClicker
 
 		ClickTemporaryBoostFactor,
 		ClickTemporaryBoostDuration,
+
+		WakeDuration,
 	};
 
 	enum class ValueIncreaseType
@@ -75,13 +77,13 @@ namespace AutoClicker
 	class UpgradeDefinition
 	{
 	public:
-		UpgradeType UpgradeType;
-		bool Unique;
+		UpgradeType UpgradeType = UpgradeType::ClickValue;
+		bool Unique = false;
 
-		int64_t BasePrice;
+		int64_t BasePrice = 0;
 
-		int64_t BaseImpactValue;
-		int TargetInfo;
+		int64_t BaseImpactValue = 0;
+		int TargetInfo = 0;
 
 		ValueIncreaseStrategy Impact;
 

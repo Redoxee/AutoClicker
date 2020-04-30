@@ -74,6 +74,11 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 		configData.TempBoostDuration =  jsonConfiguration.at(U("InitialTemporaryBoostDuration")).as_number().to_uint64();
 	}
 
+	if (jsonConfiguration.has_number_field(U("InitialWakeDuration")))
+	{
+		configData.WakeDuration = jsonConfiguration.at(U("InitialWakeDuration")).as_number().to_uint64();
+	}
+
 	if (jsonConfiguration.has_field(U("Upgrades")))
 	{
 		json::array upgradeArray = jsonConfiguration.at(U("Upgrades")).as_array();
@@ -112,6 +117,10 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 			else if (type == U("ClickTemporaryBoostStrength"))
 			{
 				upgrade.UpgradeType = AutoClicker::UpgradeType::ClickTemporaryBoostFactor;
+			}
+			else if (type == U("WakeDuration"))
+			{
+				upgrade.UpgradeType = AutoClicker::UpgradeType::WakeDuration;
 			}
 			else
 			{
@@ -244,7 +253,7 @@ void ClickerManager::ProcessNextOrder()
 
 	switch (order.Identifier)
 	{
-	case DoFrame:
+	case OrderIdentifier::DoFrame:
 		if (this->clickerInstance.IsOver())
 		{
 			break;
@@ -254,7 +263,7 @@ void ClickerManager::ProcessNextOrder()
 		
 		break;
 
-	case Click:
+	case OrderIdentifier::Click:
 		if (this->clickerInstance.IsOver())
 		{
 			break;
@@ -263,7 +272,7 @@ void ClickerManager::ProcessNextOrder()
 		this->clickerInstance.Click();
 		break;
 
-	case BuyUpgrade:
+	case OrderIdentifier:: BuyUpgrade:
 	{
 		if (this->clickerInstance.IsOver())
 		{
@@ -282,15 +291,15 @@ void ClickerManager::ProcessNextOrder()
 
 		break;
 	}
-	case Meta_Terminate:
+	case OrderIdentifier::Meta_Terminate:
 		this->isTerminated = true;
 		break;
 
-	case Meta_FrameWait:
+	case OrderIdentifier::Meta_FrameWait:
 		this->SetFrameWait(order.Value);
 		break;
 
-	case Meta_PauseUpdate:
+	case OrderIdentifier::Meta_PauseUpdate:
 		this->SetPause(order.Value != 0);
 		break;
 	default:

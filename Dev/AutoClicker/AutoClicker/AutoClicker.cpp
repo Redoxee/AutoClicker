@@ -55,10 +55,23 @@ namespace AutoClicker
 		this->data->ClickValue = configuration.ClickValue;
 
 		this->data->ClickTemporaryBonusDuration = configuration.TempBoostDuration;
+		this->data->WakeDuration = configuration.WakeDuration;
+
+		this->data->CopyTo(this->initialData);
 	}
 
 	void AutoClicker::Update()
 	{
+		if (this->data->WakeDuration > 0)
+		{
+			if (this->data->WakeTimer > this->data->WakeDuration)
+			{
+				return;
+			}
+
+			this->data->WakeTimer++;
+		}
+
 		int64_t stock = this->data->PassiveSpeed;
 		stock *= this->data->GlobalFactor;
 
@@ -83,6 +96,8 @@ namespace AutoClicker
 		int64_t stock = this->data->ClickValue * this->data->GlobalFactor;
 		this->data->Score += stock;
 
+		this->data->WakeTimer = 0;
+		
 		++this->data->FrameCount;
 	}
 
@@ -144,6 +159,8 @@ namespace AutoClicker
 		// I Don't expect the prices to go as high though.
 		this->data->Upgrades[upgradeIndex].Price = static_cast<int64_t>(floor(this->data->Upgrades[upgradeIndex].ComputeNextPrice()));
 
+		this->data->WakeTimer = 0;
+
 		++this->data->FrameCount;
 		return true;
 	}
@@ -153,7 +170,10 @@ namespace AutoClicker
 		this->data->ClickValue = 1;
 		this->data->PassiveSpeed = 0;
 		this->data->GlobalFactor = 1;
+
 		this->data->ClickTemporaryBonusFactor = 1;
+		this->data->ClickTemporaryBonusDuration = this->initialData.ClickTemporaryBonusDuration;
+		this->data->WakeDuration = this->initialData.WakeDuration;
 
 		std::size_t numberOfUpgrades = this->data->NumberOfUpgrades;
 		for (int upgradeIndex = 0; upgradeIndex < numberOfUpgrades; ++upgradeIndex)
@@ -175,11 +195,15 @@ namespace AutoClicker
 			}
 			else if (upgradeType == UpgradeType::ClickTemporaryBoostDuration)
 			{
-				this->data->ClickTemporaryBonusDuration = upgrade->CurrentImpactValue;
+				this->data->ClickTemporaryBonusDuration += upgrade->CurrentImpactValue * upgrade->InstanceBought;
 			}
 			else if (upgradeType == UpgradeType::ClickTemporaryBoostFactor)
 			{
 				this->data->ClickTemporaryBonusFactor += upgrade->CurrentImpactValue * upgrade->InstanceBought;
+			}
+			else if (upgradeType == UpgradeType::WakeDuration)
+			{
+				this->data->WakeDuration += upgrade->CurrentImpactValue * upgrade->InstanceBought;
 			}
 		}
 	}

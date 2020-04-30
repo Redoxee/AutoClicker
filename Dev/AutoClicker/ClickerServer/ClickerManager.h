@@ -12,7 +12,7 @@ using namespace web;
 using namespace json;
 using namespace utility;
 
-enum OrderIdentifier
+enum class OrderIdentifier
 {
 	DoFrame,
 	Click,
