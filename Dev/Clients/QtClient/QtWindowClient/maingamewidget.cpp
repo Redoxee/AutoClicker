@@ -138,7 +138,15 @@ void MainGameWidget::handleHttpRequest(QNetworkReply* reply)
 
 void MainGameWidget::refreshData(ServerGameplayState* serverData)
 {
-    QString scoreLabel = QString("Score %1 / %2 \n(Passive speed : %3 * %4)").arg(QString::number(serverData->Score), QString::number(serverData->TargetScore), FormatDownQuantity(serverData->PassiveSpeed), FormatDownQuantity(serverData->GlobalFactor));
+    QString scoreLabel = QString("Score %1 / %2").arg(QString::number(serverData->Score), QString::number(serverData->TargetScore));
+    scoreLabel += QString("\n(Passive speed : %1 * %2").arg(FormatDownQuantity(serverData->PassiveSpeed), FormatDownQuantity(serverData->GlobalFactor));
+    if(serverData->TempBonusDuration > 0 && serverData->TempBonusFactor > 1)
+    {
+        scoreLabel += QString(" * %1").arg(serverData -> TempBonusFactor);
+    }
+
+    scoreLabel += QString(")");
+
     this->scoreValueLabel->setText(scoreLabel);
     this->frameValueLabel->setText(QString::number(serverData->FrameCount));
     this->clickValueLabel->setText("+" + FormatDownQuantity(serverData->ClickValue) + " bytes");

@@ -21,7 +21,7 @@ struct ServerGameplayState
 
         QString GetLabel()
         {
-            QString label = QString("(%1) %2 :\n %3").arg(SWIUtils::FormatDownQuantity(this->InstanceBought), this->Name, SWIUtils::FormatDownQuantity(this->Price));
+            QString label = QString("(%1)\n %2 :\n %3").arg(SWIUtils::FormatDownQuantity(this->InstanceBought), this->Name, SWIUtils::FormatDownQuantity(this->Price));
 
             return label;
         }
@@ -34,6 +34,12 @@ struct ServerGameplayState
     int PassiveSpeed = 0;
     int GlobalFactor = 0;
 
+    int TempBonusFactor = 0;
+    int TempBonusDuration = 0;
+
+    int WakeTimer = 0;
+    int WakeDuration = 0;
+
     Upgrade* Upgrades = nullptr;
     size_t NumberOfUpgrades = 0;
 
@@ -45,6 +51,12 @@ struct ServerGameplayState
         this->ClickValue = jsonData["ClickValue"].toInt();
         this->PassiveSpeed = jsonData["PassiveSpeed"].toInt();
         this->GlobalFactor = jsonData["GlobalFactor"].toInt();
+
+        this->TempBonusDuration = jsonData["TemporaryBonusTimer"].toInt();
+        this->TempBonusFactor = jsonData["TemporaryBonusFactor"].toInt();
+
+        this->WakeTimer = jsonData["WakeTimer"].toInt();
+        this->WakeDuration = jsonData["WakeDuration"].toInt();
 
         QJsonArray jsonUpgrades = jsonData["Upgrades"].toArray();
         int nbUpgrades = jsonUpgrades.size();
