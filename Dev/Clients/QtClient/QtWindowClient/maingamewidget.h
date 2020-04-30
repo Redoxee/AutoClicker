@@ -68,7 +68,7 @@ private:
 
     int timeAccumulator = 0;
 
-    const int historySize = 200;
+    const int historySize = 100;
     int historyCursor;
     int* scoreHistory = nullptr;
     QtCharts::QLineSeries* historySeries = nullptr;
