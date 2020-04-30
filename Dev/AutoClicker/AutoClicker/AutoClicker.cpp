@@ -64,12 +64,12 @@ namespace AutoClicker
 	{
 		if (this->data->WakeDuration > 0)
 		{
-			if (this->data->WakeTimer > this->data->WakeDuration)
+			if (this->data->WakeTimer > 0)
 			{
 				return;
 			}
 
-			this->data->WakeTimer++;
+			this->data->WakeTimer--;
 		}
 
 		int64_t stock = this->data->PassiveSpeed;
@@ -96,7 +96,7 @@ namespace AutoClicker
 		int64_t stock = this->data->ClickValue * this->data->GlobalFactor;
 		this->data->Score += stock;
 
-		this->data->WakeTimer = 0;
+		this->data->WakeTimer = this->data->WakeDuration;
 		
 		++this->data->FrameCount;
 	}
@@ -134,9 +134,10 @@ namespace AutoClicker
 					continue;
 				}
 
-				this->data->Upgrades[index].InstanceBought = 0;
-				this->data->Upgrades[index].Price = static_cast<int64_t>(this->data->Upgrades[index].ComputeNextPrice());
-				this->data->Upgrades[index].CurrentImpactValue = this->data->Upgrades[index].Definition->BaseImpactValue;
+				Upgrade* targetUpgrade = &this->data->Upgrades[index];
+				targetUpgrade->InstanceBought = 0;
+				targetUpgrade->Price = targetUpgrade->Definition->BasePrice;
+				targetUpgrade->CurrentImpactValue = targetUpgrade->Definition->BaseImpactValue;
 			}
 
 			this->data->Score = 0;
@@ -145,8 +146,7 @@ namespace AutoClicker
 		else if (upgradeType == UpgradeType::UpgradeImprove)
 		{
 			Upgrade* targetUpgrade = &this->data->Upgrades[upgradeDefinition->TargetInfo];
-			double nextImpactValue = upgradeDefinition->Impact.ComputeNextValue(targetUpgrade->Definition->BaseImpactValue, targetUpgrade->CurrentImpactValue, this->data->Upgrades[upgradeIndex].InstanceBought + 1);
-			targetUpgrade->CurrentImpactValue = static_cast<long>(nextImpactValue);
+			upgradeDefinition->Impact.ComputeNextValue(targetUpgrade->CurrentImpactValue, upgradeDefinition->BaseImpactValue, this->data->Upgrades[upgradeIndex].InstanceBought + 1);
 		}
 
 		this->data->Score -= price;
@@ -157,9 +157,9 @@ namespace AutoClicker
 		// TODO if doubles are used to compute the next price then there is no point in using long to store the data.
 		// I don't know how to do floating pow function to circumvent this limitation.
 		// I Don't expect the prices to go as high though.
-		this->data->Upgrades[upgradeIndex].Price = static_cast<int64_t>(floor(this->data->Upgrades[upgradeIndex].ComputeNextPrice()));
+		this->data->Upgrades[upgradeIndex].ComputePrice();
 
-		this->data->WakeTimer = 0;
+		this->data->WakeTimer = this->data->WakeDuration;
 
 		++this->data->FrameCount;
 		return true;

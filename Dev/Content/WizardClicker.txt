@@ -84,7 +84,7 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 2
+				"Value" : 5
 			},
 
 			"BasePrice" : 4800,
@@ -136,11 +136,7 @@
 			"Description" : "Click Bonus",
 			"UpgradeType" : "ClickTemporaryBoostStrength",
 			"Unique" : true,
-			"ImpactStrategy" : 
-			{
-				"Type" : "Flat",
-				"Value" : 3
-			},
+			"BaseImpactValue" : 1,
 
 			"BasePrice" : 100,
 			"PriceStrategy":

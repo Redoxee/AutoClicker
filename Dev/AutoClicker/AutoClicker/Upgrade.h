@@ -63,7 +63,7 @@ namespace AutoClicker
 		ValueIncreaseType Type;
 		double Rate;
 
-		double ComputeNextValue(double baseValue, double currentValue, double instanceValue) const;
+		void ComputeNextValue(int64_t& value, int64_t baseValue, int64_t instanceBought) const;
 	};
 
 	class UpgradeLock
@@ -103,6 +103,6 @@ namespace AutoClicker
 		int64_t Price = 0;
 		int64_t CurrentImpactValue = 0;
 		
-		double ComputeNextPrice();
+		void ComputePrice();
 	};
 }

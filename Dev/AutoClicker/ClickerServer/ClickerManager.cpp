@@ -366,6 +366,9 @@ web::json::value ClickerManager::GetDataAsJson()
 	result[U("TemporaryBonusTimer")] = data.ClickTemporaryBonusTimer;
 	result[U("TemporaryBonusFactor")] = data.ClickTemporaryBonusFactor;
 
+	result[U("WakeTimer")] = data.WakeTimer;
+	result[U("WakeDuration")] = data.WakeDuration;
+
 	if (data.NumberOfUpgrades > 0)
 	{
 		auto upgrades = web::json::value::array();
