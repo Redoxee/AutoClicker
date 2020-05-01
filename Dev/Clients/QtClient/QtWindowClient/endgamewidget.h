@@ -8,6 +8,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsView>
+#include <QBoxLayout>
 
 #include "math.h"
 
@@ -18,6 +19,7 @@
 #include "tiledprogressbar.h"
 #include "crisscrossprogressbar.h"
 #include "doorstyleprogressbar.h"
+#include "endscorewidget.h"
 
 class EndGameWidget : public QWidget
 {
@@ -39,6 +41,7 @@ private:
     TiledProgressBar* tiledProgressBar = nullptr;
     CrissCrossProgressBar* crissCrossProgressBar = nullptr;
     DoorStyleProgressBar* doorStyleProgressBar = nullptr;
+    EndScoreWidget* endScoreWidget = nullptr;
 
     void SetupUI();
 

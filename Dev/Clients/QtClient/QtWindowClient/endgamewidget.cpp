@@ -54,6 +54,28 @@ void EndGameWidget::SetupUI()
     proxyWidget->setPos(200, 300);
     vboxLayout->addWidget(vp);
     */
+
+    this->endScoreWidget = new EndScoreWidget(this);
+    vboxLayout->addWidget(this->endScoreWidget);
+
+    QSpacerItem* spacer;
+    spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->endScoreWidget->centralLayout->addItem(spacer);
+
+    QLabel* endMessage = new QLabel();
+    endMessage->setAlignment(Qt::AlignCenter);
+    endMessage->setText("Thank you\nfor playing");
+    this->endScoreWidget->centralLayout->addWidget(endMessage);
+
+    QLabel* scoreMessage = new QLabel();
+    scoreMessage->setAlignment(Qt::AlignCenter);
+    this->endScoreWidget->centralLayout->addWidget(scoreMessage);
+    QString scoreStr = QString("your final score is \n%0");
+    scoreStr = scoreStr.arg(8888888);
+    scoreMessage->setText(scoreStr);
+
+    spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->endScoreWidget->centralLayout->addItem(spacer);
 }
 
 void EndGameWidget::Update(float dt)
@@ -65,4 +87,5 @@ void EndGameWidget::Update(float dt)
     //this->tiledProgressBar->SetValue(animTime);
     //this->crissCrossProgressBar->SetValue(animTime);
     //this->doorStyleProgressBar->SetValue(animTime);
+    this->endScoreWidget->Update(this->time);
 }

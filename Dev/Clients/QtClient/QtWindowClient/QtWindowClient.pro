@@ -23,6 +23,7 @@ SOURCES += \
     crisscrossprogressbar.cpp \
     doorstyleprogressbar.cpp \
     endgamewidget.cpp \
+    endscorewidget.cpp \
     gamewindow.cpp \
     gridprogressbar.cpp \
     introscreenwidget.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     crisscrossprogressbar.h \
     doorstyleprogressbar.h \
     endgamewidget.h \
+    endscorewidget.h \
     gamewindow.h \
     gridprogressbar.h \
     introscreenwidget.h \
