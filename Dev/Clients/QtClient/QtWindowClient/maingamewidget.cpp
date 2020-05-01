@@ -276,6 +276,26 @@ void MainGameWidget::refreshHistory()
     {
         int index = (this->historyCursor + i) % this->historySize;
         int score = this->scoreHistory[index];
+        if(score > maxValue)
+        {
+            maxValue = score;
+        }
+    }
+
+    maxValue *= 1.1;
+    int minValue = 1;
+    if(maxValue > 1000)
+    {
+        minValue = maxValue / 1000;
+    }
+
+    this->historyYAxis->setMax(maxValue);
+    this->historyYAxis->setMin(minValue);
+
+    for(int i = 0; i < this->historySize; ++i)
+    {
+        int index = (this->historyCursor + i) % this->historySize;
+        int score = this->scoreHistory[index];
 
         if(i > 0 && i < (this->historySize - 1))
         {
@@ -292,19 +312,5 @@ void MainGameWidget::refreshHistory()
 
         float xPos = static_cast<float>(i) / static_cast<float>(this->historySize);
         this->historySeries->append(xPos, score);
-        if(score > maxValue)
-        {
-            maxValue = score;
-        }
     }
-
-    maxValue *= 1.1;
-    int minValue = 0;
-    if(maxValue > 1000)
-    {
-        minValue = maxValue / 1000;
-    }
-
-    this->historyYAxis->setMax(maxValue);
-    this->historyYAxis->setMin(minValue);
 }
