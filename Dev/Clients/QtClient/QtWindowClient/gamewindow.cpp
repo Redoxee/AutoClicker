@@ -8,14 +8,14 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
 
     this->serverWorker = new class::ServerWorker(application);
 
-//    this->GotToScreen(Screens::IntroScreen);
-    this->GotToScreen(Screens::EndGameScreen);
+    this->GotToScreen(Screens::IntroScreen);
+//    this->GotToScreen(Screens::EndGameScreen);
 //    this->GotToScreen(Screens::GameScreen);
 }
 
 void GameWindow::SetupUi()
 {
-    this->setWindowTitle("Shitty Wizzard Installer");
+    this->setWindowTitle("Shitty Wizard Installer");
     this->setFixedSize(AutoClicker::WindowWidth, AutoClicker::WindowHeight);
 
     this->mainWidget = new QWidget(this);
@@ -65,19 +65,19 @@ void GameWindow::GotToScreen(Screens nextScreen)
     }
 
     switch (nextScreen) {
-    case IntroScreen:
+    case Screens::IntroScreen:
         this->CurrentDisplayedScreen = new IntroScreenWidget(this->mainWidget, this);
         break;
-    case PresentationScreen:
+    case Screens::PresentationScreen:
         this->CurrentDisplayedScreen = new PresentationWidget(this->mainWidget, this);
         break;
-    case CinematicScreen:
+    case Screens::CinematicScreen:
         this->CurrentDisplayedScreen = new CinematicWidget(this, this);
         break;
-    case GameScreen:
+    case Screens::GameScreen:
         this->CurrentDisplayedScreen = new MainGameWidget(this);
         break;
-    case EndGameScreen:
+    case Screens::EndGameScreen:
         this->CurrentDisplayedScreen = new EndGameWidget(this);
     }
 

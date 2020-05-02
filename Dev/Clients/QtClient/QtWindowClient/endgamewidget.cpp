@@ -71,7 +71,16 @@ void EndGameWidget::SetupUI()
     scoreMessage->setAlignment(Qt::AlignCenter);
     this->endScoreWidget->centralLayout->addWidget(scoreMessage);
     QString scoreStr = QString("your final score is \n%0");
-    scoreStr = scoreStr.arg(8888888);
+    if(gameWindow->currentFrame>0)
+    {
+        int finalScore = AutoClicker::ScoreFormula(gameWindow->currentFrame);
+        scoreStr = scoreStr.arg(finalScore);
+    }
+    else
+    {
+        scoreStr = scoreStr.arg(000000000);
+    }
+
     scoreMessage->setText(scoreStr);
 
     spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -82,10 +91,12 @@ void EndGameWidget::Update(float dt)
 {
     this->time += dt;
 
-    float animTime = pow(this->time * .00005, 2.);
+    //float animTime = pow(this->time * .00005, 2.);
+
     //this->spiralProgressBar->SetValue(animTime);
     //this->tiledProgressBar->SetValue(animTime);
     //this->crissCrossProgressBar->SetValue(animTime);
     //this->doorStyleProgressBar->SetValue(animTime);
+
     this->endScoreWidget->Update(this->time);
 }

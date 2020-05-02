@@ -10,8 +10,6 @@
 #include <QGraphicsView>
 #include <QBoxLayout>
 
-#include "math.h"
-
 #include "gamewindow.h"
 #include "updateworker.h"
 #include "gridprogressbar.h"

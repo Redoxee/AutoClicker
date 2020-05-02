@@ -6,6 +6,9 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->gameWindow = gameWindow;
     this->updateWorker = new UpdateWorker();
 
+    this->isFinished = false;
+    this->isSleeping = false;
+
     this->scoreHistory = new int[this->historySize];
     for(int i = 0; i < this->historySize; ++i)
     {
@@ -115,6 +118,16 @@ void MainGameWidget::SetupUI()
 
     this->clickerButton = new QPushButton("Click", this);
     vBoxLayout->addWidget(this->clickerButton);
+
+    this->finishButton = new QPushButton();
+    this->gameWindow->BottomBox->addButton(finishButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->finishButton->setVisible(false);
+    QSizePolicy sizePolicy = this->finishButton->sizePolicy();
+    sizePolicy.setRetainSizeWhenHidden(true);
+    this->finishButton->setSizePolicy(sizePolicy);
+    this->finishButton->setText("Next >>");
+
+    connect(this->finishButton, &QPushButton::clicked, this, &MainGameWidget::onFinishButtonClicked);
 }
 
 void MainGameWidget::handleClick()
@@ -150,6 +163,8 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     this->scoreValueLabel->setText(scoreLabel);
     this->frameValueLabel->setText(QString::number(serverData->FrameCount));
     this->clickValueLabel->setText("+" + FormatDownQuantity(serverData->ClickValue) + " bytes");
+
+    this->gameWindow->currentFrame = serverData->FrameCount;
 
     this->realCurrentScore = serverData->Score;
     if(serverData->NumberOfUpgrades != this->UpgradeButtons.size())
@@ -203,6 +218,20 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
 
     this->pushToScoreHistory(serverData->Score);
     this->refreshHistory();
+
+    if(!this->isSleeping && serverData->IsSleeping())
+    {
+        // TODO Display a message here to explain why the game isnt advancing.
+        // Maybe a dialog box.
+
+        this->isSleeping = true;
+    }
+
+    if(!this->isFinished && serverData->IsFinished())
+    {
+        this->finishButton->setVisible(true);
+        this->isFinished = true;
+    }
 }
 
 void MainGameWidget::UpgradeButtonClick(int buttonIndex)
@@ -313,4 +342,10 @@ void MainGameWidget::refreshHistory()
         float xPos = static_cast<float>(i) / static_cast<float>(this->historySize);
         this->historySeries->append(xPos, score);
     }
+}
+
+void MainGameWidget::onFinishButtonClicked()
+{
+    this->gameWindow->BottomBox->removeButton(this->finishButton);
+    this->gameWindow->GotToScreen(Screens::EndGameScreen);
 }

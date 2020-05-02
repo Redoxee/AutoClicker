@@ -22,17 +22,16 @@ EndScoreWidget::EndScoreWidget(QWidget *parent) : QWidget(parent)
     {
         QProgressBar* lBar = new QProgressBar();
         lBar->setTextVisible(false);
-        lBar->setValue(50 + i);
+        lBar->setValue(100);
         lBar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
         lLayout->addWidget(lBar);
 
         QProgressBar* rBar = new QProgressBar();
         rBar->setTextVisible(false);
-        rBar->setValue(50 + i);
+        rBar->setValue(100);
         rBar->setInvertedAppearance(true);
         rBar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
         rLayout->addWidget(rBar);
-
         this->progressbars[i * 2] = lBar;
         this->progressbars[i * 2+ 1] = rBar;
     }
@@ -47,14 +46,24 @@ void EndScoreWidget::Update(float time)
 
     float t = time * .001;
 
+    float f = t * .025;
+    f = f < 1 ? f : 1;
+
     for(int i = 0; i < this->nbProgressBarRows; ++i)
     {
         const float p = static_cast<float>(i) / static_cast<float>(this->nbProgressBarRows);
-        float freq = .3 + sin(t * .125 + p) * 1.7 + .85;
+        float freq = 1;
 
-        float value = sin(TAU * p * freq + t) * .3 + .5;
+        float value = (sin(TAU * p * freq - t) * .3 + .5) * f;
         int iValue = static_cast<int>(value * 100);
+        int prevValue = this->progressbars[i * 2]->value();
         this->progressbars[i * 2]->setValue(iValue);
         this->progressbars[i * 2 + 1]->setValue(iValue);
+
+        if(prevValue == 0 && iValue != 0)
+        {
+            this->progressbars[i * 2]->repaint();
+            this->progressbars[i * 2 + 1]->repaint();
+        }
     }
 }

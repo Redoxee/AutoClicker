@@ -4,7 +4,7 @@
 	"PassiveUpdateDelay" : 1000,
 
 	"InitialScore" : 0,
-	"TargetScore" : 1000000000,
+	"TargetScore" :  1000000000,
 	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
 	"InitialPassiveSpeed" : 0,

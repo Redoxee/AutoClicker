@@ -43,6 +43,16 @@ struct ServerGameplayState
     Upgrade* Upgrades = nullptr;
     size_t NumberOfUpgrades = 0;
 
+    bool IsFinished()
+    {
+        return  this->Score >= this->TargetScore;
+    }
+
+    bool IsSleeping()
+    {
+        return this->WakeTimer>0 && this->WakeDuration > 0;
+    }
+
     void SetDataData(QJsonObject jsonData)
     {
         this->Score = jsonData["Score"].toInt();

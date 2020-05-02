@@ -40,16 +40,18 @@ public slots:
 private:
     void SetupUI();
 
-    QLabel* scoreValueLabel;
-    QLabel* frameValueLabel;
-    QLabel* clickValueLabel;
-    QPushButton* clickerButton;
+    QLabel* scoreValueLabel = nullptr;
+    QLabel* frameValueLabel = nullptr;
+    QLabel* clickValueLabel = nullptr;
+    QPushButton* clickerButton = nullptr;
 
-    QGridLayout*  UpgradeLayout;
+    QPushButton* finishButton = nullptr;
 
-    UpdateWorker* updateWorker;
+    QGridLayout*  UpgradeLayout = nullptr;
 
-    QNetworkAccessManager *manager;
+    UpdateWorker* updateWorker = nullptr;
+
+    QNetworkAccessManager *manager = nullptr;
     QNetworkRequest request;
 
     ScaledProgressBar* ProgressBar[4];
@@ -60,6 +62,8 @@ private:
 
     int lastRefreshedFrame;
     bool isDirty;
+    bool isFinished;
+    bool isSleeping;
 
     GameWindow* gameWindow;
 
@@ -79,6 +83,8 @@ private:
     void refreshHistory();
 
     void Update(int dt);
+
+    void onFinishButtonClicked();
 };
 
 #endif // MAINGAMEWIDGET_H

@@ -29,7 +29,7 @@ class GameWindow;
 #include "serverworker.h"
 #include "endgamewidget.h"
 
-enum Screens
+enum class Screens
 {
     IntroScreen,
     PresentationScreen,
@@ -49,6 +49,8 @@ public:
     ServerWorker* ServerWorker() { return this->serverWorker; };
     QLayout* LeftLayout = nullptr;
     QGridLayout* LeftGLayout = nullptr;
+
+    int currentFrame = -1;
 public slots:
 private :
     void SetupUi();

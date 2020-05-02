@@ -11,6 +11,11 @@ namespace AutoClicker {
     inline std::string BaseURI() { return "http://localhost:1414/AutoClicker?"; }
     inline std::string RelativeCoreServerPath() { return "/../Server/ClickerServer.exe"; }
     inline std::string RelativeConfigPath() { return "/../Content/WizardClicker.txt"; }
+    inline int ScoreFormula(int frame)
+    {
+        int score = 300000 - frame * 3;
+        return score > 0 ? score : 0;
+    }
 }
 
 #endif // AUTOCLICKERCONFIG_H
