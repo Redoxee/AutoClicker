@@ -1,12 +1,19 @@
 #include "upgradebutton.h"
+#include "servergameplaystate.h"
 
-UpgradeButton::UpgradeButton(ServerGameplayState::Upgrade* upgrade, QWidget *parent) : QPushButton(parent)
+UpgradeButton::UpgradeButton(Upgrade* upgrade, QWidget *parent) : QPushButton(parent)
 {
-    this->Upgrade = upgrade;
-    this->setText(this->Upgrade->GetLabel());
+    this->upgrade = upgrade;
+    this->setText(this->upgrade->GetLabel());
 }
 
 void UpgradeButton::RefreshLabel()
 {
-    this->setText(this->Upgrade->GetLabel());
+    this->setText(this->upgrade->GetLabel());
+}
+
+
+void UpgradeButton::SetUpgrade(Upgrade *upgrade)
+{
+    this->upgrade = upgrade;
 }

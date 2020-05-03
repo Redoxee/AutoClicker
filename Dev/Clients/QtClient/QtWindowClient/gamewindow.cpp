@@ -1,5 +1,13 @@
 #include "gamewindow.h"
 
+#include "autoclickerconfig.h"
+#include "introscreenwidget.h"
+#include "presentationwidget.h"
+#include "cinematicwidget.h"
+#include "maingamewidget.h"
+#include "serverworker.h"
+#include "endgamewidget.h"
+
 GameWindow::GameWindow(QApplication* application, QWidget *parent)
     : QMainWindow(parent)
 {

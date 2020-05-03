@@ -5,13 +5,12 @@
 #include <QWidget>
 #include <QSequentialAnimationGroup>
 #include <QPropertyAnimation>
-
 #include <QDialogButtonBox>
 #include <QProgressBar>
 #include <QVBoxLayout>
 
-#include "gamewindow.h"
-#include "windowshakeanimation.h"
+class GameWindow;
+class WindowShakeAnimation;
 
 class CinematicWidget : public QWidget
 {

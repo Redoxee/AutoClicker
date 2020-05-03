@@ -40,6 +40,7 @@ SOURCES += \
     windowshakeanimation.cpp
 
 HEADERS += \
+    IProgressBar.h \
     SWIUtils.h \
     autoclickerconfig.h \
     crisscrossprogressbar.h \

@@ -4,12 +4,15 @@
 #include <QObject>
 #include <QProgressBar>
 
-class ScaledProgressBar : public QProgressBar
+#include "IProgressBar.h"
+
+class ScaledProgressBar : public QProgressBar, public IProgressBar
 {
     Q_OBJECT
 public:
     explicit ScaledProgressBar(int scale, QWidget* parent = nullptr);
     void SetScaledValue(int value);
+    void SetValue(float value) override;
 
 private :
     int scale;

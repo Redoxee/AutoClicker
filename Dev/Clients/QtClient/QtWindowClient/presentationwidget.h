@@ -9,9 +9,8 @@
 #include <QThread>
 
 #include "windows.h"
-#include "serverworker.h"
 
-#include "gamewindow.h"
+class GameWindow;
 
 class PresentationWidget : public QWidget
 {

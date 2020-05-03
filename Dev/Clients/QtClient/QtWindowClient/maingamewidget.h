@@ -11,17 +11,16 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 
-// TODO Remove the full module include to speed up compilation (but that mean finding the recursive include shenanigan).
 #include <QtCharts>
 
 #include <vector>
 
-#include "gamewindow.h"
-#include "upgradebutton.h"
-#include "updateworker.h"
-#include "scaledprogressbar.h"
+struct ServerGameplayState;
 
-using namespace SWIUtils;
+class UpdateWorker;
+class ScaledProgressBar;
+
+class GameWindow;
 
 class MainGameWidget : public QWidget
 {

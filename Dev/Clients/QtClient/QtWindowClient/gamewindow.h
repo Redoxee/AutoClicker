@@ -21,13 +21,7 @@
 #include <vector>
 
 class GameWindow;
-
-#include "introscreenwidget.h"
-#include "presentationwidget.h"
-#include "cinematicwidget.h"
-#include "maingamewidget.h"
-#include "serverworker.h"
-#include "endgamewidget.h"
+class ServerWorker;
 
 enum class Screens
 {

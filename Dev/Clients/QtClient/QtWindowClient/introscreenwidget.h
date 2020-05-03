@@ -9,7 +9,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-#include "gamewindow.h"
+class GameWindow;
 
 class IntroScreenWidget : public QWidget
 {

@@ -9,24 +9,24 @@
 
 #include "SWIUtils.h"
 
+struct Upgrade
+{
+    QString Name = "";
+    QString Description = "";
+    int Price = 0;
+    int InstanceBought = 0;
+    int FailureFlags = 0;
+
+    QString GetLabel()
+    {
+        QString label = QString("(%1)\n %2 :\n %3").arg(SWIUtils::FormatDownQuantity(this->InstanceBought), this->Name, SWIUtils::FormatDownQuantity(this->Price));
+
+        return label;
+    }
+};
+
 struct ServerGameplayState
 {
-    struct Upgrade
-    {
-        QString Name = "";
-        QString Description = "";
-        int Price = 0;
-        int InstanceBought = 0;
-        int FailureFlags = 0;
-
-        QString GetLabel()
-        {
-            QString label = QString("(%1)\n %2 :\n %3").arg(SWIUtils::FormatDownQuantity(this->InstanceBought), this->Name, SWIUtils::FormatDownQuantity(this->Price));
-
-            return label;
-        }
-    };
-
     int Score = 0;
     int FrameCount = 0;
     int TargetScore = 0;

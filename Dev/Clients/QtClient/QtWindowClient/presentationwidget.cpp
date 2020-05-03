@@ -1,5 +1,8 @@
 #include "presentationwidget.h"
 
+#include "gamewindow.h"
+#include "serverworker.h"
+
 PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) : QWidget(parent)
 {
     this->gameWindow = gameWindow;

@@ -1,5 +1,15 @@
 #include "maingamewidget.h"
+
+#include "autoclickerconfig.h"
 #include "SWIUtils.h"
+#include "gamewindow.h"
+#include "upgradebutton.h"
+#include "updateworker.h"
+#include "scaledprogressbar.h"
+#include "servergameplaystate.h"
+#include "serverworker.h"
+
+using namespace SWIUtils;
 
 MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {

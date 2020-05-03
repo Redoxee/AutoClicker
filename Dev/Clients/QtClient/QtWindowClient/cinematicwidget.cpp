@@ -1,4 +1,6 @@
 #include "cinematicwidget.h"
+#include "gamewindow.h"
+#include "windowshakeanimation.h"
 
 CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWidget(parent)
 {

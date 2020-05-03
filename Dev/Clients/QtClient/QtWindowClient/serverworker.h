@@ -20,9 +20,7 @@
 #include <QString>
 #include "windows.h"
 
-#include "autoclickerconfig.h"
-
-#include "servergameplaystate.h"
+struct ServerGameplayState;
 
 class ServerWorker : public QObject
 {   

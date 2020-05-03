@@ -1,4 +1,5 @@
 #include "introscreenwidget.h"
+#include "gamewindow.h"
 
 IntroScreenWidget::IntroScreenWidget(QWidget* parent, GameWindow* mainWindow) : QWidget(parent)
 {

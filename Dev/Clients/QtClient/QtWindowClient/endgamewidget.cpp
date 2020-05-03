@@ -1,5 +1,15 @@
 #include "endgamewidget.h"
 
+#include "gamewindow.h"
+#include "updateworker.h"
+#include "gridprogressbar.h"
+#include "spiralprogressbar.h"
+#include "tiledprogressbar.h"
+#include "crisscrossprogressbar.h"
+#include "doorstyleprogressbar.h"
+#include "endscorewidget.h"
+#include "autoclickerconfig.h"
+
 EndGameWidget::EndGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
     this->gameWindow = gameWindow;

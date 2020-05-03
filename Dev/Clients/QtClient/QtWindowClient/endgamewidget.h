@@ -10,14 +10,14 @@
 #include <QGraphicsView>
 #include <QBoxLayout>
 
-#include "gamewindow.h"
-#include "updateworker.h"
-#include "gridprogressbar.h"
-#include "spiralprogressbar.h"
-#include "tiledprogressbar.h"
-#include "crisscrossprogressbar.h"
-#include "doorstyleprogressbar.h"
-#include "endscorewidget.h"
+class GameWindow;
+class GridProgressBar;
+class SpiralProgressBar;
+class TiledProgressBar;
+class UpdateWorker;
+class CrissCrossProgressBar;
+class DoorStyleProgressBar;
+class EndScoreWidget;
 
 class EndGameWidget : public QWidget
 {
