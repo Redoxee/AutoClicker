@@ -6,19 +6,18 @@
 #include <QProgressBar>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QSpacerItem>
-#include <QDebug>
 
-class SpiralProgressBar : public QWidget
+#include "IProgressBar.h"
+
+class SpiralProgressBar : public QWidget, public IProgressBar
 {
     Q_OBJECT
 public:
     explicit SpiralProgressBar(QWidget *parent = nullptr);
 
-    void SetValue(float value);
+    void SetValue(float value) override;
 
     QLayout* CentralLayout = nullptr;
-signals:
 
 private:
     int numberOfLoops = 7;

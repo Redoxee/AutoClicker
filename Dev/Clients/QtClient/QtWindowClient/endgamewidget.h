@@ -9,6 +9,7 @@
 #include <QGraphicsProxyWidget>
 #include <QGraphicsView>
 #include <QBoxLayout>
+#include <QSequentialAnimationGroup>
 
 class GameWindow;
 class GridProgressBar;
@@ -18,6 +19,7 @@ class UpdateWorker;
 class CrissCrossProgressBar;
 class DoorStyleProgressBar;
 class EndScoreWidget;
+class FancyProgressBarWrapper;
 
 class EndGameWidget : public QWidget
 {
@@ -29,6 +31,7 @@ signals:
 
 private slots:
     void Update(float dt);
+    void FirstSequenceFinished();
 
 private:
     GameWindow* gameWindow = nullptr;
@@ -40,6 +43,8 @@ private:
     CrissCrossProgressBar* crissCrossProgressBar = nullptr;
     DoorStyleProgressBar* doorStyleProgressBar = nullptr;
     EndScoreWidget* endScoreWidget = nullptr;
+
+    FancyProgressBarWrapper* testWrapper = nullptr;
 
     void SetupUI();
 

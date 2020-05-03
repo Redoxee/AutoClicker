@@ -9,6 +9,7 @@
 #include "doorstyleprogressbar.h"
 #include "endscorewidget.h"
 #include "autoclickerconfig.h"
+#include "fancyprogressbarwrapper.h"
 
 EndGameWidget::EndGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
@@ -19,7 +20,7 @@ EndGameWidget::EndGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
     this->time = 0;
 
-    connect(this->updateWorker, &UpdateWorker::Update, this, &EndGameWidget::Update);
+//    connect(this->updateWorker, &UpdateWorker::Update, this, &EndGameWidget::Update);
 }
 
 void EndGameWidget::SetupUI()
@@ -30,13 +31,20 @@ void EndGameWidget::SetupUI()
     this->gridProgressBar = new GridProgressBar(this,8, 12);
     this->gridProgressBar->hide();
 
-    /*
+
     this->spiralProgressBar = new SpiralProgressBar(this);
     vboxLayout->addWidget(this->spiralProgressBar);
     this->spiralProgressBar->SetValue(0);
     QWidget* placeHolderWidget = new QWidget(this->spiralProgressBar);
     this->spiralProgressBar->CentralLayout->addWidget(placeHolderWidget);
-    */
+
+    QSequentialAnimationGroup* firstSequence = new QSequentialAnimationGroup(this);
+    this->testWrapper = new FancyProgressBarWrapper(20000, this->spiralProgressBar);
+    this->testWrapper->setEasingCurve(QEasingCurve::InExpo);
+    firstSequence->addAnimation(this->testWrapper);
+    firstSequence->addPause(2000);
+
+    connect(firstSequence, &QSequentialAnimationGroup::finished, this, &EndGameWidget::FirstSequenceFinished);
 
     /*
     this->tiledProgressBar = new TiledProgressBar(this);
@@ -64,6 +72,7 @@ void EndGameWidget::SetupUI()
     proxyWidget->setPos(200, 300);
     vboxLayout->addWidget(vp);
     */
+
 
     this->endScoreWidget = new EndScoreWidget(this);
     vboxLayout->addWidget(this->endScoreWidget);
@@ -95,18 +104,26 @@ void EndGameWidget::SetupUI()
 
     spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->endScoreWidget->centralLayout->addItem(spacer);
+    this->endScoreWidget->Update(0);
+
+    this->endScoreWidget->setVisible(false);
+
+    firstSequence->start();
 }
 
 void EndGameWidget::Update(float dt)
 {
     this->time += dt;
-
-    //float animTime = pow(this->time * .00005, 2.);
-
-    //this->spiralProgressBar->SetValue(animTime);
-    //this->tiledProgressBar->SetValue(animTime);
-    //this->crissCrossProgressBar->SetValue(animTime);
-    //this->doorStyleProgressBar->SetValue(animTime);
-
     this->endScoreWidget->Update(this->time);
+}
+
+
+void EndGameWidget::FirstSequenceFinished()
+{
+    this->spiralProgressBar->setEnabled(false);
+    delete this->spiralProgressBar;
+
+    this->endScoreWidget->setVisible(true);
+    this->time = 0;
+    connect(this->updateWorker, &UpdateWorker::Update, this, &EndGameWidget::Update);
 }
