@@ -1,5 +1,9 @@
 #include "endgamewidget.h"
 
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPauseAnimation>
+
 #include "gamewindow.h"
 #include "updateworker.h"
 #include "gridprogressbar.h"
@@ -25,12 +29,14 @@ EndGameWidget::EndGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
 void EndGameWidget::SetupUI()
 {
-    QVBoxLayout* vboxLayout = new QVBoxLayout(this);
+    QGridLayout* gridLayout = new QGridLayout(this);
+    gridLayout->setSpacing(0);
+    gridLayout->setMargin(0);
+
+    QVBoxLayout* vboxLayout = new QVBoxLayout();
     vboxLayout->setMargin(0);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    this->gridProgressBar = new GridProgressBar(this,8, 12);
-    this->gridProgressBar->hide();
-
+    gridLayout->addLayout(vboxLayout, 0, 0);
 
     this->spiralProgressBar = new SpiralProgressBar(this);
     vboxLayout->addWidget(this->spiralProgressBar);
@@ -42,9 +48,39 @@ void EndGameWidget::SetupUI()
     this->testWrapper = new FancyProgressBarWrapper(20000, this->spiralProgressBar);
     this->testWrapper->setEasingCurve(QEasingCurve::InExpo);
     firstSequence->addAnimation(this->testWrapper);
-    firstSequence->addPause(2000);
+
+    QPauseAnimation* firstPause = new QPauseAnimation(2000, this);
+    firstSequence->addAnimation(firstPause);
+
+
+    this->spiralProgressBar->SetValue(1.0f);
+    this->vertUpBigBar = new QProgressBar(this);
+    this->vertUpBigBar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
+    this->vertUpBigBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    gridLayout->addWidget(this->vertUpBigBar, 0, 0);
+    this->vertUpBigBar->setOrientation(Qt::Orientation::Vertical);
+    this->vertUpBigBar->setValue(0);
+    this->vertUpBigBar->setTextVisible(false);
+
+    QPropertyAnimation* vertUpBarAnim = new QPropertyAnimation(this->vertUpBigBar, "value");
+    vertUpBarAnim->setStartValue(0);
+    vertUpBarAnim->setEndValue(99);
+    vertUpBarAnim->setDuration(3000);
+    vertUpBarAnim->setEasingCurve(QEasingCurve::InOutExpo);
+    firstSequence->addAnimation(vertUpBarAnim);
+
+    connect(vertUpBarAnim, &QAbstractAnimation::finished, this, [this]() {this->AnimationFinishedDelete(this->spiralProgressBar);});
+
+    QPauseAnimation* secondPause = new QPauseAnimation(800, this);
+    firstSequence->addAnimation(secondPause);
+    connect(secondPause, &QPauseAnimation::finished, this, [this]() {this->AnimationFinishedDelete(this->vertUpBigBar);});
 
     connect(firstSequence, &QSequentialAnimationGroup::finished, this, &EndGameWidget::FirstSequenceFinished);
+
+/*
+    this->gridProgressBar = new GridProgressBar(this,8, 12);
+    this->gridProgressBar->hide();
+*/
 
     /*
     this->tiledProgressBar = new TiledProgressBar(this);
@@ -108,7 +144,7 @@ void EndGameWidget::SetupUI()
 
     this->endScoreWidget->setVisible(false);
 
-    firstSequence->start();
+    firstSequence->start(QAbstractAnimation::DeletionPolicy::DeleteWhenStopped);
 }
 
 void EndGameWidget::Update(float dt)
@@ -117,11 +153,15 @@ void EndGameWidget::Update(float dt)
     this->endScoreWidget->Update(this->time);
 }
 
+void EndGameWidget::AnimationFinishedDelete(QWidget *target)
+{
+    delete target;
+}
 
 void EndGameWidget::FirstSequenceFinished()
 {
-    this->spiralProgressBar->setEnabled(false);
-    delete this->spiralProgressBar;
+//    this->spiralProgressBar->setEnabled(false);
+//    delete this->spiralProgressBar;
 
     this->endScoreWidget->setVisible(true);
     this->time = 0;

@@ -8,8 +8,11 @@
 #include <QGraphicsScene>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsView>
+#include <QGridLayout>
 #include <QBoxLayout>
 #include <QSequentialAnimationGroup>
+
+class QProgressBar;
 
 class GameWindow;
 class GridProgressBar;
@@ -46,7 +49,10 @@ private:
 
     FancyProgressBarWrapper* testWrapper = nullptr;
 
+    QProgressBar* vertUpBigBar = nullptr;
+
     void SetupUI();
+    void AnimationFinishedDelete(QWidget* target);
 
     float time = 0;
 };

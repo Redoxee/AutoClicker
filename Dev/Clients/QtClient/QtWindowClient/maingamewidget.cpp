@@ -1,5 +1,11 @@
 #include "maingamewidget.h"
 
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QChart>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QLogValueAxis>
+#include <QtCharts/QChartView>
+
 #include "autoclickerconfig.h"
 #include "SWIUtils.h"
 #include "gamewindow.h"

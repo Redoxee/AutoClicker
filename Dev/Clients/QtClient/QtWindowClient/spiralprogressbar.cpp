@@ -72,6 +72,10 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
         this->progressBars[index + 2]->hide();
         this->progressBars[index + 3]->hide();
 
+        this->progressBars[index + 0]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
+        this->progressBars[index + 1]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
+        this->progressBars[index + 2]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
+        this->progressBars[index + 3]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
     }
 
     this->CentralLayout = new QHBoxLayout();

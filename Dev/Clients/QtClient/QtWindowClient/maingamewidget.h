@@ -11,15 +11,18 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 
-#include <QtCharts>
-
 #include <vector>
 
-struct ServerGameplayState;
+namespace QtCharts
+{
+    class QLineSeries;
+    class QChartView;
+    class QLogValueAxis;
+};
 
+struct ServerGameplayState;
 class UpdateWorker;
 class ScaledProgressBar;
-
 class GameWindow;
 
 class MainGameWidget : public QWidget
