@@ -9,13 +9,15 @@
 #include <QSpacerItem>
 #include <QDebug>
 
-class TiledProgressBar : public QWidget
+#include "IProgressBar.h"
+
+class TiledProgressBar : public QWidget, public IProgressBar
 {
     Q_OBJECT
 public:
     explicit TiledProgressBar(QWidget *parent = nullptr);
 
-    void SetValue(float value);
+    void SetValue(float value) override;
 
     int row = 6;
     int column = 3;

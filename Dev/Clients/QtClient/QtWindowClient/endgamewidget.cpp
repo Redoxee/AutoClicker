@@ -45,19 +45,17 @@ void EndGameWidget::SetupUI()
     this->spiralProgressBar->CentralLayout->addWidget(placeHolderWidget);
 
     QSequentialAnimationGroup* firstSequence = new QSequentialAnimationGroup(this);
-    this->testWrapper = new FancyProgressBarWrapper(20000, this->spiralProgressBar);
-    this->testWrapper->setEasingCurve(QEasingCurve::InExpo);
+    this->testWrapper = new FancyProgressBarWrapper(2000, this->spiralProgressBar);
+//    this->testWrapper->setEasingCurve(QEasingCurve::InExpo);
     firstSequence->addAnimation(this->testWrapper);
 
     QPauseAnimation* firstPause = new QPauseAnimation(2000, this);
     firstSequence->addAnimation(firstPause);
 
-
     this->spiralProgressBar->SetValue(1.0f);
     this->vertUpBigBar = new QProgressBar(this);
     this->vertUpBigBar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
     this->vertUpBigBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    gridLayout->addWidget(this->vertUpBigBar, 0, 0);
     this->vertUpBigBar->setOrientation(Qt::Orientation::Vertical);
     this->vertUpBigBar->setValue(0);
     this->vertUpBigBar->setTextVisible(false);
@@ -69,11 +67,62 @@ void EndGameWidget::SetupUI()
     vertUpBarAnim->setEasingCurve(QEasingCurve::InOutExpo);
     firstSequence->addAnimation(vertUpBarAnim);
 
-    connect(vertUpBarAnim, &QAbstractAnimation::finished, this, [this]() {this->AnimationFinishedDelete(this->spiralProgressBar);});
 
     QPauseAnimation* secondPause = new QPauseAnimation(800, this);
     firstSequence->addAnimation(secondPause);
-    connect(secondPause, &QPauseAnimation::finished, this, [this]() {this->AnimationFinishedDelete(this->vertUpBigBar);});
+
+    QPropertyAnimation* vertUpExit = new QPropertyAnimation(this->vertUpBigBar, "value");
+    vertUpExit->setStartValue(100);
+    vertUpExit->setEndValue(0);
+    vertUpExit->setDuration(1200);
+    firstSequence->addAnimation(vertUpExit);
+
+    this->tiledProgressBar = new TiledProgressBar(this);
+    this->tiledProgressBar->SetValue(0);
+    this->tiledProgressBar->setVisible(false);
+    FancyProgressBarWrapper* tiledWrapper = new FancyProgressBarWrapper(20000, this->tiledProgressBar);
+    firstSequence->addAnimation(tiledWrapper);
+
+    QPauseAnimation* thirdPause = new QPauseAnimation(3000, this);
+    firstSequence->addAnimation(thirdPause);
+
+    QPropertyAnimation* leftRight = new QPropertyAnimation(this->vertUpBigBar, "value");
+    leftRight->setStartValue(0);
+    leftRight->setEndValue(99);
+    leftRight->setDuration(3000);
+    firstSequence->addAnimation(leftRight);
+
+    QPauseAnimation* fourthPause = new QPauseAnimation(800, this);
+    firstSequence->addAnimation(fourthPause);
+
+    QPropertyAnimation* leftRightEnd = new QPropertyAnimation(this->vertUpBigBar, "value");
+    leftRightEnd->setStartValue(100);
+    leftRightEnd->setEndValue(0);
+    leftRightEnd->setDuration(2000);
+    firstSequence->addAnimation(leftRightEnd);
+
+    gridLayout->addWidget(this->vertUpBigBar, 0, 0);
+
+    connect(vertUpBarAnim, &QAbstractAnimation::finished, this, [this, vboxLayout]() {
+        this->AnimationFinishedDelete(this->spiralProgressBar);
+        this->tiledProgressBar->setVisible(true);
+        vboxLayout->addWidget(this->tiledProgressBar);
+    });
+
+    connect(secondPause, &QPauseAnimation::finished, this, [this]() {
+        this->vertUpBigBar->setInvertedAppearance(true);
+    });
+
+    connect(tiledWrapper, &QAbstractAnimation::finished, this, [this](){
+        this->vertUpBigBar->setOrientation(Qt::Orientation::Horizontal);
+        this->vertUpBigBar->setInvertedAppearance(true);
+        this->vertUpBigBar->setValue(0);
+    });
+
+    connect(leftRight, &QAbstractAnimation::finished, this, [this](){
+        delete this->tiledProgressBar;
+        this->vertUpBigBar->setInvertedAppearance(false);
+    });
 
     connect(firstSequence, &QSequentialAnimationGroup::finished, this, &EndGameWidget::FirstSequenceFinished);
 
@@ -81,12 +130,6 @@ void EndGameWidget::SetupUI()
     this->gridProgressBar = new GridProgressBar(this,8, 12);
     this->gridProgressBar->hide();
 */
-
-    /*
-    this->tiledProgressBar = new TiledProgressBar(this);
-    vboxLayout->addWidget(this->tiledProgressBar);
-    this->tiledProgressBar->SetValue(0);
-    */
 
     //this->doorStyleProgressBar = new DoorStyleProgressBar(40, this);
     //vboxLayout->addWidget(this->doorStyleProgressBar);
