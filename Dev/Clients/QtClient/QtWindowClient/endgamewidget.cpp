@@ -86,14 +86,42 @@ void EndGameWidget::SetupUI()
     FancyProgressBarWrapper* rightLeftBackWrapper = new FancyProgressBarWrapper(3000, this->BigBar, QAbstractAnimation::Direction::Backward);
     firstSequence->addAnimation(rightLeftBackWrapper);
 
-    gridLayout->addWidget(this->BigBar, 0, 0);
+    this->crissCrossProgressBar = new CrissCrossProgressBar(30, 20, 4, this);
+    this->crissCrossProgressBar->SetProgress(0);
+    this->crissCrossProgressBar->setVisible(false);
+    FancyProgressBarWrapper* crissCrossWrapper = new FancyProgressBarWrapper(3000, this->crissCrossProgressBar);
 
-    connect(downUpWrapper, &QAbstractAnimation::finished, this, [this, vboxLayout]() {
-        delete this->spiralProgressBar;
+    firstSequence->addAnimation(crissCrossWrapper);
 
-        this->tiledProgressBar->setVisible(true);
-        vboxLayout->addWidget(this->tiledProgressBar);
+    connect(crissCrossWrapper, &QAbstractAnimation::stateChanged, this, [this, gridLayout](QAbstractAnimation::State newState){
+        if(newState == QAbstractAnimation::State::Running)
+        {
+            gridLayout->addWidget(this->crissCrossProgressBar, 0, 0);
+            this->crissCrossProgressBar->setVisible(true);
+            this->BigBar->raise();
+        }
     });
+
+    QPauseAnimation* fithPause = new QPauseAnimation(3000, this);
+    firstSequence->addAnimation(fithPause);
+
+    FancyProgressBarWrapper* leftRightWrapper = new FancyProgressBarWrapper(3000, this->BigBar);
+    firstSequence->addAnimation(leftRightWrapper);
+
+    this->doorStyleProgressBar = new DoorStyleProgressBar(40, this);
+    this->doorStyleProgressBar->SetProgress(0);
+    gameWindow->LeftGLayout->addWidget(this->doorStyleProgressBar, 0, 0);
+
+    FancyProgressBarWrapper* leftDoorWrapper = new FancyProgressBarWrapper(6000, this->doorStyleProgressBar);
+    firstSequence->addAnimation(leftDoorWrapper);
+
+    FancyProgressBarWrapper* leftRightBackWrapper = new FancyProgressBarWrapper(3000, this->BigBar, QAbstractAnimation::Direction::Backward);
+    firstSequence->addAnimation(leftRightBackWrapper);
+
+    FancyProgressBarWrapper* leftDoorWrapperBack = new FancyProgressBarWrapper(6000, this->doorStyleProgressBar, QAbstractAnimation::Direction::Backward);
+    firstSequence->addAnimation(leftDoorWrapperBack);
+
+    gridLayout->addWidget(this->BigBar, 0, 0);
 
     connect(secondPause, &QPauseAnimation::finished, this, [this]() {
         this->BigBar->setInvertedAppearance(true);
@@ -120,21 +148,23 @@ void EndGameWidget::SetupUI()
         }
     });
 
+    connect(downUpWrapper, &QAbstractAnimation::finished, this, [this, vboxLayout]() {
+        delete this->spiralProgressBar;
+
+        this->tiledProgressBar->setVisible(true);
+        vboxLayout->addWidget(this->tiledProgressBar);
+        this->BigBar->raise();
+    });
+
+    connect(leftRightWrapper, &QAbstractAnimation::finished, this, [this](){
+        delete this->crissCrossProgressBar;
+    });
+
+    connect(leftDoorWrapperBack, &QAbstractAnimation::finished, this, [this](){
+        delete this->doorStyleProgressBar;
+    });
+
     connect(firstSequence, &QSequentialAnimationGroup::finished, this, &EndGameWidget::FirstSequenceFinished);
-
-/*
-    this->gridProgressBar = new GridProgressBar(this,8, 12);
-    this->gridProgressBar->hide();
-*/
-
-    //this->doorStyleProgressBar = new DoorStyleProgressBar(40, this);
-    //vboxLayout->addWidget(this->doorStyleProgressBar);
-
-    //this->crissCrossProgressBar = new CrissCrossProgressBar(30, 15, 8, this);
-    //this->gameWindow->LeftGLayout->addWidget(this->crissCrossProgressBar, 0,0);
-    //vboxLayout->addWidget(this->crissCrossProgressBar);
-    //this->crissCrossProgressBar->SetValue(0);
-
 
     this->endScoreWidget = new EndScoreWidget(this);
     vboxLayout->addWidget(this->endScoreWidget);

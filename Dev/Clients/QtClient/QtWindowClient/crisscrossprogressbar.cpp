@@ -60,7 +60,7 @@ CrissCrossProgressBar::CrissCrossProgressBar(int row, int column, int spacing, Q
     stacked->setMargin(0);
 }
 
-void CrissCrossProgressBar::SetValue(float value)
+void CrissCrossProgressBar::SetProgress(float value)
 {
     int numberOfBars = this->row + this->column;
     int targetFill = static_cast<int>(floor(value * 100 * numberOfBars));

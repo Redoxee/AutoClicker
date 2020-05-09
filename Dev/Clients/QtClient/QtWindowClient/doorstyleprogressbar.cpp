@@ -21,20 +21,20 @@ DoorStyleProgressBar::DoorStyleProgressBar(int nbBars, QWidget *parent) : QWidge
         QSizePolicy sp = mBar->sizePolicy();
         sp.setRetainSizeWhenHidden(true);
         mBar->setSizePolicy(sp);
-        mBar->setStyleSheet("border : 0px; margin : -1px;");
+        mBar->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
 
         mBar = new QProgressBar();
         hLayout->addWidget(mBar);
         this->progressBars[i * 2 + 1] = mBar;
         mBar->setTextVisible(false);
         mBar->setInvertedAppearance(true);
-        mBar->setStyleSheet("border : 0px; margin : -1px;");
+        mBar->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
 
-        layout->addLayout(hLayout);
+        layout->insertLayout(0, hLayout);
     }
 }
 
-void DoorStyleProgressBar::SetValue(float value)
+void DoorStyleProgressBar::SetProgress(float value)
 {
     int targetFill = static_cast<int>(floor(value * 100 * this->length));
     if(this->prevValue == targetFill)
@@ -56,11 +56,18 @@ void DoorStyleProgressBar::SetValue(float value)
         }
         else if(targetFill > 0)
         {
+            int prevFill = this->progressBars[i * 2]->value();
             this->progressBars[i * 2]->show();
             this->progressBars[i * 2]->setValue(targetFill);
 
             this->progressBars[i * 2 + 1]->show();
             this->progressBars[i * 2 + 1]->setValue(targetFill);
+
+            if(prevFill >= 99)
+            {
+                this->progressBars[i * 2]->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
+                this->progressBars[i * 2 + 1]->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
+            }
         }
         else
         {
@@ -77,4 +84,6 @@ void DoorStyleProgressBar::SetValue(float value)
             }
         }
     }
+
+    this->prevValue = targetFill;
 }

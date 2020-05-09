@@ -6,7 +6,9 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-class DoorStyleProgressBar : public QWidget
+#include "IProgressBar.h"
+
+class DoorStyleProgressBar : public QWidget, public IProgressBar
 {
     Q_OBJECT
 public:
@@ -14,7 +16,7 @@ public:
 
     int length;
 
-    void SetValue(float value);
+    void SetProgress(float value) override;
 
 private:
     QProgressBar** progressBars = nullptr;

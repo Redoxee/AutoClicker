@@ -11,13 +11,15 @@
 #include <QStackedLayout>
 #include <QGridLayout>
 
-class CrissCrossProgressBar : public QWidget
+#include "IProgressBar.h"
+
+class CrissCrossProgressBar : public QWidget, public IProgressBar
 {
     Q_OBJECT
 public:
     explicit CrissCrossProgressBar(int row, int column, int spacing, QWidget *parent = nullptr);
 
-    void SetValue(float value);
+    void SetProgress(float value) override;
 
 private:
     QProgressBar** progressBars = nullptr;
