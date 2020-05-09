@@ -17,7 +17,7 @@ class TiledProgressBar : public QWidget, public IProgressBar
 public:
     explicit TiledProgressBar(QWidget *parent = nullptr);
 
-    void SetValue(float value) override;
+    void SetProgress(float value) override;
 
     int row = 6;
     int column = 3;

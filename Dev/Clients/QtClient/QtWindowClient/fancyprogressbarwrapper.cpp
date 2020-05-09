@@ -2,10 +2,11 @@
 #include "IProgressBar.h"
 
 
-FancyProgressBarWrapper::FancyProgressBarWrapper(int duration, IProgressBar* targetBar)
+FancyProgressBarWrapper::FancyProgressBarWrapper(int duration, IProgressBar* targetBar, Direction direction)
 {
     this->animationDuration = duration;
     this->targetBar = targetBar;
+    this->direction = direction;
 }
 
 void FancyProgressBarWrapper::setEasingCurve(QEasingCurve curve)
@@ -39,12 +40,17 @@ void FancyProgressBarWrapper::updateCurrentTime(int currentTime)
 
     qreal progress = this->easingCurve.valueForProgress(fTime / duration);
 
-    this->targetBar->SetValue(progress);
+    if(this->direction == Direction::Backward)
+    {
+        progress = 1 - progress;
+    }
+
+    this->targetBar->SetProgress(progress);
 }
 
-void FancyProgressBarWrapper::updateDirection(QAbstractAnimation::Direction)
+void FancyProgressBarWrapper::updateDirection(QAbstractAnimation::Direction direction)
 {
-
+    this->direction = direction;
 }
 
 void FancyProgressBarWrapper::updateState(QAbstractAnimation::State newState, QAbstractAnimation::State oldState)

@@ -23,6 +23,7 @@ class CrissCrossProgressBar;
 class DoorStyleProgressBar;
 class EndScoreWidget;
 class FancyProgressBarWrapper;
+class ScaledProgressBar;
 
 class EndGameWidget : public QWidget
 {
@@ -47,9 +48,7 @@ private:
     DoorStyleProgressBar* doorStyleProgressBar = nullptr;
     EndScoreWidget* endScoreWidget = nullptr;
 
-    FancyProgressBarWrapper* testWrapper = nullptr;
-
-    QProgressBar* vertUpBigBar = nullptr;
+    ScaledProgressBar* BigBar = nullptr;
 
     void SetupUI();
     void AnimationFinishedDelete(QWidget* target);

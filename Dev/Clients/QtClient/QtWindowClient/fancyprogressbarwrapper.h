@@ -11,7 +11,7 @@ class FancyProgressBarWrapper : public QAbstractAnimation
 {
     Q_OBJECT
 public:
-    explicit FancyProgressBarWrapper(int duration, IProgressBar* targetBar);
+    explicit FancyProgressBarWrapper(int duration, IProgressBar* targetBar, Direction direction = Direction::Forward);
 
     int duration() const override;
     bool event(QEvent *event) override;
@@ -26,6 +26,8 @@ private:
     IProgressBar* targetBar = nullptr;
 
     QEasingCurve easingCurve = QEasingCurve::Linear;
+
+    Direction direction;
 };
 
 #endif // FANCYPROGRESSBARWRAPPER_H

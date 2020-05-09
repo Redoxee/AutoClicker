@@ -15,7 +15,7 @@ class SpiralProgressBar : public QWidget, public IProgressBar
 public:
     explicit SpiralProgressBar(QWidget *parent = nullptr);
 
-    void SetValue(float value) override;
+    void SetProgress(float value) override;
 
     QLayout* CentralLayout = nullptr;
 

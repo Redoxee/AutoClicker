@@ -5,7 +5,7 @@ ScaledProgressBar::ScaledProgressBar(int scale, QWidget* parent) : QProgressBar(
     this->scale = scale;
 }
 
-void ScaledProgressBar::SetValue(float value)
+void ScaledProgressBar::SetProgress(float value)
 {
     this->SetScaledValue(static_cast<int>(value * 100));
 }

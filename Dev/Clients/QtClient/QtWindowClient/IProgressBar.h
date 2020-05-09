@@ -4,7 +4,7 @@
 class IProgressBar
 {
 public:
-    virtual void SetValue(float value) = 0;
+    virtual void SetProgress(float value) = 0;
 };
 
 #endif // IPROGRESSBAR_H

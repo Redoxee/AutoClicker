@@ -84,7 +84,7 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
     this->progressBars[0]->setTextVisible(true);
 }
 
-void SpiralProgressBar::SetValue(float value)
+void SpiralProgressBar::SetProgress(float value)
 {
     int targetFill = static_cast<int>(floor(value * 100 * this->numberOfLoops * 4));
     int nbBars = this->numberOfLoops * 4;

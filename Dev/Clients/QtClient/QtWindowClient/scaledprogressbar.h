@@ -12,7 +12,7 @@ class ScaledProgressBar : public QProgressBar, public IProgressBar
 public:
     explicit ScaledProgressBar(int scale, QWidget* parent = nullptr);
     void SetScaledValue(int value);
-    void SetValue(float value) override;
+    void SetProgress(float value) override;
 
 private :
     int scale;

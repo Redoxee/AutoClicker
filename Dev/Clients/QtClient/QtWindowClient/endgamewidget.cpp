@@ -1,7 +1,6 @@
 #include "endgamewidget.h"
 
 #include <QProgressBar>
-#include <QPropertyAnimation>
 #include <QPauseAnimation>
 
 #include "gamewindow.h"
@@ -14,6 +13,7 @@
 #include "endscorewidget.h"
 #include "autoclickerconfig.h"
 #include "fancyprogressbarwrapper.h"
+#include "scaledprogressbar.h"
 
 EndGameWidget::EndGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
@@ -23,7 +23,6 @@ EndGameWidget::EndGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->updateWorker = new UpdateWorker();
 
     this->time = 0;
-
 //    connect(this->updateWorker, &UpdateWorker::Update, this, &EndGameWidget::Update);
 }
 
@@ -40,88 +39,85 @@ void EndGameWidget::SetupUI()
 
     this->spiralProgressBar = new SpiralProgressBar(this);
     vboxLayout->addWidget(this->spiralProgressBar);
-    this->spiralProgressBar->SetValue(0);
+    this->spiralProgressBar->SetProgress(0);
     QWidget* placeHolderWidget = new QWidget(this->spiralProgressBar);
     this->spiralProgressBar->CentralLayout->addWidget(placeHolderWidget);
 
     QSequentialAnimationGroup* firstSequence = new QSequentialAnimationGroup(this);
-    this->testWrapper = new FancyProgressBarWrapper(2000, this->spiralProgressBar);
-//    this->testWrapper->setEasingCurve(QEasingCurve::InExpo);
-    firstSequence->addAnimation(this->testWrapper);
+    FancyProgressBarWrapper* spiralWrapper = new FancyProgressBarWrapper(2000, this->spiralProgressBar);
+//    spiralWrapper->setEasingCurve(QEasingCurve::InExpo);
+    firstSequence->addAnimation(spiralWrapper);
 
     QPauseAnimation* firstPause = new QPauseAnimation(2000, this);
     firstSequence->addAnimation(firstPause);
 
-    this->spiralProgressBar->SetValue(1.0f);
-    this->vertUpBigBar = new QProgressBar(this);
-    this->vertUpBigBar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
-    this->vertUpBigBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    this->vertUpBigBar->setOrientation(Qt::Orientation::Vertical);
-    this->vertUpBigBar->setValue(0);
-    this->vertUpBigBar->setTextVisible(false);
+    this->BigBar = new ScaledProgressBar(101, this);
+    this->BigBar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
+    this->BigBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->BigBar->setOrientation(Qt::Orientation::Vertical);
+    this->BigBar->setValue(0);
+    this->BigBar->setTextVisible(false);
 
-    QPropertyAnimation* vertUpBarAnim = new QPropertyAnimation(this->vertUpBigBar, "value");
-    vertUpBarAnim->setStartValue(0);
-    vertUpBarAnim->setEndValue(99);
-    vertUpBarAnim->setDuration(3000);
-    vertUpBarAnim->setEasingCurve(QEasingCurve::InOutExpo);
-    firstSequence->addAnimation(vertUpBarAnim);
+    FancyProgressBarWrapper* downUpWrapper = new FancyProgressBarWrapper(3000, this->BigBar, QAbstractAnimation::Direction::Forward);
+    firstSequence->addAnimation(downUpWrapper);
 
 
     QPauseAnimation* secondPause = new QPauseAnimation(800, this);
     firstSequence->addAnimation(secondPause);
 
-    QPropertyAnimation* vertUpExit = new QPropertyAnimation(this->vertUpBigBar, "value");
-    vertUpExit->setStartValue(100);
-    vertUpExit->setEndValue(0);
-    vertUpExit->setDuration(1200);
-    firstSequence->addAnimation(vertUpExit);
+    FancyProgressBarWrapper* downUpBackWrapper = new FancyProgressBarWrapper(3000, this->BigBar, QAbstractAnimation::Direction::Backward);
+    firstSequence->addAnimation(downUpBackWrapper);
 
     this->tiledProgressBar = new TiledProgressBar(this);
-    this->tiledProgressBar->SetValue(0);
+    this->tiledProgressBar->SetProgress(0);
     this->tiledProgressBar->setVisible(false);
-    FancyProgressBarWrapper* tiledWrapper = new FancyProgressBarWrapper(20000, this->tiledProgressBar);
+    FancyProgressBarWrapper* tiledWrapper = new FancyProgressBarWrapper(3000, this->tiledProgressBar);
     firstSequence->addAnimation(tiledWrapper);
 
     QPauseAnimation* thirdPause = new QPauseAnimation(3000, this);
     firstSequence->addAnimation(thirdPause);
 
-    QPropertyAnimation* leftRight = new QPropertyAnimation(this->vertUpBigBar, "value");
-    leftRight->setStartValue(0);
-    leftRight->setEndValue(99);
-    leftRight->setDuration(3000);
-    firstSequence->addAnimation(leftRight);
+    FancyProgressBarWrapper* rightLeftWrapper = new FancyProgressBarWrapper(3000, this->BigBar, QAbstractAnimation::Direction::Forward);
+    firstSequence->addAnimation(rightLeftWrapper);
 
     QPauseAnimation* fourthPause = new QPauseAnimation(800, this);
     firstSequence->addAnimation(fourthPause);
 
-    QPropertyAnimation* leftRightEnd = new QPropertyAnimation(this->vertUpBigBar, "value");
-    leftRightEnd->setStartValue(100);
-    leftRightEnd->setEndValue(0);
-    leftRightEnd->setDuration(2000);
-    firstSequence->addAnimation(leftRightEnd);
+    FancyProgressBarWrapper* rightLeftBackWrapper = new FancyProgressBarWrapper(3000, this->BigBar, QAbstractAnimation::Direction::Backward);
+    firstSequence->addAnimation(rightLeftBackWrapper);
 
-    gridLayout->addWidget(this->vertUpBigBar, 0, 0);
+    gridLayout->addWidget(this->BigBar, 0, 0);
 
-    connect(vertUpBarAnim, &QAbstractAnimation::finished, this, [this, vboxLayout]() {
-        this->AnimationFinishedDelete(this->spiralProgressBar);
+    connect(downUpWrapper, &QAbstractAnimation::finished, this, [this, vboxLayout]() {
+        delete this->spiralProgressBar;
+
         this->tiledProgressBar->setVisible(true);
         vboxLayout->addWidget(this->tiledProgressBar);
     });
 
     connect(secondPause, &QPauseAnimation::finished, this, [this]() {
-        this->vertUpBigBar->setInvertedAppearance(true);
+        this->BigBar->setInvertedAppearance(true);
     });
 
-    connect(tiledWrapper, &QAbstractAnimation::finished, this, [this](){
-        this->vertUpBigBar->setOrientation(Qt::Orientation::Horizontal);
-        this->vertUpBigBar->setInvertedAppearance(true);
-        this->vertUpBigBar->setValue(0);
+    connect(rightLeftWrapper, &QAbstractAnimation::stateChanged, this, [this](QAbstractAnimation::State newState){
+        if(newState == QAbstractAnimation::State::Running)
+        {
+            this->BigBar->setOrientation(Qt::Orientation::Horizontal);
+            this->BigBar->setInvertedAppearance(true);
+            this->BigBar->SetProgress(0.0f);
+            this->BigBar->raise();
+        }
     });
 
-    connect(leftRight, &QAbstractAnimation::finished, this, [this](){
+    connect(rightLeftWrapper, &QAbstractAnimation::finished, this, [this](){
         delete this->tiledProgressBar;
-        this->vertUpBigBar->setInvertedAppearance(false);
+    });
+
+    connect(rightLeftBackWrapper, &QAbstractAnimation::stateChanged, this, [this](QAbstractAnimation::State newState){
+        if(newState == QAbstractAnimation::State::Running)
+        {
+            this->BigBar->setInvertedAppearance(false);
+        }
     });
 
     connect(firstSequence, &QSequentialAnimationGroup::finished, this, &EndGameWidget::FirstSequenceFinished);
@@ -138,19 +134,6 @@ void EndGameWidget::SetupUI()
     //this->gameWindow->LeftGLayout->addWidget(this->crissCrossProgressBar, 0,0);
     //vboxLayout->addWidget(this->crissCrossProgressBar);
     //this->crissCrossProgressBar->SetValue(0);
-
-    /*
-    QGraphicsScene* grScene = new QGraphicsScene(this);
-    QProgressBar* rotatedPB = new QProgressBar();
-    QGraphicsView* grView = new QGraphicsView(grScene);
-    QGraphicsProxyWidget* proxyWidget = grScene->addWidget(rotatedPB);
-    grView->setBackgroundBrush(Qt::BrushStyle::CrossPattern);
-    QWidget* vp = grView->viewport();
-    proxyWidget->setRotation(0);
-    grScene->setSceneRect(0,0,vp->width(), vp->height());
-    proxyWidget->setPos(200, 300);
-    vboxLayout->addWidget(vp);
-    */
 
 
     this->endScoreWidget = new EndScoreWidget(this);
