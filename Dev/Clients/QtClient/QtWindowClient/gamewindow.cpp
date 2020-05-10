@@ -49,10 +49,10 @@ void GameWindow::SetupUi()
     this->LeftLayout = new QVBoxLayout();
     this->LeftGLayout->addLayout(this->LeftLayout, 0, 0);
     this->LeftLayout->setMargin(0);
-    QLabel* logoLabel = new QLabel(this);
+    this->logoHolder = new QLabel(this);
     QPixmap* logo = new QPixmap("Ressources/SWI_logo.png");
-    logoLabel->setPixmap(*logo);
-    this->LeftLayout->addWidget(logoLabel);
+    this->logoHolder->setPixmap(*logo);
+    this->LeftLayout->addWidget(this->logoHolder);
     QSpacerItem* spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->LeftLayout->addItem(spacer);
 

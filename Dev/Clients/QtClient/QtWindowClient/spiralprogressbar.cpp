@@ -6,7 +6,7 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->progressBars = new QProgressBar*[this->numberOfLoops * 4];
 
-    QLayout* lastLayout = new QVBoxLayout(this);
+    QLayout* lastLayout = new QHBoxLayout(this);
     lastLayout->setMargin(0);
     lastLayout->setSpacing(0);
 
@@ -18,45 +18,45 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
         this->progressBars[index + 2] = new QProgressBar(this);
         this->progressBars[index + 3] = new QProgressBar(this);
 
-        QLayout* nextLayout = new QHBoxLayout();
+        QLayout* nextLayout = new QVBoxLayout();
         QProgressBar* progressBar = this->progressBars[index + 0];
-        lastLayout->addItem(nextLayout);
-        lastLayout->addWidget(progressBar);
-        progressBar->setTextVisible(false);
-
-        lastLayout = nextLayout;
-        lastLayout->setMargin(0);
-        lastLayout->setSpacing(0);
-
-        nextLayout = new QVBoxLayout();
-        progressBar = this->progressBars[index + 1];
-        lastLayout->addItem(nextLayout);
-        lastLayout->addWidget(progressBar);
-        progressBar->setTextVisible(false);
         progressBar->setOrientation(Qt::Orientation::Vertical);
+        lastLayout->addItem(nextLayout);
+        lastLayout->addWidget(progressBar);
+        progressBar->setTextVisible(false);
 
         lastLayout = nextLayout;
         lastLayout->setMargin(0);
         lastLayout->setSpacing(0);
 
         nextLayout = new QHBoxLayout();
-        progressBar = this->progressBars[index + 2];
+        progressBar = this->progressBars[index + 1];
+        progressBar->setInvertedAppearance(true);
         lastLayout->addWidget(progressBar);
         lastLayout->addItem(nextLayout);
         progressBar->setTextVisible(false);
-        progressBar->setInvertedAppearance(true);
 
         lastLayout = nextLayout;
         lastLayout->setMargin(0);
         lastLayout->setSpacing(0);
 
         nextLayout = new QVBoxLayout();
-        progressBar = this->progressBars[index + 3];
+        progressBar = this->progressBars[index + 2];
+        progressBar->setOrientation(Qt::Orientation::Vertical);
+        progressBar->setInvertedAppearance(true);
         lastLayout->addWidget(progressBar);
         lastLayout->addItem(nextLayout);
         progressBar->setTextVisible(false);
-        progressBar->setOrientation(Qt::Orientation::Vertical);
-        progressBar->setInvertedAppearance(true);
+
+        lastLayout = nextLayout;
+        lastLayout->setMargin(0);
+        lastLayout->setSpacing(0);
+
+        nextLayout = new QHBoxLayout();
+        progressBar = this->progressBars[index + 3];
+        lastLayout->addItem(nextLayout);
+        lastLayout->addWidget(progressBar);
+        progressBar->setTextVisible(false);
 
         lastLayout = nextLayout;
         lastLayout->setMargin(0);

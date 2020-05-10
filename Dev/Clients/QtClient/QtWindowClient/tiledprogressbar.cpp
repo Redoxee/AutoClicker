@@ -12,14 +12,14 @@ TiledProgressBar::TiledProgressBar(QWidget *parent) : QWidget(parent)
 
     for(int colIndex = 0; colIndex < this->column; ++colIndex)
     {
-        QLayout* secondLayout = new QVBoxLayout();
+        QBoxLayout* secondLayout = new QVBoxLayout();
         mainLayout->addItem(secondLayout);
         secondLayout->setMargin(0);
         secondLayout->setSpacing(0);
 
         for(int rowIndex = 0; rowIndex < this->row; ++rowIndex)
         {
-            QLayout* tile;
+            QBoxLayout* tile;
             bool vert = false;
             if(((rowIndex % 2) + (colIndex % 2)) % 2 > 0)
             {
@@ -29,9 +29,11 @@ TiledProgressBar::TiledProgressBar(QWidget *parent) : QWidget(parent)
             else
             {
                 vert = false;
-                tile = new QVBoxLayout();
+                tile = new QVBoxLayout();;
+                tile->setDirection(QBoxLayout::Direction::BottomToTop);
             }
-            secondLayout->addItem(tile);
+
+            secondLayout->insertItem(0, tile);
             tile->setMargin(0);
             tile->setSpacing(0);
 

@@ -35,7 +35,6 @@ signals:
 
 private slots:
     void Update(float dt);
-    void FirstSequenceFinished();
 
 private:
     GameWindow* gameWindow = nullptr;
@@ -51,7 +50,6 @@ private:
     ScaledProgressBar* BigBar = nullptr;
 
     void SetupUI();
-    void AnimationFinishedDelete(QWidget* target);
 
     float time = 0;
 };

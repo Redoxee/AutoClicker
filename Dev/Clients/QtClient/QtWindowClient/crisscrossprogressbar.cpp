@@ -30,6 +30,7 @@ CrissCrossProgressBar::CrissCrossProgressBar(int row, int column, int spacing, Q
         QSizePolicy sp = bar->sizePolicy();
         sp.setRetainSizeWhenHidden(true);
         bar->setSizePolicy(sp);
+        bar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
     }
 
     this->secondLayout = new QHBoxLayout();
@@ -49,6 +50,7 @@ CrissCrossProgressBar::CrissCrossProgressBar(int row, int column, int spacing, Q
         QSizePolicy sp = bar->sizePolicy();
         sp.setRetainSizeWhenHidden(true);
         bar->setSizePolicy(sp);
+        bar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
     }
 
     this->firstLayout->setSpacing(this->spacing);

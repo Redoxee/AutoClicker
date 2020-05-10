@@ -40,14 +40,16 @@ public:
     void GotToScreen(Screens nextScreen);
     QDialogButtonBox* BottomBox;
 
-    ServerWorker* ServerWorker() { return this->serverWorker; };
+    inline ServerWorker* ServerWorker() { return this->serverWorker; };
     QLayout* LeftLayout = nullptr;
     QGridLayout* LeftGLayout = nullptr;
 
     int currentFrame = -1;
+    inline QLabel* LogoHolder() { return this->logoHolder; };
+
 public slots:
 private :
-    void SetupUi();
+    inline void SetupUi();
     QApplication* qApplication = nullptr;
 
     QLayout* mainLayout = nullptr;
@@ -55,6 +57,7 @@ private :
     QWidget* mainWidget = nullptr;
 
     QWidget* leftWidget = nullptr;
+    QLabel* logoHolder = nullptr;
 
     QWidget* CurrentDisplayedScreen = nullptr;
     class::ServerWorker* serverWorker = nullptr;
