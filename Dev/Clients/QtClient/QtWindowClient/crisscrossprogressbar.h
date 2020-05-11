@@ -21,6 +21,8 @@ public:
 
     void SetProgress(float value) override;
 
+    inline QBoxLayout* FirstLayout() const { return this->firstLayout; };
+
 private:
     QProgressBar** progressBars = nullptr;
 

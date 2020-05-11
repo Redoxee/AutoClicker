@@ -42,26 +42,6 @@ void EndGameWidget::SetupUI()
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     gridLayout->addLayout(vboxLayout, 0, 0);
 
-    QProgressBar* firstFakeBar = new QProgressBar(this);
-
-    firstBarSequence(firstFakeBar, firstSequence, this);
-
-    this->spiralProgressBar = new SpiralProgressBar(this);
-
-    vboxLayout->addWidget(this->spiralProgressBar);
-    vboxLayout->addWidget(firstFakeBar);
-
-    this->spiralProgressBar->SetProgress(0);
-    QWidget* placeHolderWidget = new QWidget(this->spiralProgressBar);
-    this->spiralProgressBar->CentralLayout->addWidget(placeHolderWidget);
-
-    FancyProgressBarWrapper* spiralWrapper = new FancyProgressBarWrapper(20000, this->spiralProgressBar);
-    spiralWrapper->setEasingCurve(QEasingCurve::InSine);
-    firstSequence->addAnimation(spiralWrapper);
-
-    QPauseAnimation* firstPause = new QPauseAnimation(8000, this);
-    firstSequence->addAnimation(firstPause);
-
     this->BigBar = new ScaledProgressBar(101, this);
     this->BigBar->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
     this->BigBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -69,10 +49,25 @@ void EndGameWidget::SetupUI()
     this->BigBar->setValue(0);
     this->BigBar->setTextVisible(false);
 
+    QProgressBar* firstFakeBar = new QProgressBar(this);
+    firstBarSequence(firstFakeBar, firstSequence, this);
+
+    this->crissCrossProgressBar = new CrissCrossProgressBar(28, 15, 4, this);
+    this->crissCrossProgressBar->SetProgress(0);
+    FancyProgressBarWrapper* crissCrossWrapper = new FancyProgressBarWrapper(23000, this->crissCrossProgressBar);
+    crissCrossWrapper->setEasingCurve(QEasingCurve::InSine);
+    firstSequence->addAnimation(crissCrossWrapper);
+
+    this->crissCrossProgressBar->FirstLayout()->addWidget(firstFakeBar);
+
+    vboxLayout->insertWidget(0, this->crissCrossProgressBar);
+
+    QPauseAnimation* firstPause = new QPauseAnimation(8000, this);
+    firstSequence->addAnimation(firstPause);
+
     FancyProgressBarWrapper* downUpWrapper = new FancyProgressBarWrapper(1000, this->BigBar, QAbstractAnimation::Direction::Forward);
     downUpWrapper->setEasingCurve(QEasingCurve::InQuad);
     firstSequence->addAnimation(downUpWrapper);
-
 
     QPauseAnimation* secondPause = new QPauseAnimation(300, this);
     firstSequence->addAnimation(secondPause);
@@ -81,12 +76,14 @@ void EndGameWidget::SetupUI()
     downUpWrapper->setEasingCurve(QEasingCurve::OutQuad);
     firstSequence->addAnimation(downUpBackWrapper);
 
-    this->tiledProgressBar = new TiledProgressBar(this);
-    this->tiledProgressBar->SetProgress(0);
-    this->tiledProgressBar->setVisible(false);
-    FancyProgressBarWrapper* tiledWrapper = new FancyProgressBarWrapper(25000, this->tiledProgressBar);
-    tiledWrapper->setEasingCurve(QEasingCurve::InSine);
-    firstSequence->addAnimation(tiledWrapper);
+    this->spiralProgressBar = new SpiralProgressBar(this);
+    this->spiralProgressBar->SetProgress(0);
+    this->spiralProgressBar->setVisible(false);
+    QWidget* placeHolderWidget = new QWidget(this->spiralProgressBar);
+    this->spiralProgressBar->CentralLayout->addWidget(placeHolderWidget);
+    FancyProgressBarWrapper* spiralWrapper = new FancyProgressBarWrapper(20000, this->spiralProgressBar);
+    spiralWrapper->setEasingCurve(QEasingCurve::InSine);
+    firstSequence->addAnimation(spiralWrapper);
 
     QPauseAnimation* thirdPause = new QPauseAnimation(9000, this);
     firstSequence->addAnimation(thirdPause);
@@ -102,13 +99,12 @@ void EndGameWidget::SetupUI()
     rightLeftWrapper->setEasingCurve(QEasingCurve::InQuad);
     firstSequence->addAnimation(rightLeftBackWrapper);
 
-    this->crissCrossProgressBar = new CrissCrossProgressBar(30, 15, 4, this);
-    this->crissCrossProgressBar->SetProgress(0);
-    this->crissCrossProgressBar->setVisible(false);
-    FancyProgressBarWrapper* crissCrossWrapper = new FancyProgressBarWrapper(23000, this->crissCrossProgressBar);
-    crissCrossWrapper->setEasingCurve(QEasingCurve::InSine);
-    firstSequence->addAnimation(crissCrossWrapper);
-
+    this->tiledProgressBar = new TiledProgressBar(this);
+    this->tiledProgressBar->SetProgress(0);
+    this->tiledProgressBar->setVisible(false);
+    FancyProgressBarWrapper* tiledWrapper = new FancyProgressBarWrapper(25000, this->tiledProgressBar);
+    tiledWrapper->setEasingCurve(QEasingCurve::InSine);
+    firstSequence->addAnimation(tiledWrapper);
 
     QPauseAnimation* fithPause = new QPauseAnimation(8000, this);
     firstSequence->addAnimation(fithPause);
@@ -133,12 +129,14 @@ void EndGameWidget::SetupUI()
 
     gridLayout->addWidget(this->BigBar, 0, 0);
 
+    this->BigBar->raise();
+
     connect(downUpWrapper, &QAbstractAnimation::finished, this, [this, vboxLayout, firstFakeBar]() {
-        delete this->spiralProgressBar;
+        delete this->crissCrossProgressBar;
         delete firstFakeBar;
 
-        this->tiledProgressBar->setVisible(true);
-        vboxLayout->addWidget(this->tiledProgressBar);
+        this->spiralProgressBar->setVisible(true);
+        vboxLayout->addWidget(this->spiralProgressBar);
         this->BigBar->raise();
     });
 
@@ -157,7 +155,7 @@ void EndGameWidget::SetupUI()
     });
 
     connect(rightLeftWrapper, &QAbstractAnimation::finished, this, [this](){
-        delete this->tiledProgressBar;
+        delete this->spiralProgressBar;
     });
 
     connect(rightLeftBackWrapper, &QAbstractAnimation::stateChanged, this, [this](QAbstractAnimation::State newState){
@@ -167,11 +165,11 @@ void EndGameWidget::SetupUI()
         }
     });
 
-    connect(crissCrossWrapper, &QAbstractAnimation::stateChanged, this, [this, gridLayout](QAbstractAnimation::State newState){
+    connect(tiledWrapper, &QAbstractAnimation::stateChanged, this, [this, gridLayout](QAbstractAnimation::State newState){
         if(newState == QAbstractAnimation::State::Running)
         {
-            gridLayout->addWidget(this->crissCrossProgressBar, 0, 0);
-            this->crissCrossProgressBar->setVisible(true);
+            gridLayout->addWidget(this->tiledProgressBar, 0, 0);
+            this->tiledProgressBar->setVisible(true);
             this->BigBar->raise();
         }
     });
@@ -182,7 +180,7 @@ void EndGameWidget::SetupUI()
        QLabel* logoHolder = this->gameWindow->LogoHolder();
        logoHolder->setPixmap(*logo);
 
-       delete this->crissCrossProgressBar;
+       delete this->tiledProgressBar;
 
        this->endScoreWidget->setVisible(true);
        this->time = 0;

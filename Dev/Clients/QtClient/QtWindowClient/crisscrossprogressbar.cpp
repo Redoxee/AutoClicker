@@ -22,7 +22,7 @@ CrissCrossProgressBar::CrissCrossProgressBar(int row, int column, int spacing, Q
         bar->setParent(this);
         this->firstLayout->insertWidget(0, bar);
         bar->setTextVisible(false);
-        if((index % 2) > 0)
+        if((index % 2) == 0)
         {
             bar->setInvertedAppearance(true);
         }

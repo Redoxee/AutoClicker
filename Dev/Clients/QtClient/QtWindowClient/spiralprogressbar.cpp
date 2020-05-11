@@ -7,7 +7,7 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
 
     this->progressBars = new QProgressBar*[this->numberOfLoops * 4];
 
-    QLayout* lastLayout = new QHBoxLayout(this);
+    QLayout* lastLayout = new QVBoxLayout(this);
     lastLayout->setMargin(0);
     lastLayout->setSpacing(0);
 
@@ -19,9 +19,8 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
         this->progressBars[index + 2] = new QProgressBar(this);
         this->progressBars[index + 3] = new QProgressBar(this);
 
-        QLayout* nextLayout = new QVBoxLayout();
+        QLayout* nextLayout = new QHBoxLayout();
         QProgressBar* progressBar = this->progressBars[index + 0];
-        progressBar->setOrientation(Qt::Orientation::Vertical);
         lastLayout->addItem(nextLayout);
         lastLayout->addWidget(progressBar);
         progressBar->setTextVisible(false);
@@ -30,8 +29,19 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
         lastLayout->setMargin(0);
         lastLayout->setSpacing(0);
 
-        nextLayout = new QHBoxLayout();
+        nextLayout = new QVBoxLayout();
         progressBar = this->progressBars[index + 1];
+        lastLayout->addItem(nextLayout);
+        lastLayout->addWidget(progressBar);
+        progressBar->setTextVisible(false);
+        progressBar->setOrientation(Qt::Orientation::Vertical);
+
+        lastLayout = nextLayout;
+        lastLayout->setMargin(0);
+        lastLayout->setSpacing(0);
+
+        nextLayout = new QHBoxLayout();
+        progressBar = this->progressBars[index + 2];
         progressBar->setInvertedAppearance(true);
         lastLayout->addWidget(progressBar);
         lastLayout->addItem(nextLayout);
@@ -42,22 +52,12 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
         lastLayout->setSpacing(0);
 
         nextLayout = new QVBoxLayout();
-        progressBar = this->progressBars[index + 2];
+        progressBar = this->progressBars[index + 3];
+        lastLayout->addWidget(progressBar);
+        lastLayout->addItem(nextLayout);
+        progressBar->setTextVisible(false);
         progressBar->setOrientation(Qt::Orientation::Vertical);
         progressBar->setInvertedAppearance(true);
-        lastLayout->addWidget(progressBar);
-        lastLayout->addItem(nextLayout);
-        progressBar->setTextVisible(false);
-
-        lastLayout = nextLayout;
-        lastLayout->setMargin(0);
-        lastLayout->setSpacing(0);
-
-        nextLayout = new QHBoxLayout();
-        progressBar = this->progressBars[index + 3];
-        lastLayout->addItem(nextLayout);
-        lastLayout->addWidget(progressBar);
-        progressBar->setTextVisible(false);
 
         lastLayout = nextLayout;
         lastLayout->setMargin(0);
@@ -73,21 +73,19 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
         this->progressBars[index + 2]->hide();
         this->progressBars[index + 3]->hide();
 
-        this->progressBars[index + 0]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
-        this->progressBars[index + 1]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
-        this->progressBars[index + 2]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
-        this->progressBars[index + 3]->setStyleSheet("border : 0px;margin : -1px;background:transparent;");
+        this->progressBars[index + 0]->setStyleSheet("border : 0px;margin-left : 2px;margin-top : 1px;background:transparent;");
+        this->progressBars[index + 1]->setStyleSheet("border : 0px;margin-left : 2px;margin-top : 1px;background:transparent;");
+        this->progressBars[index + 2]->setStyleSheet("border : 0px;margin-left : 2px;margin-top : 1px;background:transparent;");
+        this->progressBars[index + 3]->setStyleSheet("border : 0px;margin-left : 2px;margin-top : 1px;background:transparent;");
     }
 
     this->CentralLayout = new QHBoxLayout();
     lastLayout->addItem(this->CentralLayout);
-
-    this->progressBars[0]->setTextVisible(true);
 }
 
 void SpiralProgressBar::SetProgress(float value)
 {
-    int nbBars = this->numberOfLoops * 4 - 1;
+    int nbBars = this->numberOfLoops * 4 - 2;
     int targetFill = static_cast<int>(floor(value * 100 * nbBars));
     for(int i = 0 ; i < nbBars; ++i)
     {

@@ -20,7 +20,7 @@ public:
     QLayout* CentralLayout = nullptr;
 
 private:
-    int numberOfLoops = 8;
+    int numberOfLoops = 7;
     QProgressBar** progressBars = nullptr;
 };
 
