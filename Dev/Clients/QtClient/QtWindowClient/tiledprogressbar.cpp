@@ -3,21 +3,21 @@
 TiledProgressBar::TiledProgressBar(QWidget *parent) : QWidget(parent)
 {
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    QLayout* mainLayout = new QHBoxLayout(this);
+    QBoxLayout* mainLayout = new QVBoxLayout(this);
     int index = 0;
     int numberOfBars = this->row * this->column * this->barPerTile;
     this->progressBars = new QProgressBar*[numberOfBars];
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    for(int colIndex = 0; colIndex < this->column; ++colIndex)
+    for(int rowIndex = 0; rowIndex < this->row; ++rowIndex)
     {
-        QBoxLayout* secondLayout = new QVBoxLayout();
-        mainLayout->addItem(secondLayout);
+        QBoxLayout* secondLayout = new QHBoxLayout();
+        mainLayout->insertItem(0, secondLayout);
         secondLayout->setMargin(0);
         secondLayout->setSpacing(0);
 
-        for(int rowIndex = 0; rowIndex < this->row; ++rowIndex)
+        for(int colIndex = 0; colIndex < this->column; ++colIndex)
         {
             QBoxLayout* tile;
             bool vert = false;
@@ -33,7 +33,7 @@ TiledProgressBar::TiledProgressBar(QWidget *parent) : QWidget(parent)
                 tile->setDirection(QBoxLayout::Direction::BottomToTop);
             }
 
-            secondLayout->insertItem(0, tile);
+            secondLayout->addItem(tile);
             tile->setMargin(0);
             tile->setSpacing(0);
 

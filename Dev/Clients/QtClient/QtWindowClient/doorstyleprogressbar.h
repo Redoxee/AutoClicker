@@ -18,9 +18,12 @@ public:
 
     void SetProgress(float value) override;
 
+    void SetBackward(bool back) { this->backward = back; };
+
 private:
     QProgressBar** progressBars = nullptr;
     int prevValue = -1;
+    bool backward = false;
 
 signals:
 

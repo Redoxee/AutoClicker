@@ -44,35 +44,41 @@ void DoorStyleProgressBar::SetProgress(float value)
 
     for(int i = 0 ; i < this->length; ++i)
     {
+        int index = i;
+        if(this->backward)
+        {
+            index = this->length - i - 1;
+        }
+
         if(targetFill >= 99)
         {
-            if(this->progressBars[i * 2]->value() != 99)
+            if(this->progressBars[index * 2]->value() != 99)
             {
-                this->progressBars[i * 2]->setValue(99);
-                this->progressBars[i * 2 + 1]->setValue(99);
-                this->progressBars[i * 2]->setStyleSheet("border : 0px; margin : -1px; background-color : #06B025;");
-                this->progressBars[i * 2 + 1]->setStyleSheet("border : 0px; margin : -1px; background-color : #06B025;");
+                this->progressBars[index * 2]->setValue(99);
+                this->progressBars[index * 2 + 1]->setValue(99);
+                this->progressBars[index * 2]->setStyleSheet("border : 0px; margin : -1px; background-color : #06B025;");
+                this->progressBars[index * 2 + 1]->setStyleSheet("border : 0px; margin : -1px; background-color : #06B025;");
             }
         }
         else if(targetFill > 0)
         {
-            int prevFill = this->progressBars[i * 2]->value();
-            this->progressBars[i * 2]->show();
-            this->progressBars[i * 2]->setValue(targetFill);
+            int prevFill = this->progressBars[index * 2]->value();
+            this->progressBars[index * 2]->show();
+            this->progressBars[index * 2]->setValue(targetFill);
 
-            this->progressBars[i * 2 + 1]->show();
-            this->progressBars[i * 2 + 1]->setValue(targetFill);
+            this->progressBars[index * 2 + 1]->show();
+            this->progressBars[index * 2 + 1]->setValue(targetFill);
 
             if(prevFill >= 99)
             {
-                this->progressBars[i * 2]->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
-                this->progressBars[i * 2 + 1]->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
+                this->progressBars[index * 2]->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
+                this->progressBars[index * 2 + 1]->setStyleSheet("border : 0px; margin : -1px; background-color : transparent;");
             }
         }
         else
         {
-            this->progressBars[i * 2]->hide();
-            this->progressBars[i * 2 + 1]->hide();
+            this->progressBars[index * 2]->hide();
+            this->progressBars[index * 2 + 1]->hide();
         }
 
         if(targetFill > 0)

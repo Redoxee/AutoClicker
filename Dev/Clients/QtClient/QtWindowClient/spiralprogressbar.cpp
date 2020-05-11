@@ -4,6 +4,7 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
 {
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     this->progressBars = new QProgressBar*[this->numberOfLoops * 4];
 
     QLayout* lastLayout = new QHBoxLayout(this);
@@ -86,8 +87,8 @@ SpiralProgressBar::SpiralProgressBar(QWidget *parent) : QWidget(parent)
 
 void SpiralProgressBar::SetProgress(float value)
 {
-    int targetFill = static_cast<int>(floor(value * 100 * this->numberOfLoops * 4));
-    int nbBars = this->numberOfLoops * 4;
+    int nbBars = this->numberOfLoops * 4 - 1;
+    int targetFill = static_cast<int>(floor(value * 100 * nbBars));
     for(int i = 0 ; i < nbBars; ++i)
     {
         if(targetFill >= 100)

@@ -133,14 +133,6 @@ void EndGameWidget::SetupUI()
 
     gridLayout->addWidget(this->BigBar, 0, 0);
 
-    connect(spiralWrapper, &QAbstractAnimation::stateChanged, this, [firstFakeBar](QAbstractAnimation::State newState)
-    {
-        if(newState == QAbstractAnimation::State::Running)
-        {
-            firstFakeBar->setTextVisible(false);
-        }
-    });
-
     connect(downUpWrapper, &QAbstractAnimation::finished, this, [this, vboxLayout, firstFakeBar]() {
         delete this->spiralProgressBar;
         delete firstFakeBar;
@@ -184,24 +176,25 @@ void EndGameWidget::SetupUI()
         }
     });
 
-    connect(leftRightWrapper, &QAbstractAnimation::finished, this, [this](){
-        delete this->crissCrossProgressBar;
+    connect(leftDoorWrapper, &QAbstractAnimation::finished, this, [this]()
+    {
+       QPixmap* logo = new QPixmap("Ressources/ThankYouForPlaying.png");
+       QLabel* logoHolder = this->gameWindow->LogoHolder();
+       logoHolder->setPixmap(*logo);
 
-        this->endScoreWidget->setVisible(true);
-        this->time = 0;
-        this->endScoreWidget->Update(0);
+       delete this->crissCrossProgressBar;
+
+       this->endScoreWidget->setVisible(true);
+       this->time = 0;
+       this->endScoreWidget->Update(0);
+
+       this->doorStyleProgressBar->SetBackward(true);
     });
 
     connect(leftDoorWrapperBack, &QAbstractAnimation::finished, this, [this](){
         delete this->doorStyleProgressBar;
     });
 
-    connect(leftDoorWrapper, &QAbstractAnimation::finished, this, [this]()
-    {
-       QPixmap* logo = new QPixmap("Ressources/ThankYouForPlaying.png");
-       QLabel* logoHolder = this->gameWindow->LogoHolder();
-       logoHolder->setPixmap(*logo);
-    });
 
     connect(firstSequence, &QAbstractAnimation::finished, this, [this]()
     {
