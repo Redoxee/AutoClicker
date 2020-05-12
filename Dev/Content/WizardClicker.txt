@@ -26,7 +26,7 @@
 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.05
+				"Value" : 1.15
 			}
 		},
 
@@ -41,7 +41,7 @@
 				"Value" : 2
 			},
 
-			"BasePrice" : 400,
+			"BasePrice" : 4000,
 			"Unique" : true,
 			"PriceStrategy" : 
 			{
@@ -60,7 +60,7 @@
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.05
+				"Value" : 1.15
 			}
 		},
 
@@ -68,13 +68,13 @@
 			"Name" : "Generator_2",
 			"Description" : "Auto click",
 			"UpgradeType" : "Generator",
-			"BaseImpactValue" : 300,
-			"BasePrice" : 6500,
+			"BaseImpactValue" : 150,
+			"BasePrice" : 8000,
 			"Unique" : false,
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.05
+				"Value" : 1.15
 			}
 		},
 
@@ -86,7 +86,7 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 5
+				"Value" : 10
 			},
 
 			"BasePrice" : 4800,
@@ -95,6 +95,13 @@
 			{
 				"Type" : "Exponential",
 				"Value" : 1.05
+			},
+
+			"Lock" : 
+			{
+				"TargetName" : "Generator_1",
+				"Comparer" : "GeaterThan",
+				"Value" : 50
 			}
 		},
 
@@ -106,7 +113,7 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 2
+				"Value" : 4
 			},
 
 			"BasePrice" : 35000,
@@ -115,6 +122,13 @@
 			{
 				"Type" : "Exponential",
 				"Value" : 1.05
+			},
+			
+			"Lock" : 
+			{
+				"TargetName" : "Generator_2",
+				"Comparer" : "GeaterThan",
+				"Value" : 50
 			}
 		},
 
@@ -124,7 +138,7 @@
 			"UpgradeType" : "Prestige",
 			"BaseImpactValue" : 1,
 
-			"BasePrice" : 150000,
+			"BasePrice" : 1500000,
 			"Unique" : false,
 			"PriceStrategy" : 
 			{
@@ -140,7 +154,7 @@
 			"Unique" : true,
 			"BaseImpactValue" : 1,
 
-			"BasePrice" : 100,
+			"BasePrice" : 1000000,
 			"PriceStrategy":
 			{
 				"Type":"Exponential",
@@ -149,9 +163,31 @@
 
 			"Lock":
 			{
+				"TargetName" : "Click_upgrade_2",
+				"Comparer" : "GreaterThan",
+				"Value" : 100
+			}
+		},
+
+		{
+			"Name" : "SuperImprove",
+			"Description" : "Super improve of the click",
+			"UpgradeType" : "ClickTemporaryBoostStrength",
+			"Unique" : true,
+			"BaseImpactValue" : 5,
+
+			"BasePrice" : 250000000,
+			"PriceStrategy":
+			{
+				"Type" : "Exponential",
+				"Value" : 4.0
+			},
+
+			"Lock":
+			{
 				"TargetName" : "Click_upgrade_1",
-				"Comparer" : "SmallerThan",
-				"Value" : 10
+				"Comparer" : "GeaterThan",
+				"Value" : 250
 			}
 		}
 	]
