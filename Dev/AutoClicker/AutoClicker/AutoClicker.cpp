@@ -102,20 +102,16 @@ namespace AutoClicker
 	}
 
 	bool AutoClicker::BuyUpgrade(int upgradeIndex)
-	{
-		if (upgradeIndex < 0 || upgradeIndex >= this->data->NumberOfUpgrades)
+	{		
+		FailureFlags failures =  AutoClicker::GetUpgradeFailureFlags(this->data, upgradeIndex);
+		if (failures != FailureFlags::None)
 		{
 			return false;
 		}
-		
+
 		int64_t price = this->data->Upgrades[upgradeIndex].Price;
 
 		if (price > this->data->Score)
-		{
-			return false;
-		}
-
-		if (this->data->Upgrades[upgradeIndex].Definition->Unique && this->data->Upgrades[upgradeIndex].InstanceBought > 0)
 		{
 			return false;
 		}
@@ -129,17 +125,19 @@ namespace AutoClicker
 			std::size_t numberOfUpgrades = this->data->NumberOfUpgrades;
 			for (int index = 0; index < numberOfUpgrades; ++index)
 			{
-				if (upgradeIndex == index)
+				Upgrade* targetUpgrade = &this->data->Upgrades[index];
+				if (targetUpgrade->Definition->UpgradeType == UpgradeType::Prestige)
 				{
 					continue;
 				}
-
-				Upgrade* targetUpgrade = &this->data->Upgrades[index];
+				
 				targetUpgrade->InstanceBought = 0;
 				targetUpgrade->Price = targetUpgrade->Definition->BasePrice;
 				targetUpgrade->CurrentImpactValue = targetUpgrade->Definition->BaseImpactValue;
 			}
 
+			this->data->GlobalFactor += upgrade->CurrentImpactValue;
+			upgrade->CurrentImpactValue = upgrade->Definition->BaseImpactValue;
 			this->data->Score = 0;
 			price = 0;
 		}
@@ -169,7 +167,6 @@ namespace AutoClicker
 	{
 		this->data->ClickValue = 1;
 		this->data->PassiveSpeed = 0;
-		this->data->GlobalFactor = 1;
 
 		this->data->ClickTemporaryBonusFactor = 1;
 		this->data->ClickTemporaryBonusDuration = this->initialData.ClickTemporaryBonusDuration;
@@ -188,10 +185,6 @@ namespace AutoClicker
 			else if (upgradeType == UpgradeType::Generator)
 			{
 				this->data->PassiveSpeed += upgrade->CurrentImpactValue * upgrade->InstanceBought;
-			}
-			else if (upgradeType == UpgradeType::Prestige)
-			{
-				this->data->GlobalFactor += upgrade->CurrentImpactValue * upgrade->InstanceBought;
 			}
 			else if (upgradeType == UpgradeType::ClickTemporaryBoostDuration)
 			{
