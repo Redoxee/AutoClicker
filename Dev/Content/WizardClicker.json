@@ -11,7 +11,7 @@
 
 	"InitialTemporaryBoostDuration" : 3,
 
-	"InitialWakeDuration" : 300,
+	"InitialWakeDuration" : 1000,
 
 	"Upgrades" :
 	[
@@ -20,13 +20,13 @@
 			"Description" : "Increase click value",
 			"UpgradeType" : "ClickValue",
 			"BaseImpactValue" : 1,
-			"BasePrice" : 80,
+			"BasePrice" : 100,
 			"Unique" : false,
 			"PriceStrategy" : 
 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.15
+				"Value" : 1.2
 			}
 		},
 
@@ -41,12 +41,12 @@
 				"Value" : 2
 			},
 
-			"BasePrice" : 4000,
+			"BasePrice" : 400000,
 			"Unique" : true,
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.05
+				"Value" : 1.0
 			}
 		},
 
@@ -55,12 +55,12 @@
 			"Description" : "Auto click",
 			"UpgradeType" : "Generator",
 			"BaseImpactValue" : 1,
-			"BasePrice" : 190,
+			"BasePrice" : 650,
 			"Unique" : false,
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.15
+				"Value" : 1.1
 			}
 		},
 
@@ -69,12 +69,12 @@
 			"Description" : "Auto click",
 			"UpgradeType" : "Generator",
 			"BaseImpactValue" : 150,
-			"BasePrice" : 8000,
+			"BasePrice" : 30000,
 			"Unique" : false,
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
-				"Value" : 1.15
+				"Value" : 1.125
 			}
 		},
 
@@ -86,10 +86,10 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 10
+				"Value" : 30
 			},
 
-			"BasePrice" : 4800,
+			"BasePrice" : 200000,
 			"Unique" : true,
 			"PriceStrategy" : 
 			{
@@ -101,7 +101,7 @@
 			{
 				"TargetName" : "Generator_1",
 				"Comparer" : "GeaterThan",
-				"Value" : 50
+				"Value" : 35
 			}
 		},
 
@@ -113,10 +113,10 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 4
+				"Value" : 30
 			},
 
-			"BasePrice" : 35000,
+			"BasePrice" : 350000,
 			"Unique" : true,
 			"PriceStrategy" : 
 			{
@@ -128,7 +128,7 @@
 			{
 				"TargetName" : "Generator_2",
 				"Comparer" : "GeaterThan",
-				"Value" : 50
+				"Value" : 35
 			}
 		},
 
@@ -136,9 +136,9 @@
 			"Name" : "Prestige 1",
 			"Description" : "Reset the game and increase the global factor",
 			"UpgradeType" : "Prestige",
-			"BaseImpactValue" : 1,
+			"BaseImpactValue" : 3,
 
-			"BasePrice" : 1500000,
+			"BasePrice" : 600000,
 			"Unique" : false,
 			"PriceStrategy" : 
 			{
@@ -152,9 +152,9 @@
 			"Description" : "Click Bonus",
 			"UpgradeType" : "ClickTemporaryBoostStrength",
 			"Unique" : true,
-			"BaseImpactValue" : 1,
+			"BaseImpactValue" : 3,
 
-			"BasePrice" : 1000000,
+			"BasePrice" : 90000,
 			"PriceStrategy":
 			{
 				"Type":"Exponential",
@@ -165,7 +165,7 @@
 			{
 				"TargetName" : "Click_upgrade_2",
 				"Comparer" : "GreaterThan",
-				"Value" : 100
+				"Value" : 40
 			}
 		},
 
@@ -181,7 +181,7 @@
 				"Value" : 3
 			},
 
-			"BasePrice" : 250000000,
+			"BasePrice" : 2500000,
 			"PriceStrategy":
 			{
 				"Type" : "Exponential",
@@ -191,8 +191,8 @@
 			"Lock":
 			{
 				"TargetName" : "Click_upgrade_1",
-				"Comparer" : "GeaterThan",
-				"Value" : 250
+				"Comparer" : "LesserThan",
+				"Value" : 50
 			}
 		}
 	]
