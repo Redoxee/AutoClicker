@@ -11,7 +11,7 @@ namespace SimpleDotNetClient
             int counter = 0;
             int logLaps = 10;
 
-            int clickPerSecond = 10;
+            int clickPerSecond = 5;
 
             int laps = 1000 / clickPerSecond;
 

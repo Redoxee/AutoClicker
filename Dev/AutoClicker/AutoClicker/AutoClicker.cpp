@@ -211,9 +211,9 @@ namespace AutoClicker
 		switch (sigil)
 		{
 		case Comparer::Smaller:
-			return a < b;
+			return a <= b;
 		case Comparer::Greater:
-			return a > b;
+			return a >= b;
 		default:
 			return false;
 		}

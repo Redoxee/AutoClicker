@@ -24,7 +24,7 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
 void GameWindow::SetupUi()
 {
     this->setWindowTitle("Shitty Wizard Installer");
-    this->setFixedSize(AutoClicker::WindowWidth, AutoClicker::WindowHeight);
+    this->setFixedSize(500, 600);
 
     this->mainWidget = new QWidget(this);
     this->mainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
