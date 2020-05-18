@@ -1,15 +1,15 @@
 {
 	"Port" : "1414",
 	"InitialState" : "Paused",
-	"PassiveUpdateDelay" : 1000,
-
+	
 	"InitialScore" : 0,
 	"TargetScore" :  1000000000,
 	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
 	"InitialPassiveSpeed" : 0,
+	"PassiveUpdateDelay" : 1000,
 
-	"InitialTemporaryBoostDuration" : 3,
+	"InitialTemporaryBoostDuration" : 4,
 
 	"InitialWakeDuration" : 1000,
 
@@ -136,7 +136,7 @@
 			"Name" : "Prestige 1",
 			"Description" : "Reset the game and increase the global factor",
 			"UpgradeType" : "Prestige",
-			"BaseImpactValue" : 3,
+			"BaseImpactValue" : 4,
 
 			"BasePrice" : 600000,
 			"Unique" : false,
@@ -163,9 +163,9 @@
 
 			"Lock":
 			{
-				"TargetName" : "Click_upgrade_2",
+				"TargetName" : "Click_upgrade_1",
 				"Comparer" : "GreaterThan",
-				"Value" : 40
+				"Value" : 35
 			}
 		},
 
@@ -192,7 +192,7 @@
 			{
 				"TargetName" : "Click_upgrade_1",
 				"Comparer" : "LesserThan",
-				"Value" : 50
+				"Value" : 35
 			}
 		}
 	]
