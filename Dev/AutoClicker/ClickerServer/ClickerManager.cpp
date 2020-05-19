@@ -377,7 +377,14 @@ web::json::value ClickerManager::GetDataAsJson()
 			auto upgrade = web::json::value::object();
 			upgrade[U("Price")] = data.Upgrades[index].Price;
 			upgrade[U("NumberOfInstanceBought")] = data.Upgrades[index].InstanceBought;
-			upgrade[U("ImpactValue")] = data.Upgrades[index].CurrentImpactValue;
+			if (data.Upgrades[index].Definition->Impact.Type == AutoClicker::ValueIncreaseType::None)
+			{
+				upgrade[U("ImpactValue")] = data.Upgrades[index].CurrentImpactValue;
+			}
+			else
+			{
+				upgrade[U("ImpactValue")] = data.Upgrades[index].Definition->Impact.Rate;
+			}
 
 			utility::string_t name = utility::conversions::to_string_t(data.Upgrades[index].Definition->Name);
 			upgrade[U("Name")] = web::json::value::string(name);

@@ -219,6 +219,7 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         {
             this->UpgradeButtons[index]->setText(serverData->Upgrades[index].GetLabel());
             this->UpgradeButtons[index]->setEnabled(serverData->Upgrades[index].FailureFlags == 0);
+            this->UpgradeButtons[index]->setToolTip(serverData->Upgrades[index].Description);
         }
 
         this->isDirty = false;

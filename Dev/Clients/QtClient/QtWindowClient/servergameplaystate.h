@@ -88,8 +88,10 @@ struct ServerGameplayState
             QJsonObject jsonUpgrade = jsonUpgrades[index].toObject();
             Upgrade* upgrd = &this->Upgrades[index];
 
+            int impactValue = jsonUpgrade["ImpactValue"].toInt(0);
+
             upgrd->Name = jsonUpgrade["Name"].toString();
-            upgrd->Description = jsonUpgrade["Description"].toString();
+            upgrd->Description = jsonUpgrade["Description"].toString().arg(impactValue);
             upgrd->Price = jsonUpgrade["Price"].toInt();
             upgrd->InstanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
 

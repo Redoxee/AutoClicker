@@ -17,7 +17,7 @@
 	[
 		{
 			"Name" : "Click_upgrade_1",
-			"Description" : "Increase click value",
+			"Description" : "Increase click value by %1",
 			"UpgradeType" : "ClickValue",
 			"BaseImpactValue" : 1,
 			"BasePrice" : 100,
@@ -32,7 +32,7 @@
 
 		{
 			"Name" : "Improve_click_upgrade_1",
-			"Description" : "Upgrade your bus to the next version",
+			"Description" : "Multiply the click upgrade effect by %1",
 			"UpgradeType" : "UpgradeImprovement",
 			"TargetName" : "Click_upgrade_1",
 			"ImpactStrategy" : 
@@ -52,7 +52,7 @@
 
 		{
 			"Name" : "Generator_1",
-			"Description" : "Auto click",
+			"Description" : "Auto click for %1 by tick",
 			"UpgradeType" : "Generator",
 			"BaseImpactValue" : 1,
 			"BasePrice" : 650,
@@ -66,7 +66,7 @@
 
 		{
 			"Name" : "Generator_2",
-			"Description" : "Auto click",
+			"Description" : "Auto click for %1 by tick",
 			"UpgradeType" : "Generator",
 			"BaseImpactValue" : 150,
 			"BasePrice" : 30000,
@@ -80,7 +80,7 @@
 
 		{
 			"Name" : "Improve_generator_1",
-			"Description" : "Increase the generator output",
+			"Description" : "Multiply the generator 1 by %1, unlock after 35 Generator 1",
 			"UpgradeType" : "UpgradeImprovement",
 			"TargetName" : "Generator_1",
 			"ImpactStrategy" : 
@@ -107,7 +107,7 @@
 
 		{
 			"Name" : "Improve_generator_2",
-			"Description" : "Increase the generator output",
+			"Description" : "Multiply the generator 2 by %1, unlock after 35 Generator 2",
 			"UpgradeType" : "UpgradeImprovement",
 			"TargetName" : "Generator_2",
 			"ImpactStrategy" : 
@@ -134,7 +134,7 @@
 
 		{
 			"Name" : "Prestige 1",
-			"Description" : "Reset the game and increase the global factor",
+			"Description" : "Reset the game and increase all gains by %1",
 			"UpgradeType" : "Prestige",
 			"BaseImpactValue" : 4,
 
@@ -149,7 +149,7 @@
 
 		{
 			"Name" : "ClickBonus",
-			"Description" : "Click Bonus",
+			"Description" : "Short boost of *%1 after each click",
 			"UpgradeType" : "ClickTemporaryBoostStrength",
 			"Unique" : true,
 			"BaseImpactValue" : 3,
@@ -171,7 +171,7 @@
 
 		{
 			"Name" : "PrestigeImprove",
-			"Description" : "ImproveThePrestige",
+			"Description" : "Multiply prestige gain by %1",
 			"UpgradeType" : "UpgradeImprovement",
 			"Unique" : true,
 			"TargetName" : "Prestige 1",

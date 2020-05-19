@@ -18,6 +18,7 @@ namespace AutoClicker
 
 	enum class ValueIncreaseType
 	{
+		None,
 		Flat,
 		Factor,
 		Exponential,
@@ -50,7 +51,7 @@ namespace AutoClicker
 	public:
 		ValueIncreaseStrategy()
 		{
-			this->Type = ValueIncreaseType::Flat;
+			this->Type = ValueIncreaseType::None;
 			this->Rate = 0;
 		}
 
