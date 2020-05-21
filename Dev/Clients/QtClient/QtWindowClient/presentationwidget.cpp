@@ -1,4 +1,6 @@
 #include "presentationwidget.h"
+#include <QVBoxLayout>
+#include <QLabel>
 
 #include "gamewindow.h"
 #include "serverworker.h"
@@ -30,9 +32,14 @@ PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) 
 
 void PresentationWidget::SetupUI()
 {
+    this->layout = new QVBoxLayout(this);
+    QLabel* tempLabel = new QLabel();
+    tempLabel->setText("<Insert here> Message to explain why a terminal window is showing.");
+    this->layout->addWidget(tempLabel);
+
     this->bottomButton = new QPushButton(this);
     this->bottomButton->setText("Begin installation");
-    this->gameWindow->BottomBox->addButton(this->bottomButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->gameWindow->BottomBox->addWidget(this->bottomButton);
     this->bottomButton->hide();
 
     connect(this->bottomButton, SIGNAL(clicked()), this, SLOT(StartButtonClicked()));
@@ -40,7 +47,7 @@ void PresentationWidget::SetupUI()
 
 void PresentationWidget::StartButtonClicked()
 {
-    this->gameWindow->BottomBox->removeButton(this->bottomButton);
+    this->gameWindow->BottomBox->removeWidget(this->bottomButton);
     delete this->bottomButton;
 
     this->gameWindow->GotToScreen(Screens::CinematicScreen);

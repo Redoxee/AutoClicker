@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QDialogButtonBox>
+#include <QBoxLayout>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -38,7 +39,7 @@ class GameWindow : public QMainWindow
 public:
     GameWindow(QApplication* application, QWidget *parent = nullptr);
     void GotToScreen(Screens nextScreen);
-    QDialogButtonBox* BottomBox;
+    QBoxLayout* BottomBox;
 
     inline ServerWorker* ServerWorker() { return this->serverWorker; };
     QLayout* LeftLayout = nullptr;
@@ -52,8 +53,8 @@ private :
     inline void SetupUi();
     QApplication* qApplication = nullptr;
 
-    QLayout* mainLayout = nullptr;
-    QLayout* mainHorizontalLayout = nullptr;
+    QBoxLayout* mainLayout = nullptr;
+    QBoxLayout* mainHorizontalLayout = nullptr;
     QWidget* mainWidget = nullptr;
 
     QWidget* leftWidget = nullptr;

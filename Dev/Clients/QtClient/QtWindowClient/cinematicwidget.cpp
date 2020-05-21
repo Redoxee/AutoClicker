@@ -28,12 +28,17 @@ CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWid
 void CinematicWidget::SetupUI()
 {
     QVBoxLayout* vLayout = new QVBoxLayout(this);
+
+    QLabel* tempLabel = new QLabel();
+    tempLabel->setText("<Insert Here> UI To fake a installer that fail at the end.");
+    vLayout->addWidget(tempLabel);
+
     this->progressBar = new QProgressBar();
     vLayout->addWidget(this->progressBar);
 
     this->bottomButton = new QPushButton();
     this->bottomButton->setText("Start Manual Installation!");
-    this->gameWindow->BottomBox->addButton(this->bottomButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->gameWindow->BottomBox->addWidget(this->bottomButton);
     this->bottomButton->hide();
 }
 
@@ -49,7 +54,7 @@ void CinematicWidget::MainSequenceFinished()
 
 void CinematicWidget::GameStartPressed()
 {
-    this->gameWindow->BottomBox->removeButton(this->bottomButton);
+    this->gameWindow->BottomBox->removeWidget(this->bottomButton);
     delete this->bottomButton;
 
     this->gameWindow->GotToScreen(Screens::GameScreen);

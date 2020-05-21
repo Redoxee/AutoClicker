@@ -11,6 +11,7 @@
 #include "windows.h"
 
 class GameWindow;
+class QBoxLayout;
 
 class PresentationWidget : public QWidget
 {
@@ -20,6 +21,7 @@ public:
 private:
     GameWindow* gameWindow;
     QPushButton* bottomButton;
+    QBoxLayout* layout = nullptr;
 
     void SetupUI();
 

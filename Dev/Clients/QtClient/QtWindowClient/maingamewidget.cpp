@@ -83,10 +83,6 @@ void MainGameWidget::SetupUI()
     this->frameValueLabel = new QLabel(this);
     this->gameWindow->LeftLayout->addWidget(this->frameValueLabel);
 
-    this->clickValueLabel = new QLabel(this);
-    vBoxLayout->addWidget(this->clickValueLabel);
-
-
     QVBoxLayout* progressLayout = new QVBoxLayout();
     progressLayout->setMargin(0);
 
@@ -132,11 +128,11 @@ void MainGameWidget::SetupUI()
     this->UpgradeLayout = new QGridLayout();
     vBoxLayout->addLayout(this->UpgradeLayout);
 
-    this->clickerButton = new QPushButton("Click", this);
+    this->clickerButton = new QPushButton("Click (+1 Bit)", this);
     vBoxLayout->addWidget(this->clickerButton);
 
     this->finishButton = new QPushButton();
-    this->gameWindow->BottomBox->addButton(finishButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->gameWindow->BottomBox->addWidget(finishButton);
     this->finishButton->setVisible(false);
     QSizePolicy sizePolicy = this->finishButton->sizePolicy();
     sizePolicy.setRetainSizeWhenHidden(true);
@@ -178,7 +174,19 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
 
     this->scoreValueLabel->setText(scoreLabel);
     this->frameValueLabel->setText(QString::number(serverData->FrameCount));
-    this->clickValueLabel->setText("+" + FormatDownQuantity(serverData->ClickValue) + " bytes");
+
+    int clickValue = serverData->ClickValue;
+    if(serverData->GlobalFactor > 1)
+    {
+        clickValue *= serverData->GlobalFactor;
+    }
+
+    if(serverData->TempBonusDuration > 0)
+    {
+        clickValue *= serverData->TempBonusFactor;
+    }
+
+    this->clickerButton->setText(QString("Click (+%1 Bits)").arg(clickValue));
 
     this->gameWindow->currentFrame = serverData->FrameCount;
 
@@ -363,6 +371,6 @@ void MainGameWidget::refreshHistory()
 
 void MainGameWidget::onFinishButtonClicked()
 {
-    this->gameWindow->BottomBox->removeButton(this->finishButton);
+    this->gameWindow->BottomBox->removeWidget(this->finishButton);
     this->gameWindow->GotToScreen(Screens::EndGameScreen);
 }

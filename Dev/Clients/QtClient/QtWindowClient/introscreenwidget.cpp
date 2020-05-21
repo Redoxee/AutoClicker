@@ -22,14 +22,14 @@ void IntroScreenWidget::SetupUI()
 
     this->startButton = new QPushButton(this);
     this->startButton->setText("Next");
-    this->mainWindow->BottomBox->addButton(startButton, QDialogButtonBox::ButtonRole::YesRole);
+    this->mainWindow->BottomBox->addWidget(startButton);
 
     connect(this->startButton, SIGNAL(clicked()), this, SLOT(StartButtonPressed()));
 }
 
 void IntroScreenWidget::StartButtonPressed()
 {
-    this->mainWindow->BottomBox->removeButton(this->startButton);
+    this->mainWindow->BottomBox->removeWidget(this->startButton);
     delete this->startButton;
 
     this->mainWindow->GotToScreen(Screens::PresentationScreen);

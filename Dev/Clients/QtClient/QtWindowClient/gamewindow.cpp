@@ -59,8 +59,15 @@ void GameWindow::SetupUi()
     this->mainHorizontalLayout->addWidget(this->leftWidget);
     this->mainLayout->addItem(this->mainHorizontalLayout);
 
-    this->BottomBox = new QDialogButtonBox();
-    this->mainLayout->addWidget(this->BottomBox);
+    this->BottomBox = new QHBoxLayout();
+    this->mainLayout->addLayout(this->BottomBox);
+
+    QLabel* contactLabel = new QLabel();
+    contactLabel->setText("contact : antonmakesgames@gmail.com");
+    contactLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    contactLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    contactLabel->setAlignment(Qt::AlignLeft);
+    this->BottomBox->addWidget(contactLabel);
 }
 
 void GameWindow::GotToScreen(Screens nextScreen)

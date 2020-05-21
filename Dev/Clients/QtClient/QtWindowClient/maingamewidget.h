@@ -44,7 +44,6 @@ private:
 
     QLabel* scoreValueLabel = nullptr;
     QLabel* frameValueLabel = nullptr;
-    QLabel* clickValueLabel = nullptr;
     QPushButton* clickerButton = nullptr;
 
     QPushButton* finishButton = nullptr;

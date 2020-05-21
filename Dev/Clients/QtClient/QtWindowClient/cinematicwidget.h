@@ -8,6 +8,7 @@
 #include <QDialogButtonBox>
 #include <QProgressBar>
 #include <QVBoxLayout>
+#include <QLabel>
 
 class GameWindow;
 class WindowShakeAnimation;
