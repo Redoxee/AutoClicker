@@ -373,5 +373,59 @@ void MainGameWidget::onFinishButtonClicked()
 {
     this->gameWindow->BottomBox->removeWidget(this->finishButton);
     delete this->finishButton;
+
     this->gameWindow->GotToScreen(Screens::EndGameScreen);
+}
+
+UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
+{
+    QHBoxLayout* hLayout = new QHBoxLayout(this);
+    hLayout->setSpacing(0);
+    hLayout->setMargin(0);
+    this->setFixedHeight(50);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    this->InstanceBought = new QLabel(this);
+    this->InstanceBought->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->InstanceBought->setFixedWidth(40);
+    this->InstanceBought->setText("999");
+    this->InstanceBought->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    QFont instanceFont = this->InstanceBought->font();
+    instanceFont.setPixelSize(15);
+    this->InstanceBought->setFont(instanceFont);
+    hLayout->addWidget(this->InstanceBought);
+
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    QSpacerItem* spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    vLayout->addSpacerItem(spacer);
+    hLayout->addLayout(vLayout);
+    this->MainLabel = new QLabel(this);
+    QFont mainFont = this->MainLabel->font();
+    mainFont.setPointSize(10);
+    this->MainLabel->setFont(mainFont);
+    vLayout->addWidget(this->MainLabel);
+    this->MainLabel->setText("[TBW] Placeholder");
+
+    this->SubLabel = new QLabel(this);
+    vLayout->addWidget(this->SubLabel);
+    this->SubLabel->setText("[TBW] PlaceHolder");
+
+    spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
+    vLayout->addSpacerItem(spacer);
+
+    this->BuyButton = new QPushButton("Aquire\n8888 bits");
+    hLayout->addWidget(this->BuyButton);
+    this->BuyButton->setFixedWidth(55);
+    this->BuyButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+
+    this->UpgradeButton =  new QPushButton("+");
+    hLayout->addWidget(this->UpgradeButton);
+    this->UpgradeButton->setFixedWidth(25);
+    this->UpgradeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+
+    QSplitter* splitter = new QSplitter(this);
+    vLayout->addWidget(splitter);
+
+    this->MainLayout = hLayout;
+    this->setFrameStyle(QFrame::Box | QFrame::Sunken);
 }

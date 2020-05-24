@@ -7,6 +7,7 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QGridLayout>
+#include <QFrame>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -24,6 +25,19 @@ struct ServerGameplayState;
 class UpdateWorker;
 class ScaledProgressBar;
 class GameWindow;
+
+class UpgradeSlot : public QFrame
+{
+public:
+    UpgradeSlot(QWidget* parrent = nullptr);
+
+    QBoxLayout* MainLayout = nullptr;
+    QLabel* InstanceBought = nullptr;
+    QLabel* MainLabel = nullptr;
+    QLabel* SubLabel = nullptr;
+    QPushButton* BuyButton = nullptr;
+    QPushButton* UpgradeButton = nullptr;
+};
 
 class MainGameWidget : public QWidget
 {
@@ -44,7 +58,9 @@ private:
 
     QLabel* scoreValueLabel = nullptr;
     QLabel* frameValueLabel = nullptr;
+
     QPushButton* clickerButton = nullptr;
+    QPushButton* clickMenuButton = nullptr;
 
     QPushButton* finishButton = nullptr;
 
