@@ -372,5 +372,6 @@ void MainGameWidget::refreshHistory()
 void MainGameWidget::onFinishButtonClicked()
 {
     this->gameWindow->BottomBox->removeWidget(this->finishButton);
+    delete this->finishButton;
     this->gameWindow->GotToScreen(Screens::EndGameScreen);
 }
