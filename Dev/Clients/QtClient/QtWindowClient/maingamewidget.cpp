@@ -5,6 +5,10 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QLogValueAxis>
 #include <QtCharts/QChartView>
+#include <QSplitter>
+
+#include <QMenu>
+#include <QAction>
 
 #include "autoclickerconfig.h"
 #include "SWIUtils.h"
@@ -40,7 +44,6 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
     connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
 
-    scoreValueLabel->setText("0");
     frameValueLabel->setText("0");
 
     this->RefreshProgressBars(0);
@@ -63,6 +66,8 @@ MainGameWidget::~MainGameWidget()
         delete (*current);
     }
 
+    return; // temp while experimenting with layout.
+
     this->UpgradeButtons.clear();
 
     QLayoutItem *child;
@@ -75,10 +80,13 @@ MainGameWidget::~MainGameWidget()
 void MainGameWidget::SetupUI()
 {
     QVBoxLayout* vBoxLayout = new QVBoxLayout(this);
-    vBoxLayout->setMargin(15);
+    vBoxLayout->setMargin(0);
 
-    this->scoreValueLabel = new QLabel(this);
-    vBoxLayout->addWidget(this->scoreValueLabel);
+    this->scoreSlot = new ScoreSlot(this);
+    vBoxLayout->addWidget(this->scoreSlot);
+
+    QSpacerItem* verticalSpacer = new QSpacerItem(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    vBoxLayout->addSpacerItem(verticalSpacer);
 
     this->frameValueLabel = new QLabel(this);
     this->gameWindow->LeftLayout->addWidget(this->frameValueLabel);
@@ -125,11 +133,45 @@ void MainGameWidget::SetupUI()
 
     vBoxLayout->addLayout(progressLayout);
 
-    this->UpgradeLayout = new QGridLayout();
-    vBoxLayout->addLayout(this->UpgradeLayout);
+    QBoxLayout* upgradeLayout = new QVBoxLayout();
+    upgradeLayout->setSpacing(0);
+    upgradeLayout->setMargin(0);
+
+    UpgradeSlot* slot = new UpgradeSlot(this);
+    upgradeLayout->addWidget(slot);
+    slot = new UpgradeSlot(this);
+    upgradeLayout->addWidget(slot);
+    slot = new UpgradeSlot(this);
+    upgradeLayout->addWidget(slot);
+
+    vBoxLayout->addLayout(upgradeLayout);
+
+    QHBoxLayout* clickerButtonLayout = new QHBoxLayout();
+    vBoxLayout->addLayout(clickerButtonLayout);
+
+    clickerButtonLayout->setMargin(0);
+    clickerButtonLayout->setSpacing(0);
 
     this->clickerButton = new QPushButton("Click (+1 Bit)", this);
-    vBoxLayout->addWidget(this->clickerButton);
+    clickerButtonLayout->addWidget(this->clickerButton);
+    this->clickerButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    this->clickMenuButton = new QPushButton("+");
+    clickerButtonLayout->addWidget(this->clickMenuButton);
+    this->clickMenuButton->setFixedWidth(20);
+    this->clickMenuButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);    
+    connect(this->clickMenuButton, &QPushButton::clicked, this,[this]()
+    {
+        QMenu menu;
+        menu.setToolTipsVisible(true);
+        QAction *a = new QAction();
+        a->setText("Buy upgrade for 8888888 bits\n Test");
+        a->setToolTip("Upgrade by x precent \n youhou.");
+        menu.addAction(a);
+        QPoint pos = this->clickMenuButton->pos() + this->gameWindow->pos();
+
+        menu.exec(pos);
+    });
 
     this->finishButton = new QPushButton();
     this->gameWindow->BottomBox->addWidget(finishButton);
@@ -137,7 +179,7 @@ void MainGameWidget::SetupUI()
     QSizePolicy sizePolicy = this->finishButton->sizePolicy();
     sizePolicy.setRetainSizeWhenHidden(true);
     this->finishButton->setSizePolicy(sizePolicy);
-    this->finishButton->setText("Next >>");
+    this->finishButton->setText("Next");
 
     connect(this->finishButton, &QPushButton::clicked, this, &MainGameWidget::onFinishButtonClicked);
 }
@@ -163,16 +205,21 @@ void MainGameWidget::handleHttpRequest(QNetworkReply* reply)
 
 void MainGameWidget::refreshData(ServerGameplayState* serverData)
 {
-    QString scoreLabel = QString("Score %1 / %2").arg(QString::number(serverData->Score), QString::number(serverData->TargetScore));
-    scoreLabel += QString("\n(Passive speed : %1 * %2").arg(FormatDownQuantity(serverData->PassiveSpeed), FormatDownQuantity(serverData->GlobalFactor));
+    return;
+
+    QString scoreMessage = QString("%1 bits installed").arg(QString::number(serverData->Score));
+
+    int64_t passiveSpeed = serverData->PassiveSpeed * serverData->GlobalFactor;
     if(serverData->TempBonusDuration > 0 && serverData->TempBonusFactor > 1)
     {
-        scoreLabel += QString(" * %1").arg(serverData -> TempBonusFactor);
+        passiveSpeed *= serverData->TempBonusFactor;
     }
 
-    scoreLabel += QString(")");
+    QString passiveSpeedMessage = QString("Autoinstall %1 bits per second").arg(QString::number(passiveSpeed));
 
-    this->scoreValueLabel->setText(scoreLabel);
+    this->scoreSlot->ScoreLabel->setText(scoreMessage);
+    this->scoreSlot->FactorLabel->setText(passiveSpeedMessage);
+
     this->frameValueLabel->setText(QString::number(serverData->FrameCount));
 
     int clickValue = serverData->ClickValue;
@@ -427,5 +474,47 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
     vLayout->addWidget(splitter);
 
     this->MainLayout = hLayout;
+    this->setFrameStyle(QFrame::Box | QFrame::Sunken);
+}
+
+
+ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
+{
+    QHBoxLayout* hLayout = new QHBoxLayout(this);
+    QVBoxLayout* vLayout = new QVBoxLayout(this);
+    hLayout->setSpacing(0);
+    hLayout->setMargin(0);
+
+    this->ScoreLabel = new QLabel("0", this);
+    this->FactorLabel = new QLabel("1", this);
+
+    QSpacerItem* horizontalSpacer = new QSpacerItem(0,0, QSizePolicy::Expanding, QSizePolicy::Fixed);
+    hLayout->addSpacerItem(horizontalSpacer);
+
+    QSpacerItem* spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    vLayout->addSpacerItem(spacer);
+    hLayout->addLayout(vLayout);
+    QFont scoreFont = this->ScoreLabel->font();
+    scoreFont.setPointSize(10);
+    this->ScoreLabel->setFont(scoreFont);
+    vLayout->addWidget(this->ScoreLabel);
+    vLayout->addWidget(this->FactorLabel);
+    spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
+    vLayout->addSpacerItem(spacer);
+
+    hLayout->addLayout(vLayout);
+
+    this->PrestigeButton = new QPushButton("Optimize", this);
+    this->ImproveButton = new QPushButton("+", this);
+    hLayout->addWidget(this->PrestigeButton);
+    hLayout->addWidget(this->ImproveButton);
+
+    this->PrestigeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->ImproveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->PrestigeButton->setFixedWidth(55);
+    this->ImproveButton->setFixedWidth(25);
+
+    this->setFixedHeight(50);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setFrameStyle(QFrame::Box | QFrame::Sunken);
 }

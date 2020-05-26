@@ -39,6 +39,18 @@ public:
     QPushButton* UpgradeButton = nullptr;
 };
 
+class ScoreSlot : public QFrame
+{
+public:
+    ScoreSlot(QWidget* parent = nullptr);
+
+    QLabel* ScoreLabel = nullptr;
+    QLabel* FactorLabel = nullptr;
+
+    QPushButton* PrestigeButton = nullptr;
+    QPushButton* ImproveButton = nullptr;
+};
+
 class MainGameWidget : public QWidget
 {
     Q_OBJECT
@@ -56,7 +68,8 @@ public slots:
 private:
     void SetupUI();
 
-    QLabel* scoreValueLabel = nullptr;
+    ScoreSlot* scoreSlot = nullptr;
+
     QLabel* frameValueLabel = nullptr;
 
     QPushButton* clickerButton = nullptr;
