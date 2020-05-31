@@ -16,11 +16,11 @@ struct Upgrade
     int Price = 0;
     int InstanceBought = 0;
     int FailureFlags = 0;
+    int Index = 0;
 
-    QString GetLabel()
+    QString GetPriceLabel()
     {
-        QString label = QString("(%1)\n %2 :\n %3").arg(SWIUtils::FormatDownQuantity(this->InstanceBought), this->Name, SWIUtils::FormatDownQuantity(this->Price));
-
+        QString label = QString("Aquire\n%1").arg(SWIUtils::FormatDownQuantity(this->Price));
         return label;
     }
 };
@@ -40,8 +40,29 @@ struct ServerGameplayState
     int WakeTimer = 0;
     int WakeDuration = 0;
 
+    Upgrade* clickUpgrade = nullptr;
     Upgrade* Upgrades = nullptr;
     size_t NumberOfUpgrades = 0;
+
+    const QString prestigeName = "Prestige_1";
+    const QString prestigeImproveName = "PrestigeImprove";
+    const QString clickUpgradeName = "Click_upgrade_1";
+    const QString clickUpgradeImproveName = "Improve_click_upgrade_1";
+    const QString clickFactorName = "ClickBonus";
+    const QString firstGeneratorName = "Generator_1";
+    const QString firstGeneratorImproveName = "Improve_generator_1";
+    const QString secondGeneratorName = "Generator_1";
+    const QString secondGeneratorImproveName = "Improve_generator_1";
+
+    static const int ClickUpgradeIndex = 0;
+    static const int ClickUpgradeImproveIndex = 1;
+    static const int ClickBonusFactorIndex = 2;
+    static const int Generator1Index = 3;
+    static const int Generator1ImproveIndex = 4;
+    static const int Generator2Index = 5;
+    static const int Generator2ImproveIndex = 6;
+    static const int PrestigeIndex = 7;
+    static const int PrestigeImproveIndex = 8;
 
     bool IsFinished()
     {
@@ -86,16 +107,21 @@ struct ServerGameplayState
         for(int index = 0; index < nbUpgrades; ++index)
         {
             QJsonObject jsonUpgrade = jsonUpgrades[index].toObject();
-            Upgrade* upgrd = &this->Upgrades[index];
+            Upgrade* upgrade = &this->Upgrades[index];
 
             int impactValue = jsonUpgrade["ImpactValue"].toInt(0);
 
-            upgrd->Name = jsonUpgrade["Name"].toString();
-            upgrd->Description = jsonUpgrade["Description"].toString().arg(impactValue);
-            upgrd->Price = jsonUpgrade["Price"].toInt();
-            upgrd->InstanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
+            upgrade->Name = jsonUpgrade["Name"].toString();
+            upgrade->Description = jsonUpgrade["Description"].toString().arg(impactValue);
+            upgrade->Price = jsonUpgrade["Price"].toInt();
+            upgrade->InstanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
+            upgrade->Index = index;
 
-            upgrd->FailureFlags = jsonUpgrades[index].toObject()["FailureFlags"].toInt();
+            upgrade->FailureFlags = jsonUpgrades[index].toObject()["FailureFlags"].toInt();
+            if(upgrade->Name == ServerGameplayState::clickUpgradeName)
+            {
+                this->clickUpgrade = upgrade;
+            }
         }
     }
 };

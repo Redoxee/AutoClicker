@@ -1,19 +1,20 @@
 #include "upgradebutton.h"
-#include "servergameplaystate.h"
 
-UpgradeButton::UpgradeButton(Upgrade* upgrade, QWidget *parent) : QPushButton(parent)
+UpgradeButton::UpgradeButton(QString mainLabel, QWidget *parent) : QWidget(parent)
 {
-    this->upgrade = upgrade;
-    this->setText(this->upgrade->GetLabel());
-}
+    QHBoxLayout* hLayout = new QHBoxLayout(this);
+    hLayout->setMargin(0);
+    hLayout->setSpacing(0);
+    this->MainButton = new QPushButton(this);
+    hLayout->addWidget(this->MainButton);
+    this->SecondaryButton = new QPushButton(this);
+    hLayout->addWidget(this->SecondaryButton);
 
-void UpgradeButton::RefreshLabel()
-{
-    this->setText(this->upgrade->GetLabel());
-}
+    this->MainButton->setText(mainLabel);
+    this->SecondaryButton->setText("+");
 
-
-void UpgradeButton::SetUpgrade(Upgrade *upgrade)
-{
-    this->upgrade = upgrade;
+    this->MainButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->SecondaryButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->MainButton->setFixedWidth(55);
+    this->SecondaryButton->setFixedWidth(25);
 }

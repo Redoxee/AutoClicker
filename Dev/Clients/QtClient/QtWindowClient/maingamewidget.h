@@ -25,6 +25,7 @@ struct ServerGameplayState;
 class UpdateWorker;
 class ScaledProgressBar;
 class GameWindow;
+class UpgradeButton;
 
 class UpgradeSlot : public QFrame
 {
@@ -35,8 +36,7 @@ public:
     QLabel* InstanceBought = nullptr;
     QLabel* MainLabel = nullptr;
     QLabel* SubLabel = nullptr;
-    QPushButton* BuyButton = nullptr;
-    QPushButton* UpgradeButton = nullptr;
+    UpgradeButton* UpgradeButtons = nullptr;
 };
 
 class ScoreSlot : public QFrame
@@ -47,8 +47,7 @@ public:
     QLabel* ScoreLabel = nullptr;
     QLabel* FactorLabel = nullptr;
 
-    QPushButton* PrestigeButton = nullptr;
-    QPushButton* ImproveButton = nullptr;
+    UpgradeButton* UpgradeButtons = nullptr;
 };
 
 class MainGameWidget : public QWidget
@@ -76,19 +75,20 @@ private:
     QPushButton* clickMenuButton = nullptr;
 
     QPushButton* finishButton = nullptr;
-
-    QGridLayout*  UpgradeLayout = nullptr;
-
     UpdateWorker* updateWorker = nullptr;
 
     QNetworkAccessManager *manager = nullptr;
     QNetworkRequest request;
 
     ScaledProgressBar* ProgressBar[4];
-    std::vector<QPushButton*> UpgradeButtons;
+
+    UpgradeSlot* clickUpgradeSlot = nullptr;
+
+    UpgradeSlot* firstGeneratorSlot = nullptr;
+
+    UpgradeSlot* secondGeneratorSlot = nullptr;
 
     void RefreshProgressBars(int score);
-    QPushButton CreateUpgradeButton(QString Label);
 
     int lastRefreshedFrame;
     bool isDirty;

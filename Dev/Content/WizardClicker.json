@@ -51,6 +51,28 @@
 		},
 
 		{
+			"Name" : "ClickBonus",
+			"Description" : "Short boost of *%1 after each click",
+			"UpgradeType" : "ClickTemporaryBoostStrength",
+			"Unique" : true,
+			"BaseImpactValue" : 3,
+
+			"BasePrice" : 90000,
+			"PriceStrategy":
+			{
+				"Type":"Exponential",
+				"Value":1.9
+			},
+
+			"Lock":
+			{
+				"TargetName" : "Click_upgrade_1",
+				"Comparer" : "GreaterThan",
+				"Value" : 35
+			}
+		},
+
+		{
 			"Name" : "Generator_1",
 			"Description" : "Auto click for %1 by tick",
 			"UpgradeType" : "Generator",
@@ -133,7 +155,7 @@
 		},
 
 		{
-			"Name" : "Prestige 1",
+			"Name" : "Prestige_1",
 			"Description" : "Reset the game and increase all gains by %1",
 			"UpgradeType" : "Prestige",
 			"BaseImpactValue" : 4,
@@ -146,35 +168,13 @@
 				"Value" : 2.0
 			}
 		},
-
-		{
-			"Name" : "ClickBonus",
-			"Description" : "Short boost of *%1 after each click",
-			"UpgradeType" : "ClickTemporaryBoostStrength",
-			"Unique" : true,
-			"BaseImpactValue" : 3,
-
-			"BasePrice" : 90000,
-			"PriceStrategy":
-			{
-				"Type":"Exponential",
-				"Value":1.9
-			},
-
-			"Lock":
-			{
-				"TargetName" : "Click_upgrade_1",
-				"Comparer" : "GreaterThan",
-				"Value" : 35
-			}
-		},
-
+		
 		{
 			"Name" : "PrestigeImprove",
 			"Description" : "Multiply prestige gain by %1",
 			"UpgradeType" : "UpgradeImprovement",
 			"Unique" : true,
-			"TargetName" : "Prestige 1",
+			"TargetName" : "Prestige_1",
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",

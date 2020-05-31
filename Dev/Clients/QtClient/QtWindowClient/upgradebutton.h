@@ -1,22 +1,22 @@
 #ifndef UPGRADEBUTTON_H
 #define UPGRADEBUTTON_H
 
+#include <QWidget>
 #include <QPushButton>
+#include <QMenu>
+#include <QHBoxLayout>
 
-struct Upgrade;
-
-class UpgradeButton : public QPushButton
+class UpgradeButton : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UpgradeButton(Upgrade* upgrade, QWidget *parent = nullptr);
-    void RefreshLabel();
+    explicit UpgradeButton(QString mainLabel, QWidget *parent = nullptr);
 
-    void SetUpgrade(Upgrade* upgrade);
+    QPushButton* MainButton = nullptr;
+    QPushButton* SecondaryButton = nullptr;
+
 private:
-    Upgrade* upgrade;
 signals:
-
 public slots:
 };
 

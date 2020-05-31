@@ -42,10 +42,6 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->manager = new QNetworkAccessManager();
     connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleHttpRequest(QNetworkReply*)));
 
-    connect(this->clickerButton, SIGNAL (clicked()), this, SLOT (handleClick()));
-
-    frameValueLabel->setText("0");
-
     this->RefreshProgressBars(0);
 
     this->lastRefreshedFrame = -1;
@@ -58,23 +54,7 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
 MainGameWidget::~MainGameWidget()
 {
-
     disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
-
-    for(auto current = this->UpgradeButtons.begin(); current != this->UpgradeButtons.end(); current++)
-    {
-        delete (*current);
-    }
-
-    return; // temp while experimenting with layout.
-
-    this->UpgradeButtons.clear();
-
-    QLayoutItem *child;
-    while ((child = this->UpgradeLayout->takeAt(0)) != nullptr) {
-        delete child->widget();
-        delete child;
-    }
 }
 
 void MainGameWidget::SetupUI()
@@ -137,12 +117,18 @@ void MainGameWidget::SetupUI()
     upgradeLayout->setSpacing(0);
     upgradeLayout->setMargin(0);
 
-    UpgradeSlot* slot = new UpgradeSlot(this);
-    upgradeLayout->addWidget(slot);
-    slot = new UpgradeSlot(this);
-    upgradeLayout->addWidget(slot);
-    slot = new UpgradeSlot(this);
-    upgradeLayout->addWidget(slot);
+    this->clickUpgradeSlot = new UpgradeSlot(this);
+    this->clickUpgradeSlot->MainLabel->setText("Faster manual install");
+    this->clickUpgradeSlot->SubLabel->setText("Use the current installed bits to improve the installer.");
+    this->clickUpgradeSlot->InstanceBought->setText("0");
+    connect(this->clickUpgradeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickUpgradeIndex);});
+
+    this->firstGeneratorSlot = new UpgradeSlot(this);
+    this->secondGeneratorSlot = new UpgradeSlot(this);
+
+    upgradeLayout->addWidget(this->secondGeneratorSlot);
+    upgradeLayout->addWidget(this->firstGeneratorSlot);
+    upgradeLayout->addWidget(this->clickUpgradeSlot);
 
     vBoxLayout->addLayout(upgradeLayout);
 
@@ -152,14 +138,19 @@ void MainGameWidget::SetupUI()
     clickerButtonLayout->setMargin(0);
     clickerButtonLayout->setSpacing(0);
 
-    this->clickerButton = new QPushButton("Click (+1 Bit)", this);
+    this->clickerButton = new QPushButton("Install (+1 Bit)", this);
     clickerButtonLayout->addWidget(this->clickerButton);
+    this->clickerButton->setFixedHeight(50);
     this->clickerButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    connect(this->clickerButton, &QPushButton::clicked, this, &MainGameWidget::handleClick);
 
     this->clickMenuButton = new QPushButton("+");
     clickerButtonLayout->addWidget(this->clickMenuButton);
-    this->clickMenuButton->setFixedWidth(20);
-    this->clickMenuButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);    
+    this->clickMenuButton->setFixedWidth(25);
+    this->clickMenuButton->setFixedHeight(50);
+    this->clickMenuButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
     connect(this->clickMenuButton, &QPushButton::clicked, this,[this]()
     {
         QMenu menu;
@@ -187,6 +178,7 @@ void MainGameWidget::SetupUI()
 void MainGameWidget::handleClick()
 {
     this->isDirty = true;
+    qDebug("Hello");
     request.setUrl(
                 QUrl(
                     QString::fromStdString(AutoClicker::BaseURI() + "click=true")
@@ -205,8 +197,6 @@ void MainGameWidget::handleHttpRequest(QNetworkReply* reply)
 
 void MainGameWidget::refreshData(ServerGameplayState* serverData)
 {
-    return;
-
     QString scoreMessage = QString("%1 bits installed").arg(QString::number(serverData->Score));
 
     int64_t passiveSpeed = serverData->PassiveSpeed * serverData->GlobalFactor;
@@ -233,60 +223,14 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         clickValue *= serverData->TempBonusFactor;
     }
 
-    this->clickerButton->setText(QString("Click (+%1 Bits)").arg(clickValue));
+    this->clickUpgradeSlot->InstanceBought->setText(QString::number(serverData->clickUpgrade->InstanceBought));
+    this->clickUpgradeSlot->UpgradeButtons->MainButton->setText(serverData->clickUpgrade->GetPriceLabel());
+
+    this->clickerButton->setText(QString("Install (+%1 Bits)").arg(clickValue));
 
     this->gameWindow->currentFrame = serverData->FrameCount;
 
     this->realCurrentScore = serverData->Score;
-    if(serverData->NumberOfUpgrades != this->UpgradeButtons.size())
-    {
-        if(serverData->NumberOfUpgrades > this->UpgradeButtons.size())
-        {
-            size_t buttonToAdd = serverData->NumberOfUpgrades - this->UpgradeButtons.size();
-            for(int i = 0; i < buttonToAdd; ++i)
-            {
-                QPushButton* btn = new QPushButton;
-                this->UpgradeButtons.push_back(btn);
-                int index = this->UpgradeButtons.size() - 1;
-                int col = index % 3;
-                int row = index / 3;
-                this->UpgradeLayout->addWidget(btn, row, col);
-                connect(btn, &QPushButton::clicked, [=](){ emit this->UpgradeButtonClick(index);});
-            }
-        }
-        else
-        {
-            size_t buttonToRemove = this->UpgradeButtons.size() - serverData->NumberOfUpgrades;
-            for(int i = 0; i < buttonToRemove; ++i)
-            {
-                QPushButton* btn = this->UpgradeButtons[this->UpgradeButtons.size() - 1];
-                delete btn;
-                this->UpgradeButtons.pop_back();
-            }
-        }
-
-        this->isDirty = true;
-    }
-
-    if(this->isDirty)
-    {
-        for(int index = 0; index < serverData->NumberOfUpgrades; ++index)
-        {
-            this->UpgradeButtons[index]->setText(serverData->Upgrades[index].GetLabel());
-            this->UpgradeButtons[index]->setEnabled(serverData->Upgrades[index].FailureFlags == 0);
-            this->UpgradeButtons[index]->setToolTip(serverData->Upgrades[index].Description);
-        }
-
-        this->isDirty = false;
-        this->lastRefreshedFrame = serverData->FrameCount;
-    }
-    else
-    {
-        for(int index = 0; index < serverData->NumberOfUpgrades; ++index)
-        {
-            this->UpgradeButtons[index]->setEnabled(serverData->Upgrades[index].FailureFlags == 0);
-        }
-    }
 
     this->pushToScoreHistory(serverData->Score);
     this->refreshHistory();
@@ -460,15 +404,8 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
     spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
     vLayout->addSpacerItem(spacer);
 
-    this->BuyButton = new QPushButton("Aquire\n8888 bits");
-    hLayout->addWidget(this->BuyButton);
-    this->BuyButton->setFixedWidth(55);
-    this->BuyButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-
-    this->UpgradeButton =  new QPushButton("+");
-    hLayout->addWidget(this->UpgradeButton);
-    this->UpgradeButton->setFixedWidth(25);
-    this->UpgradeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->UpgradeButtons = new UpgradeButton("Aquire\n8888 bits", this);
+    hLayout->addWidget(this->UpgradeButtons);
 
     QSplitter* splitter = new QSplitter(this);
     vLayout->addWidget(splitter);
@@ -487,6 +424,8 @@ ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
 
     this->ScoreLabel = new QLabel("0", this);
     this->FactorLabel = new QLabel("1", this);
+    this->ScoreLabel->setAlignment(Qt::AlignRight);
+    this->FactorLabel->setAlignment(Qt::AlignRight);
 
     QSpacerItem* horizontalSpacer = new QSpacerItem(0,0, QSizePolicy::Expanding, QSizePolicy::Fixed);
     hLayout->addSpacerItem(horizontalSpacer);
@@ -494,6 +433,7 @@ ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
     QSpacerItem* spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     vLayout->addSpacerItem(spacer);
     hLayout->addLayout(vLayout);
+    hLayout->addSpacing(5);
     QFont scoreFont = this->ScoreLabel->font();
     scoreFont.setPointSize(10);
     this->ScoreLabel->setFont(scoreFont);
@@ -504,17 +444,10 @@ ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
 
     hLayout->addLayout(vLayout);
 
-    this->PrestigeButton = new QPushButton("Optimize", this);
-    this->ImproveButton = new QPushButton("+", this);
-    hLayout->addWidget(this->PrestigeButton);
-    hLayout->addWidget(this->ImproveButton);
+    this->UpgradeButtons = new UpgradeButton("Optimize", this);
+    hLayout->addWidget(this->UpgradeButtons);
+    this->UpgradeButtons->setFixedHeight(50);
 
-    this->PrestigeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    this->ImproveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    this->PrestigeButton->setFixedWidth(55);
-    this->ImproveButton->setFixedWidth(25);
-
-    this->setFixedHeight(50);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setFrameStyle(QFrame::Box | QFrame::Sunken);
 }
