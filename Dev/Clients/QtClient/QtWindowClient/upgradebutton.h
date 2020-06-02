@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QAction>
 #include <QMenu>
 #include <QHBoxLayout>
 
@@ -14,6 +15,9 @@ public:
 
     QPushButton* MainButton = nullptr;
     QPushButton* SecondaryButton = nullptr;
+
+    QMenu* secondaryMenu = nullptr;
+    QAction* secondaryAction = nullptr;
 
 private:
 signals:

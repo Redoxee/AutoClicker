@@ -40,7 +40,16 @@ struct ServerGameplayState
     int WakeTimer = 0;
     int WakeDuration = 0;
 
+    Upgrade* prestige = nullptr;
+    Upgrade* prestigeImprove = nullptr;
     Upgrade* clickUpgrade = nullptr;
+    Upgrade* clickUpgradeImprove = nullptr;
+    Upgrade* clickFactor = nullptr;
+    Upgrade* firstGenerator = nullptr;
+    Upgrade* firstGeneratorImprove = nullptr;
+    Upgrade* secondGenerator = nullptr;
+    Upgrade* secondGeneratorImprove = nullptr;
+
     Upgrade* Upgrades = nullptr;
     size_t NumberOfUpgrades = 0;
 
@@ -51,16 +60,16 @@ struct ServerGameplayState
     const QString clickFactorName = "ClickBonus";
     const QString firstGeneratorName = "Generator_1";
     const QString firstGeneratorImproveName = "Improve_generator_1";
-    const QString secondGeneratorName = "Generator_1";
-    const QString secondGeneratorImproveName = "Improve_generator_1";
+    const QString secondGeneratorName = "Generator_2";
+    const QString secondGeneratorImproveName = "Improve_generator_2";
 
     static const int ClickUpgradeIndex = 0;
     static const int ClickUpgradeImproveIndex = 1;
     static const int ClickBonusFactorIndex = 2;
-    static const int Generator1Index = 3;
-    static const int Generator1ImproveIndex = 4;
-    static const int Generator2Index = 5;
-    static const int Generator2ImproveIndex = 6;
+    static const int FirstGeneratorIndex = 3;
+    static const int FirstGeneratorImproveIndex = 4;
+    static const int SecondGeneratorIndex = 5;
+    static const int SecondGeneratorImproveIndex = 6;
     static const int PrestigeIndex = 7;
     static const int PrestigeImproveIndex = 8;
 
@@ -121,6 +130,38 @@ struct ServerGameplayState
             if(upgrade->Name == ServerGameplayState::clickUpgradeName)
             {
                 this->clickUpgrade = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::clickUpgradeImproveName)
+            {
+                this->clickUpgradeImprove = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::clickFactorName)
+            {
+                this->clickFactor = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::firstGeneratorName)
+            {
+                this->firstGenerator = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::firstGeneratorImproveName)
+            {
+                this->firstGeneratorImprove = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::secondGeneratorName)
+            {
+                this->secondGenerator = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::secondGeneratorImproveName)
+            {
+                this->secondGeneratorImprove = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::prestigeName)
+            {
+                this->prestige = upgrade;
+            }
+            else if(upgrade->Name == ServerGameplayState::prestigeImproveName)
+            {
+                this->prestigeImprove = upgrade;
             }
         }
     }

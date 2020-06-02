@@ -124,7 +124,10 @@ void MainGameWidget::SetupUI()
     connect(this->clickUpgradeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickUpgradeIndex);});
 
     this->firstGeneratorSlot = new UpgradeSlot(this);
+    connect(this->firstGeneratorSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::FirstGeneratorIndex);});
+
     this->secondGeneratorSlot = new UpgradeSlot(this);
+    connect(this->secondGeneratorSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::SecondGeneratorIndex);});
 
     upgradeLayout->addWidget(this->secondGeneratorSlot);
     upgradeLayout->addWidget(this->firstGeneratorSlot);
@@ -225,6 +228,12 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
 
     this->clickUpgradeSlot->InstanceBought->setText(QString::number(serverData->clickUpgrade->InstanceBought));
     this->clickUpgradeSlot->UpgradeButtons->MainButton->setText(serverData->clickUpgrade->GetPriceLabel());
+
+    this->firstGeneratorSlot->InstanceBought->setText(QString::number(serverData->firstGenerator->InstanceBought));
+    this->firstGeneratorSlot->UpgradeButtons->MainButton->setText(serverData->firstGenerator->GetPriceLabel());
+
+    this->secondGeneratorSlot->InstanceBought->setText(QString::number(serverData->secondGenerator->InstanceBought));
+    this->secondGeneratorSlot->UpgradeButtons->MainButton->setText(serverData->secondGenerator->GetPriceLabel());
 
     this->clickerButton->setText(QString("Install (+%1 Bits)").arg(clickValue));
 
@@ -399,6 +408,7 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
 
     this->SubLabel = new QLabel(this);
     vLayout->addWidget(this->SubLabel);
+    this->SubLabel->setWordWrap(true);
     this->SubLabel->setText("[TBW] PlaceHolder");
 
     spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
