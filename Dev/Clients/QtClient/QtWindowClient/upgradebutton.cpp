@@ -1,6 +1,6 @@
 #include "upgradebutton.h"
 
-UpgradeButton::UpgradeButton(QString mainLabel, QWidget *parent) : QWidget(parent)
+UpgradeButton::UpgradeButton(QWidget *parent) : QWidget(parent)
 {
     QHBoxLayout* hLayout = new QHBoxLayout(this);
     hLayout->setMargin(0);
@@ -10,7 +10,6 @@ UpgradeButton::UpgradeButton(QString mainLabel, QWidget *parent) : QWidget(paren
     this->SecondaryButton = new QPushButton(this);
     hLayout->addWidget(this->SecondaryButton);
 
-    this->MainButton->setText(mainLabel);
     this->SecondaryButton->setText("+");
 
     this->MainButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -35,4 +34,19 @@ UpgradeButton::UpgradeButton(QString mainLabel, QWidget *parent) : QWidget(paren
 
         this->secondaryMenu->exec(pos);
     });
+}
+
+void UpgradeButton::SetMainButtonValue(int64_t value)
+{
+    this->MainButton->setText(this->mainButtonPattern.arg(value));
+}
+
+void UpgradeButton::SetSecondaryButtonValue(int64_t value)
+{
+    this->secondaryAction->setText(this->secondButtonPattern.arg(value));
+}
+
+void UpgradeButton::SetSecondaryTooltipValue(int64_t value)
+{
+    this->secondaryAction->setToolTip(this->secondButtonTooltipPattern.arg(value));
 }

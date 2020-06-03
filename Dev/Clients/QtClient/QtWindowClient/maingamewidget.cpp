@@ -118,16 +118,35 @@ void MainGameWidget::SetupUI()
     upgradeLayout->setMargin(0);
 
     this->clickUpgradeSlot = new UpgradeSlot(this);
-    this->clickUpgradeSlot->MainLabel->setText("Faster manual install");
-    this->clickUpgradeSlot->SubLabel->setText("Use the current installed bits to improve the installer.");
+    this->clickUpgradeSlot->MainPattern = "Faster manual install";
+    this->clickUpgradeSlot->SecondPattern = "Use the current installed bits to improve the installer.";
     this->clickUpgradeSlot->InstanceBought->setText("0");
+    this->clickUpgradeSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
+    this->clickUpgradeSlot->UpgradeButtons->secondButtonPattern = "Improve each unit for %1 bits";
+    this->clickUpgradeSlot->UpgradeButtons->secondButtonTooltipPattern = "Multiply the effect by %1";
     connect(this->clickUpgradeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickUpgradeIndex);});
+    this->clickUpgradeSlot->SetMainLabelValue(0);
+    this->clickUpgradeSlot->SetSubLabelValue(0);
 
     this->firstGeneratorSlot = new UpgradeSlot(this);
+    this->firstGeneratorSlot->MainPattern = "Auto installer";
+    this->firstGeneratorSlot->SecondPattern = "This revolutionary feature install bits on its own!";
     connect(this->firstGeneratorSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::FirstGeneratorIndex);});
+    this->firstGeneratorSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
+    this->firstGeneratorSlot->UpgradeButtons->secondButtonPattern = "Improve each generator output for %1 bits";
+    this->firstGeneratorSlot->UpgradeButtons->secondButtonTooltipPattern = "Multiply the generator output by %1";
+    this->firstGeneratorSlot->SetMainLabelValue(0);
+    this->firstGeneratorSlot->SetSubLabelValue(0);
 
     this->secondGeneratorSlot = new UpgradeSlot(this);
+    this->secondGeneratorSlot->MainPattern = "Super installer";
+    this->secondGeneratorSlot->SecondPattern = "It's way better that the auto installer.";
     connect(this->secondGeneratorSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::SecondGeneratorIndex);});
+    this->secondGeneratorSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
+    this->secondGeneratorSlot->UpgradeButtons->secondButtonPattern = "Improve each generator output for %1 bits";
+    this->secondGeneratorSlot->UpgradeButtons->secondButtonTooltipPattern = "Multiply the generator output by %1";
+    this->secondGeneratorSlot->SetMainLabelValue(0);
+    this->secondGeneratorSlot->SetSubLabelValue(0);
 
     upgradeLayout->addWidget(this->secondGeneratorSlot);
     upgradeLayout->addWidget(this->firstGeneratorSlot);
@@ -227,7 +246,7 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     }
 
     this->clickUpgradeSlot->InstanceBought->setText(QString::number(serverData->clickUpgrade->InstanceBought));
-    this->clickUpgradeSlot->UpgradeButtons->MainButton->setText(serverData->clickUpgrade->GetPriceLabel());
+    this->clickUpgradeSlot->UpgradeButtons->SetMainButtonValue(serverData->clickUpgrade->Price);
 
     this->firstGeneratorSlot->InstanceBought->setText(QString::number(serverData->firstGenerator->InstanceBought));
     this->firstGeneratorSlot->UpgradeButtons->MainButton->setText(serverData->firstGenerator->GetPriceLabel());
@@ -396,7 +415,7 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
     hLayout->addWidget(this->InstanceBought);
 
     QVBoxLayout* vLayout = new QVBoxLayout();
-    QSpacerItem* spacer = new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     vLayout->addSpacerItem(spacer);
     hLayout->addLayout(vLayout);
     this->MainLabel = new QLabel(this);
@@ -410,11 +429,14 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
     vLayout->addWidget(this->SubLabel);
     this->SubLabel->setWordWrap(true);
     this->SubLabel->setText("[TBW] PlaceHolder");
+    QFont subFont = this->SubLabel->font();
+    subFont.setPointSize(8);
+    this->SubLabel->setFont(subFont);
 
-    spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
+    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     vLayout->addSpacerItem(spacer);
 
-    this->UpgradeButtons = new UpgradeButton("Aquire\n8888 bits", this);
+    this->UpgradeButtons = new UpgradeButton(this);
     hLayout->addWidget(this->UpgradeButtons);
 
     QSplitter* splitter = new QSplitter(this);
@@ -424,6 +446,15 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
     this->setFrameStyle(QFrame::Box | QFrame::Sunken);
 }
 
+void UpgradeSlot::SetMainLabelValue(int64_t value)
+{
+    this->MainLabel->setText(this->MainPattern.arg(value));
+}
+
+void UpgradeSlot::SetSubLabelValue(int64_t value)
+{
+    this->SubLabel->setText(this->SecondPattern.arg(value));
+}
 
 ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
 {
@@ -454,7 +485,10 @@ ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
 
     hLayout->addLayout(vLayout);
 
-    this->UpgradeButtons = new UpgradeButton("Optimize", this);
+    this->UpgradeButtons = new UpgradeButton(this);
+    this->UpgradeButtons->mainButtonPattern = "Optimize\n%1 bits";
+    this->UpgradeButtons->secondButtonPattern = "Improve the optimize process for %1 bits";
+    this->UpgradeButtons->secondButtonTooltipPattern = "Temp";
     hLayout->addWidget(this->UpgradeButtons);
     this->UpgradeButtons->setFixedHeight(50);
 

@@ -11,13 +11,20 @@ class UpgradeButton : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UpgradeButton(QString mainLabel, QWidget *parent = nullptr);
+    explicit UpgradeButton(QWidget *parent = nullptr);
+
+    void SetMainButtonValue(int64_t value);
+    void SetSecondaryButtonValue(int64_t value);
+    void SetSecondaryTooltipValue(int64_t value);
 
     QPushButton* MainButton = nullptr;
     QPushButton* SecondaryButton = nullptr;
 
     QMenu* secondaryMenu = nullptr;
     QAction* secondaryAction = nullptr;
+    QString mainButtonPattern;
+    QString secondButtonPattern;
+    QString secondButtonTooltipPattern;
 
 private:
 signals:

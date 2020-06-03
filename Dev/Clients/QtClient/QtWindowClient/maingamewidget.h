@@ -32,11 +32,17 @@ class UpgradeSlot : public QFrame
 public:
     UpgradeSlot(QWidget* parrent = nullptr);
 
+    void SetMainLabelValue(int64_t value);
+    void SetSubLabelValue(int64_t value);
+
     QBoxLayout* MainLayout = nullptr;
     QLabel* InstanceBought = nullptr;
     QLabel* MainLabel = nullptr;
     QLabel* SubLabel = nullptr;
     UpgradeButton* UpgradeButtons = nullptr;
+
+    QString MainPattern;
+    QString SecondPattern;
 };
 
 class ScoreSlot : public QFrame
