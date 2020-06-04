@@ -77,8 +77,7 @@ private:
 
     QLabel* frameValueLabel = nullptr;
 
-    QPushButton* clickerButton = nullptr;
-    QPushButton* clickMenuButton = nullptr;
+    UpgradeButton* clickerButton = nullptr;
 
     QPushButton* finishButton = nullptr;
     UpdateWorker* updateWorker = nullptr;

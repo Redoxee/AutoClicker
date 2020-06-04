@@ -154,37 +154,13 @@ void MainGameWidget::SetupUI()
 
     vBoxLayout->addLayout(upgradeLayout);
 
-    QHBoxLayout* clickerButtonLayout = new QHBoxLayout();
-    vBoxLayout->addLayout(clickerButtonLayout);
-
-    clickerButtonLayout->setMargin(0);
-    clickerButtonLayout->setSpacing(0);
-
-    this->clickerButton = new QPushButton("Install (+1 Bit)", this);
-    clickerButtonLayout->addWidget(this->clickerButton);
-    this->clickerButton->setFixedHeight(50);
-    this->clickerButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    connect(this->clickerButton, &QPushButton::clicked, this, &MainGameWidget::handleClick);
-
-    this->clickMenuButton = new QPushButton("+");
-    clickerButtonLayout->addWidget(this->clickMenuButton);
-    this->clickMenuButton->setFixedWidth(25);
-    this->clickMenuButton->setFixedHeight(50);
-    this->clickMenuButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-    connect(this->clickMenuButton, &QPushButton::clicked, this,[this]()
-    {
-        QMenu menu;
-        menu.setToolTipsVisible(true);
-        QAction *a = new QAction();
-        a->setText("Buy upgrade for 8888888 bits\n Test");
-        a->setToolTip("Upgrade by x precent \n youhou.");
-        menu.addAction(a);
-        QPoint pos = this->clickMenuButton->pos() + this->gameWindow->pos();
-
-        menu.exec(pos);
-    });
+    this->clickerButton = new UpgradeButton(this);
+    this->clickerButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    this->clickerButton->mainButtonPattern = "Install (+%1 Bits)";
+    this->clickerButton->MainButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->clickerButton->MainButton->setMaximumWidth(3000);
+    vBoxLayout->addWidget(this->clickerButton);
+    connect(this->clickerButton->MainButton, &QPushButton::clicked, this, &MainGameWidget::handleClick);
 
     this->finishButton = new QPushButton();
     this->gameWindow->BottomBox->addWidget(finishButton);
@@ -254,7 +230,7 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     this->secondGeneratorSlot->InstanceBought->setText(QString::number(serverData->secondGenerator->InstanceBought));
     this->secondGeneratorSlot->UpgradeButtons->MainButton->setText(serverData->secondGenerator->GetPriceLabel());
 
-    this->clickerButton->setText(QString("Install (+%1 Bits)").arg(clickValue));
+    this->clickerButton->SetMainButtonValue(clickValue);
 
     this->gameWindow->currentFrame = serverData->FrameCount;
 
