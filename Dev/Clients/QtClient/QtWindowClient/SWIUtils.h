@@ -4,7 +4,7 @@
 #include <QTextStream>
 
 namespace  SWIUtils {
-    QString FormatDownQuantity(int quantity);
+    QString FormatDownQuantity(int64_t quantity);
 }
 
 #endif // SWIUTILS_H

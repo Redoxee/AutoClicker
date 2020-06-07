@@ -127,6 +127,7 @@ void MainGameWidget::SetupUI()
     connect(this->clickUpgradeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickUpgradeIndex);});
     this->clickUpgradeSlot->SetMainLabelValue(0);
     this->clickUpgradeSlot->SetSubLabelValue(0);
+    connect(this->clickUpgradeSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickUpgradeImproveIndex);});
 
     this->firstGeneratorSlot = new UpgradeSlot(this);
     this->firstGeneratorSlot->MainPattern = "Auto installer";
@@ -137,6 +138,7 @@ void MainGameWidget::SetupUI()
     this->firstGeneratorSlot->UpgradeButtons->secondButtonTooltipPattern = "Multiply the generator output by %1";
     this->firstGeneratorSlot->SetMainLabelValue(0);
     this->firstGeneratorSlot->SetSubLabelValue(0);
+    connect(this->firstGeneratorSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::FirstGeneratorImproveIndex);});
 
     this->secondGeneratorSlot = new UpgradeSlot(this);
     this->secondGeneratorSlot->MainPattern = "Super installer";
@@ -147,6 +149,7 @@ void MainGameWidget::SetupUI()
     this->secondGeneratorSlot->UpgradeButtons->secondButtonTooltipPattern = "Multiply the generator output by %1";
     this->secondGeneratorSlot->SetMainLabelValue(0);
     this->secondGeneratorSlot->SetSubLabelValue(0);
+    connect(this->secondGeneratorSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::SecondGeneratorImproveIndex);});
 
     upgradeLayout->addWidget(this->secondGeneratorSlot);
     upgradeLayout->addWidget(this->firstGeneratorSlot);
@@ -155,12 +158,21 @@ void MainGameWidget::SetupUI()
     vBoxLayout->addLayout(upgradeLayout);
 
     this->clickerButton = new UpgradeButton(this);
-    this->clickerButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    this->clickerButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->clickerButton->mainButtonPattern = "Install (+%1 Bits)";
+    this->clickerButton->secondButtonPattern = "Boost your auto installer temporarely by using your manual installer %1 bits";
     this->clickerButton->MainButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->clickerButton->MainButton->setMaximumWidth(3000);
+    this->clickerButton->setFixedHeight(50);
     vBoxLayout->addWidget(this->clickerButton);
     connect(this->clickerButton->MainButton, &QPushButton::clicked, this, &MainGameWidget::handleClick);
+    connect(this->clickerButton->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickBonusFactorIndex);});
+
+    this->scoreSlot->UpgradeButtons->mainButtonPattern = "Optimize\n%1 bits";
+    this->scoreSlot->UpgradeButtons->secondButtonPattern = "improve optimization %1 bits";
+
+    connect(this->scoreSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::PrestigeIndex);});
+    connect(this->scoreSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::PrestigeImproveIndex);});
 
     this->finishButton = new QPushButton();
     this->gameWindow->BottomBox->addWidget(finishButton);
@@ -176,7 +188,6 @@ void MainGameWidget::SetupUI()
 void MainGameWidget::handleClick()
 {
     this->isDirty = true;
-    qDebug("Hello");
     request.setUrl(
                 QUrl(
                     QString::fromStdString(AutoClicker::BaseURI() + "click=true")
@@ -223,14 +234,21 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
 
     this->clickUpgradeSlot->InstanceBought->setText(QString::number(serverData->clickUpgrade->InstanceBought));
     this->clickUpgradeSlot->UpgradeButtons->SetMainButtonValue(serverData->clickUpgrade->Price);
+    this->clickUpgradeSlot->UpgradeButtons->SetSecondaryButtonValue(serverData->clickUpgradeImprove->Price);
 
     this->firstGeneratorSlot->InstanceBought->setText(QString::number(serverData->firstGenerator->InstanceBought));
-    this->firstGeneratorSlot->UpgradeButtons->MainButton->setText(serverData->firstGenerator->GetPriceLabel());
+    this->firstGeneratorSlot->UpgradeButtons->SetMainButtonValue(serverData->firstGenerator->Price);
+    this->firstGeneratorSlot->UpgradeButtons->SetSecondaryButtonValue(serverData->firstGeneratorImprove->Price);
 
     this->secondGeneratorSlot->InstanceBought->setText(QString::number(serverData->secondGenerator->InstanceBought));
-    this->secondGeneratorSlot->UpgradeButtons->MainButton->setText(serverData->secondGenerator->GetPriceLabel());
+    this->secondGeneratorSlot->UpgradeButtons->SetMainButtonValue(serverData->secondGenerator->Price);
+    this->secondGeneratorSlot->UpgradeButtons->SetSecondaryButtonValue(serverData->secondGeneratorImprove->Price);
+
+    this->scoreSlot->UpgradeButtons->SetMainButtonValue(serverData->prestige->Price);
+    this->scoreSlot->UpgradeButtons->SetSecondaryButtonValue(serverData->prestigeImprove->Price);
 
     this->clickerButton->SetMainButtonValue(clickValue);
+    this->clickerButton->SetSecondaryButtonValue(serverData->clickFactor->Price);
 
     this->gameWindow->currentFrame = serverData->FrameCount;
 
