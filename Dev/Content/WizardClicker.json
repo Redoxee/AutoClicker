@@ -87,20 +87,6 @@
 		},
 
 		{
-			"Name" : "Generator_2",
-			"Description" : "Auto click for %1 by tick",
-			"UpgradeType" : "Generator",
-			"BaseImpactValue" : 150,
-			"BasePrice" : 30000,
-			"Unique" : false,
-			"PriceStrategy" : 
-			{
-				"Type" : "Exponential",
-				"Value" : 1.125
-			}
-		},
-
-		{
 			"Name" : "Improve_generator_1",
 			"Description" : "Multiply the generator 1 by %1, unlock after 35 Generator 1",
 			"UpgradeType" : "UpgradeImprovement",
@@ -108,7 +94,7 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 30
+				"Value" : 60
 			},
 
 			"BasePrice" : 200000,
@@ -124,6 +110,20 @@
 				"TargetName" : "Generator_1",
 				"Comparer" : "GeaterThan",
 				"Value" : 35
+			}
+		},
+
+		{
+			"Name" : "Generator_2",
+			"Description" : "Auto click for %1 by tick",
+			"UpgradeType" : "Generator",
+			"BaseImpactValue" : 150,
+			"BasePrice" : 30000,
+			"Unique" : false,
+			"PriceStrategy" : 
+			{
+				"Type" : "Exponential",
+				"Value" : 1.125
 			}
 		},
 
