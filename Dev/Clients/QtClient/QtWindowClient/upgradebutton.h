@@ -15,7 +15,9 @@ public:
 
     void SetMainButtonValue(int64_t value);
     void SetSecondaryButtonValue(int64_t value);
+    void SetSecondaryButtonValue(int64_t v1, int64_t v2);
     void SetSecondaryTooltipValue(int64_t value);
+    void SetSecondaryTooltipValue(int64_t v1, int64_t v2);
 
     QPushButton* MainButton = nullptr;
     QPushButton* SecondaryButton = nullptr;

@@ -26,6 +26,7 @@ class UpdateWorker;
 class ScaledProgressBar;
 class GameWindow;
 class UpgradeButton;
+struct Upgrade;
 
 class UpgradeSlot : public QFrame
 {
@@ -34,6 +35,7 @@ public:
 
     void SetMainLabelValue(int64_t value);
     void SetSubLabelValue(int64_t value);
+    void RefreshDisplay(Upgrade* mainUpgrade, int mainImpactFactor, Upgrade* Improve);
 
     QBoxLayout* MainLayout = nullptr;
     QLabel* InstanceBought = nullptr;
@@ -52,8 +54,6 @@ public:
 
     QLabel* ScoreLabel = nullptr;
     QLabel* FactorLabel = nullptr;
-
-    UpgradeButton* UpgradeButtons = nullptr;
 };
 
 class MainGameWidget : public QWidget
@@ -88,10 +88,9 @@ private:
     ScaledProgressBar* ProgressBar[4];
 
     UpgradeSlot* clickUpgradeSlot = nullptr;
-
     UpgradeSlot* firstGeneratorSlot = nullptr;
-
     UpgradeSlot* secondGeneratorSlot = nullptr;
+    UpgradeSlot* prestigeSlot = nullptr;
 
     void RefreshProgressBars(int score);
 

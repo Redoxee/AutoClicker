@@ -46,8 +46,22 @@ void UpgradeButton::SetSecondaryButtonValue(int64_t value)
     this->secondaryAction->setText(this->secondButtonPattern.arg(valueLabel));
 }
 
+void UpgradeButton::SetSecondaryButtonValue(int64_t v1, int64_t v2)
+{
+    QString v1Label = SWIUtils::FormatDownQuantity(v1);
+    QString v2Label = SWIUtils::FormatDownQuantity(v2);
+    this->secondaryAction->setText(this->secondButtonPattern.arg(v1Label, v2Label));
+}
+
 void UpgradeButton::SetSecondaryTooltipValue(int64_t value)
 {
     QString valueLabel = SWIUtils::FormatDownQuantity(value);
     this->secondaryAction->setToolTip(this->secondButtonTooltipPattern.arg(valueLabel));
+}
+
+void UpgradeButton::SetSecondaryTooltipValue(int64_t v1, int64_t v2)
+{
+    QString v1Label = SWIUtils::FormatDownQuantity(v1);
+    QString v2Label = SWIUtils::FormatDownQuantity(v2);
+    this->secondaryAction->setToolTip(this->secondButtonTooltipPattern.arg(v1Label, v2Label));
 }

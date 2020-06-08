@@ -9,14 +9,25 @@
 
 #include "SWIUtils.h"
 
+enum class FailureFlags
+{
+    None = 0,
+    NotEnoughMoney = 1,
+    PurchaseLimitReached = 2,
+    GameOver = 4,
+    UnknownUpgrade = 8,
+    LockedByAnOtherPurchase = 16,
+};
+
 struct Upgrade
 {
     QString Name = "";
     QString Description = "";
     int Price = 0;
     int InstanceBought = 0;
-    int FailureFlags = 0;
+    FailureFlags FailureFlags = FailureFlags::None;
     int Index = 0;
+    int ImpactValue = 0;
 
     QString GetPriceLabel()
     {
@@ -124,9 +135,12 @@ struct ServerGameplayState
             upgrade->Description = jsonUpgrade["Description"].toString().arg(impactValue);
             upgrade->Price = jsonUpgrade["Price"].toInt();
             upgrade->InstanceBought = jsonUpgrade["NumberOfInstanceBought"].toInt();
+            upgrade->ImpactValue = jsonUpgrade["ImpactValue"].toInt();
+
             upgrade->Index = index;
 
-            upgrade->FailureFlags = jsonUpgrades[index].toObject()["FailureFlags"].toInt();
+            int iFailureFlags = jsonUpgrades[index].toObject()["FailureFlags"].toInt();
+            upgrade->FailureFlags = static_cast<FailureFlags>(iFailureFlags);
             if(upgrade->Name == ServerGameplayState::clickUpgradeName)
             {
                 this->clickUpgrade = upgrade;
