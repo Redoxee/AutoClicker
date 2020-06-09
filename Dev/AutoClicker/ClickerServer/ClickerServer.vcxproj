@@ -119,11 +119,13 @@
   <ItemGroup>
     <ClInclude Include="ClickerManager.h" />
     <ClInclude Include="ClickerServer.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClickerManager.cpp" />
     <ClCompile Include="ClickerServer.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

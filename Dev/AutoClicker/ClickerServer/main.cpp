@@ -1,10 +1,12 @@
 #include "stdafx.h"
-#include "ClickerServer.h"
-#include "AutoClicker.h"
 
 #include <map>
 #include <fstream>
 #include <cpprest/json.h>
+
+#include "ClickerServer.h"
+#include "AutoClicker.h"
+#include "Logger.h"
 
 using namespace std;
 
@@ -129,6 +131,8 @@ int main(int argc, char *argv[])
 			configPath = utility::conversions::to_string_t(argv[argc - 1]);
 		}
 	}
+
+	Logger* logger = new Logger(L"ClickerLogger.txt");
 
 	start(configPath);
 
