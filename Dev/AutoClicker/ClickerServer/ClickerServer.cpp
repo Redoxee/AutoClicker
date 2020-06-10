@@ -8,9 +8,9 @@ using namespace utility;
 using namespace http;
 using namespace web::http::experimental::listener;
 
-ClickerServer::ClickerServer(utility::string_t url, const json::value& configuration) : listener(url)
+ClickerServer::ClickerServer(utility::string_t url, const json::value& configuration, const string_t logFileName) : listener(url)
 {
-	this->clickerManager.Initialize(configuration);
+	this->clickerManager.Initialize(configuration, logFileName);
 
 	this->clickerManager.StartClickerThread();
 

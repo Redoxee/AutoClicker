@@ -16,7 +16,7 @@ class ClickerServer
 {
 public:
 	ClickerServer() {}
-	ClickerServer(utility::string_t url, const json::value& configuration);
+	ClickerServer(utility::string_t url, const json::value& configuration, const string_t logFileName);
 
 	pplx::task<void> open() {
 		return listener.open(); 

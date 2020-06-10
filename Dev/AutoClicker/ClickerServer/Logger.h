@@ -8,10 +8,12 @@ class Logger
 {
 public:
 	Logger(string_t fileName);
-	void Log(string_t message);
-
+	~Logger();
+	void LogUpgrade(int64_t frame, string_t upgradeName);
+	void Dump(string_t endGameDump);
 private:
 	bool isLogging = false;
-	concurrency::streams::file_stream<unsigned char>* fstream = nullptr;
+
+	Concurrency::task <Concurrency::streams::ostream > streamTask;
 };
 

@@ -12,6 +12,8 @@ using namespace web;
 using namespace json;
 using namespace utility;
 
+class Logger;
+
 enum class OrderIdentifier
 {
 	DoFrame,
@@ -41,7 +43,7 @@ public:
 	ClickerManager();
 	~ClickerManager();
 
-	void Initialize(const json::value& configuration);
+	void Initialize(const json::value& configuration, string_t loggerFile);
 
 	void PostOrder(Order order);
 	void ProcessNextOrder();
@@ -83,4 +85,5 @@ private:
 	void Synchonize();
 	long frameWait = 100;
 
+	Logger* logger = nullptr;
 };

@@ -3,6 +3,8 @@
 #include "vector"
 #include <stdio.h>
 
+#include "Logger.h"
+
 ClickerManager::ClickerManager()
 {
 }
@@ -34,7 +36,7 @@ AutoClicker::ValueIncreaseStrategy ParseIncreaseStrategy(const json::value jsonS
 	return strategy;
 }
 
-void ClickerManager::Initialize(const json::value& jsonConfiguration)
+void ClickerManager::Initialize(const json::value& jsonConfiguration, string_t loggerFile)
 {
 	wcout << "Parsing clicker configuration." << endl;
 	AutoClicker::ConfigurationData configData;
@@ -218,6 +220,8 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration)
 		}
 	}
 
+	this->logger = new Logger(loggerFile);
+
 	wcout << "Clicker configuration parsed." << endl;
 }
 
@@ -225,6 +229,7 @@ ClickerManager::~ClickerManager()
 {
 	this->isTerminated = true;
 	this->clickerThread.join();
+	delete this->logger;
 }
 
 void ClickerManager::PostOrder(Order order)
@@ -287,6 +292,10 @@ void ClickerManager::ProcessNextOrder()
 		else
 		{
 			this->clickerInstance.BuyUpgrade(index);
+
+			AutoClicker::Data data;
+			this->clickerInstance.GetData(data);
+			this->logger->LogUpgrade(data.FrameCount, this->upgradeDefinitions[index].Name);
 		}
 
 		break;
@@ -316,7 +325,7 @@ void ClickerManager::StartClickerThread()
 
 void ClickerManager::ManagerThreadLoop()
 {
-	while (!this->IsTerminated())
+	while (!this->IsTerminated() && !this->clickerInstance.IsOver())
 	{
 		this->ProcessNextOrder();
 
@@ -337,6 +346,9 @@ void ClickerManager::ManagerThreadLoop()
 			}
 		}
 	}
+
+	this->logger->Dump(this->GetDataAsJson().serialize());
+	
 	wcout << "Exiting the clicker manager thread loop" << endl;
 }
 

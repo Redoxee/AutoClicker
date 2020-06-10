@@ -59,7 +59,7 @@ bool read_config_file(const string_t& config_file_path, json::value& result)
 	return false;
 }
 
-void start(const string_t& config_filePath)
+void start(const string_t& config_filePath, const string_t logFileName)
 {
 	json::value config;
 	if (config_filePath.size() > 0)
@@ -94,7 +94,7 @@ void start(const string_t& config_filePath)
 	uri.append_path(U("AutoClicker/"));
 
 	string_t addr = uri.to_uri().to_string();
-	g_http = std::unique_ptr<ClickerServer>(new ClickerServer(addr, config));
+	g_http = std::unique_ptr<ClickerServer>(new ClickerServer(addr, config, logFileName));
 
 	wcout << "Initialization done." << endl;
 
@@ -115,8 +115,8 @@ void stop()
 int main(int argc, char *argv[])
 {
 	map<string_t, string_t> arguments;
-	string_t configPath = U("");
-	
+	string_t configPath = L"";
+	string_t logFileName = L"";
 	if (argc > 0)
 	{
 		for (int index = 1; index < (argc - 1); index += 2)
@@ -126,15 +126,24 @@ int main(int argc, char *argv[])
 			arguments[param] = value;
 		}
 
+		if (arguments.find(L"Config") != arguments.end())
+		{
+			configPath = arguments[L"Config"];
+		}
+
+		if (arguments.find(L"LogFile") != arguments.end())
+		{
+			logFileName = arguments[L"LogFile"];
+		}
+
 		if (argc % 2 == 0)
 		{
 			configPath = utility::conversions::to_string_t(argv[argc - 1]);
 		}
 	}
 
-	Logger* logger = new Logger(L"ClickerLogger.txt");
 
-	start(configPath);
+	start(configPath, logFileName);
 
 	std::wcout << "Press ENTER to exit." << std::endl;
 	std::string line;
