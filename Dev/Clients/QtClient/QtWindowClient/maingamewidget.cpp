@@ -18,6 +18,7 @@
 #include "scaledprogressbar.h"
 #include "servergameplaystate.h"
 #include "serverworker.h"
+#include "SWIUtils.h"
 
 using namespace SWIUtils;
 
@@ -212,8 +213,6 @@ void MainGameWidget::handleHttpRequest(QNetworkReply* reply)
 
 void MainGameWidget::refreshData(ServerGameplayState* serverData)
 {
-    QString scoreMessage = QString("%1 bits installed").arg(QString::number(serverData->Score));
-
     int64_t passiveSpeed = serverData->PassiveSpeed * serverData->GlobalFactor;
     if(serverData->TempBonusDuration > 0 && serverData->TempBonusFactor > 1)
     {
@@ -222,27 +221,36 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
 
     int framePerSecond = 1000 / AutoClicker::FrameLength();
     passiveSpeed *= framePerSecond;
-    QString passiveSpeedMessage = QString("Autoinstall %1 bits per second").arg(QString::number(passiveSpeed));
 
+    QString passiveSpeedMessage = QString("Autoinstall %1 bits per second").arg(SWIUtils::FormatDownQuantity(passiveSpeed));
+
+    QString scoreMessage = QString("%1 bits installed").arg(QString::number(serverData->Score));
     this->scoreSlot->ScoreLabel->setText(scoreMessage);
     this->scoreSlot->FactorLabel->setText(passiveSpeedMessage);
 
     this->frameValueLabel->setText(QString::number(serverData->FrameCount));
 
     int clickValue = serverData->ClickValue;
+    int bonusFactor = 1;
+    int globalFactor = 1;
+
     if(serverData->GlobalFactor > 1)
     {
-        clickValue *= serverData->GlobalFactor;
+        globalFactor = serverData->GlobalFactor;
     }
+
+    bonusFactor *= globalFactor;
 
     if(serverData->TempBonusDuration > 0)
     {
-        clickValue *= serverData->TempBonusFactor;
+        bonusFactor *= serverData->TempBonusFactor;
     }
 
-    this->clickUpgradeSlot->RefreshDisplay(serverData->clickUpgrade, 1, serverData->clickUpgradeImprove);
-    this->firstGeneratorSlot->RefreshDisplay(serverData->firstGenerator, framePerSecond, serverData->firstGeneratorImprove);
-    this->secondGeneratorSlot->RefreshDisplay(serverData->secondGenerator, framePerSecond, serverData->secondGeneratorImprove);
+    clickValue *= bonusFactor;
+
+    this->clickUpgradeSlot->RefreshDisplay(serverData->clickUpgrade, globalFactor, serverData->clickUpgradeImprove);
+    this->firstGeneratorSlot->RefreshDisplay(serverData->firstGenerator, framePerSecond * globalFactor, serverData->firstGeneratorImprove);
+    this->secondGeneratorSlot->RefreshDisplay(serverData->secondGenerator, framePerSecond * globalFactor, serverData->secondGeneratorImprove);
 
     this->prestigeSlot->RefreshDisplay(serverData->prestige, 1, serverData->prestigeImprove);
 
