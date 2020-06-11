@@ -1,5 +1,7 @@
 #include "serverworker.h"
 
+#include <QStringList>
+
 #include "autoclickerconfig.h"
 #include "servergameplaystate.h"
 
@@ -108,8 +110,11 @@ void ServerWorker::StartNewServer()
         args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
     });
 
+    QStringList arguments;
+    arguments << "--Config" << this->applicationPath + QString::fromStdString(AutoClicker::RelativeConfigPath());
+    arguments << "--LogFile" << "GameLog.txt";
     qProcess.setProgram(coreGameProcessPath);
-    qProcess.setArguments({this->applicationPath + QString::fromStdString(AutoClicker::RelativeConfigPath())});
+    qProcess.setArguments(arguments);
     qProcess.startDetached();
 
     connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(startServerRequest(QNetworkReply*)));

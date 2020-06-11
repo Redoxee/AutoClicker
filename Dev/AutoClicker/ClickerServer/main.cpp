@@ -126,14 +126,16 @@ int main(int argc, char *argv[])
 			arguments[param] = value;
 		}
 
-		if (arguments.find(L"Config") != arguments.end())
+		if (arguments.find(L"--Config") != arguments.end())
 		{
-			configPath = arguments[L"Config"];
+			configPath = arguments[L"--Config"];
+			std::cout << "Config file specified : " << utility::conversions::to_utf8string(configPath) << std::endl;
 		}
 
-		if (arguments.find(L"LogFile") != arguments.end())
+		if (arguments.find(L"--LogFile") != arguments.end())
 		{
-			logFileName = arguments[L"LogFile"];
+			logFileName = arguments[L"--LogFile"];
+			std::cout << "Log file specified : " << utility::conversions::to_utf8string(logFileName) << std::endl;
 		}
 
 		if (argc % 2 == 0)
