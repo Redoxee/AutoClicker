@@ -1,1 +1,3 @@
-{"ClickValue":0,"FrameCount":0,"GlobalFactor":0,"PassiveSpeed":0,"Score":0,"TargetScore":0,"TemporaryBonusFactor":0,"TemporaryBonusTimer":0,"WakeDuration":0,"WakeTimer":0}
+Frame : 325 | Upgrade : Click_upgrade_1
+Frame : 327 | Upgrade : Click_upgrade_1
+etScore":0,"TemporaryBonusFactor":0,"TemporaryBonusTimer":0,"WakeDuration":0,"WakeTimer":0}
