@@ -405,6 +405,23 @@ web::json::value ClickerManager::GetDataAsJson()
 			upgrade[U("Description")] = web::json::value::string(description);
 			upgrade[U("FailureFlags")] = static_cast<int>(AutoClicker::AutoClicker::GetUpgradeFailureFlags(&data ,index));
 
+			auto lock = web::json::value::object();
+			if (data.Upgrades[index].Definition->Lock.LockIndex > -1)
+			{
+				auto lock = web::json::value::object();
+				int targetIndex = data.Upgrades[index].Definition->Lock.LockIndex;
+				
+				lock[U("Target")] = web::json::value::string(data.Upgrades[targetIndex].Definition->Name);
+				lock[U("Comparer")] = static_cast<int>(data.Upgrades[index].Definition->Lock.Comparer);
+				lock[U("Value")] = data.Upgrades[index].Definition->Lock.targetValue;
+			}
+			else
+			{
+				lock[U("Target")] = web::json::value::string(U("None"));
+			}
+
+			upgrade[U("Lock")] = lock;
+
 			upgrades[index] = upgrade;
 		}
 
