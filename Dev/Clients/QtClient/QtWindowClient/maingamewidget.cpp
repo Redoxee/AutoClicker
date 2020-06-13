@@ -5,6 +5,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QLogValueAxis>
 #include <QtCharts/QChartView>
+#include <QGraphicsLayout>
 #include <QSplitter>
 
 #include <QMenu>
@@ -21,6 +22,7 @@
 #include "SWIUtils.h"
 
 using namespace SWIUtils;
+using namespace FailureFlagsUtils;
 
 MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
@@ -63,6 +65,33 @@ void MainGameWidget::SetupUI()
     QVBoxLayout* vBoxLayout = new QVBoxLayout(this);
     vBoxLayout->setMargin(0);
 
+    this->historySeries = new QtCharts::QLineSeries();
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    chart->legend()->hide();
+    chart->addSeries(this->historySeries);
+    chart->layout()->setContentsMargins(0, 0, 0, 0);
+    chart->setMargins(QMargins(0, 0, 0, 0));
+    chart->setBackgroundRoundness(0);
+
+    this->historyYAxis = new QtCharts::QLogValueAxis();
+    this->historyYAxis->setMin(0);
+    this->historyYAxis->setLabelFormat("%g bits");
+    QFont font = this->historyYAxis->labelsFont();
+    font.setPointSize(6);
+    this->historyYAxis->setLabelsFont(font);
+    this->historyYAxis->setBase(10.0);
+    this->historyYAxis->setMinorTickCount(0);
+    chart->addAxis(this->historyYAxis, Qt::AlignLeft);
+    this->historySeries->attachAxis(this->historyYAxis);
+    this->historyChartView = new QtCharts::QChartView(chart);
+    this->historyChartView->setRenderHint(QPainter::Antialiasing, true);
+    this->historyChartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    this->historyChartView->setMinimumHeight(100);
+    this->historyChartView->setMaximumHeight(100);
+
+    vBoxLayout->addWidget(this->historyChartView);
+    this->historyChartView->setVisible(false);
+
     this->scoreSlot = new ScoreSlot(this);
     vBoxLayout->addWidget(this->scoreSlot);
 
@@ -88,32 +117,8 @@ void MainGameWidget::SetupUI()
         this->ProgressBar[index] = new ScaledProgressBar(scale, this);
 
         progressLayout->addWidget(this->ProgressBar[index]);
+        this->ProgressBar[index]->setVisible(false);
     }
-
-    this->historySeries = new QtCharts::QLineSeries();
-    QtCharts::QChart *chart = new QtCharts::QChart();
-    chart->legend()->hide();
-    chart->addSeries(this->historySeries);
-    chart->setMargins(QMargins(0, 0, 0, 0));
-    chart->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    this->historyYAxis = new QtCharts::QLogValueAxis();
-    this->historyYAxis->setMin(0);
-    this->historyYAxis->setLabelFormat("%g");
-    QFont font = this->historyYAxis->labelsFont();
-    font.setPointSize(6);
-    this->historyYAxis->setLabelsFont(font);
-    this->historyYAxis->setBase(10.0);
-    this->historyYAxis->setMinorTickCount(0);
-
-    chart->addAxis(this->historyYAxis, Qt::AlignLeft);
-    this->historySeries->attachAxis(this->historyYAxis);
-    this->historyChartView = new QtCharts::QChartView(chart);
-    this->historyChartView->setRenderHint(QPainter::Antialiasing, true);
-    this->historyChartView->setMinimumHeight(90);
-    this->historyChartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    vBoxLayout->addWidget(this->historyChartView);
 
     vBoxLayout->addLayout(progressLayout);
 
@@ -190,6 +195,16 @@ void MainGameWidget::SetupUI()
     this->finishButton->setText("Next");
 
     connect(this->finishButton, &QPushButton::clicked, this, &MainGameWidget::onFinishButtonClicked);
+
+    this->clickerButton->SecondaryButton->setVisible(false);
+    this->clickUpgradeSlot->setVisible(false);
+    this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+    this->firstGeneratorSlot->setVisible(false);
+    this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+    this->secondGeneratorSlot->setVisible(false);
+    this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+    this->prestigeSlot->setVisible(false);
+    this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
 }
 
 void MainGameWidget::handleClick()
@@ -251,8 +266,77 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     this->clickUpgradeSlot->RefreshDisplay(serverData->clickUpgrade, globalFactor, serverData->clickUpgradeImprove);
     this->firstGeneratorSlot->RefreshDisplay(serverData->firstGenerator, framePerSecond * globalFactor, serverData->firstGeneratorImprove);
     this->secondGeneratorSlot->RefreshDisplay(serverData->secondGenerator, framePerSecond * globalFactor, serverData->secondGeneratorImprove);
-
     this->prestigeSlot->RefreshDisplay(serverData->prestige, 1, serverData->prestigeImprove);
+
+    if(!this->clickerButton->SecondaryButton->isVisible())
+    {
+        if((serverData->clickFactor->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            if(serverData->Score >= (serverData->clickFactor->Price / 2))
+            {
+                this->clickerButton->SecondaryButton->setVisible(true);
+            }
+        }
+    }
+
+    if(!this->clickUpgradeSlot->isVisible())
+    {
+        if((serverData->clickUpgrade->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            if(serverData->Score >= (serverData->clickUpgrade->Price / 2))
+            {
+                this->clickUpgradeSlot->setVisible(true);
+            }
+        }
+    }
+
+    if(!this->firstGeneratorSlot->isVisible())
+    {
+        if((serverData->firstGenerator->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            if(serverData->Score >= (serverData->firstGenerator->Price / 2))
+            {
+                this->firstGeneratorSlot->setVisible(true);
+            }
+        }
+    }
+
+    if((serverData->firstGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
+    {
+        this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+    }
+
+    if(!this->secondGeneratorSlot->isVisible())
+    {
+        if((serverData->secondGenerator->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            if(serverData->Score >= (serverData->secondGenerator->Price / 2))
+            {
+                this->secondGeneratorSlot->setVisible(true);
+            }
+        }
+    }
+
+    if((serverData->secondGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
+    {
+        this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+    }
+
+    if(!this->prestigeSlot->isVisible())
+    {
+        if((serverData->prestige->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            if(serverData->Score >= (serverData->prestige->Price / 2))
+            {
+                this->prestigeSlot->setVisible(true);
+            }
+        }
+    }
+
+    if((serverData->prestigeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->prestigeSlot->UpgradeButtons->SecondaryButton->isVisible())
+    {
+        this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+    }
 
     this->clickerButton->SetMainButtonValue(clickValue);
     this->clickerButton->SetSecondaryButtonValue(serverData->clickFactor->Price);
@@ -270,7 +354,18 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     this->realCurrentScore = serverData->Score;
 
     this->pushToScoreHistory(serverData->Score);
-    this->refreshHistory();
+
+    int displayGap = abs(this->displayedScore - this->realCurrentScore);
+
+    if(!this->historyChartView->isVisible() && displayGap > 15000)
+    {
+        this->historyChartView->setVisible(true);
+    }
+
+    if(this->historyChartView->isVisible())
+    {
+        this->refreshHistory();
+    }
 
     if(!this->isSleeping && serverData->IsSleeping())
     {
@@ -310,6 +405,10 @@ void MainGameWidget::RefreshProgressBars(int score)
     for(int index = 0; index < numberOfbars; ++index)
     {
         this->ProgressBar[index]->SetScaledValue(displayedScore);
+        if(!this->ProgressBar[index]->isVisible() && this->ProgressBar[index]->value() > 0)
+        {
+            this->ProgressBar[index]->setVisible(true);
+        }
     }
 }
 
@@ -409,7 +508,7 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
 {
     QHBoxLayout* hLayout = new QHBoxLayout(this);
     hLayout->setSpacing(0);
-    hLayout->setMargin(0);
+    hLayout-> setMargin(0);
     this->setFixedHeight(50);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -423,6 +522,7 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
     this->InstanceBought->setFont(instanceFont);
     hLayout->addWidget(this->InstanceBought);
 
+    hLayout->addSpacing(5);
     QVBoxLayout* vLayout = new QVBoxLayout();
     vLayout->setMargin(0);
     vLayout->setSpacing(0);
@@ -455,6 +555,8 @@ UpgradeSlot::UpgradeSlot(QWidget* parent) : QFrame(parent)
 
     this->MainLayout = hLayout;
     this->setFrameStyle(QFrame::Box | QFrame::Sunken);
+
+    this->InstanceBought->setVisible(false);
 }
 
 void UpgradeSlot::SetMainLabelValue(int64_t value)
@@ -492,6 +594,11 @@ void UpgradeSlot::RefreshDisplay(Upgrade *mainUpgrade, int mainImpactFactor, Upg
         {
             this->UpgradeButtons->secondaryAction->setEnabled(true);
         }
+    }
+
+    if(mainUpgrade->InstanceBought > 1 && !this->InstanceBought->isVisible())
+    {
+        this->InstanceBought->setVisible(true);
     }
 }
 

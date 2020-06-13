@@ -19,6 +19,16 @@ enum class FailureFlags
     LockedByAnOtherPurchase = 16,
 };
 
+namespace FailureFlagsUtils {
+    inline FailureFlags operator~ (FailureFlags a) { return static_cast<FailureFlags>(~static_cast<int>(a)); }
+    inline FailureFlags operator| (FailureFlags a, FailureFlags b) { return static_cast<FailureFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+    inline FailureFlags operator& (FailureFlags a, FailureFlags b) { return static_cast<FailureFlags>(static_cast<int>(a) & static_cast<int>(b)); }
+    inline FailureFlags operator^ (FailureFlags a, FailureFlags b) { return static_cast<FailureFlags>(static_cast<int>(a) ^ static_cast<int>(b)); }
+    inline FailureFlags& operator|= (FailureFlags& a, FailureFlags b) { a = static_cast<FailureFlags>(static_cast<int>(a) | static_cast<int>(b)); return a;}
+    inline FailureFlags& operator&= (FailureFlags& a, FailureFlags b) { a = static_cast<FailureFlags>(static_cast<int>(a) & static_cast<int>(b)); return a;}
+    inline FailureFlags& operator^= (FailureFlags& a, FailureFlags b) { a = static_cast<FailureFlags>(static_cast<int>(a) ^ static_cast<int>(b)); return a;}
+}
+
 struct Upgrade
 {
     QString Name = "";
