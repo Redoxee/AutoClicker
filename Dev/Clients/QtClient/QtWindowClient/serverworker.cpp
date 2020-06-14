@@ -5,6 +5,8 @@
 #include "autoclickerconfig.h"
 #include "servergameplaystate.h"
 
+using namespace ServerUtils;
+
 ServerWorker::ServerWorker(QApplication* application)
 {
     this->currentState = State::Initializing;

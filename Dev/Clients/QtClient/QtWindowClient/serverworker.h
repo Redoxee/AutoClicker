@@ -20,7 +20,9 @@
 #include <QString>
 #include "windows.h"
 
-struct ServerGameplayState;
+namespace ServerUtils {
+    struct ServerGameplayState;
+}
 
 class ServerWorker : public QObject
 {   
@@ -54,7 +56,7 @@ public:
 signals:
     void InitialServerResponse();
     void ServerStarted();
-    void RefreshGameData(ServerGameplayState* gameData);
+    void RefreshGameData(ServerUtils::ServerGameplayState* gameData);
 
     void PostOrderSignal(ServerWorker::Order order);
 
@@ -71,7 +73,7 @@ private:
 
     QString applicationPath;
 
-    ServerGameplayState* data = nullptr;
+    ServerUtils::ServerGameplayState* data = nullptr;
 
     int attemptCount;
     const int maxAttemptCount = 100;

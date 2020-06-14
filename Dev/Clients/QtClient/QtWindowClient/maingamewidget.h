@@ -21,12 +21,16 @@ namespace QtCharts
     class QLogValueAxis;
 };
 
-struct ServerGameplayState;
+namespace ServerUtils
+{
+    struct ServerGameplayState;
+    struct Upgrade;
+}
+
 class UpdateWorker;
 class ScaledProgressBar;
 class GameWindow;
 class UpgradeButton;
-struct Upgrade;
 
 class UpgradeSlot : public QFrame
 {
@@ -35,7 +39,7 @@ public:
 
     void SetMainLabelValue(int64_t value);
     void SetSubLabelValue(int64_t value);
-    void RefreshDisplay(Upgrade* mainUpgrade, int mainImpactFactor, Upgrade* Improve);
+    void RefreshDisplay(ServerUtils::Upgrade* mainUpgrade, int mainImpactFactor, ServerUtils::Upgrade* Improve);
 
     QBoxLayout* MainLayout = nullptr;
     QLabel* InstanceBought = nullptr;
@@ -45,6 +49,7 @@ public:
 
     QString MainPattern;
     QString SecondPattern;
+    QString TooltipPattern;
 };
 
 class ScoreSlot : public QFrame
@@ -68,7 +73,7 @@ public slots:
     void UpgradeButtonClick(int buttonIndex);
     void handleHttpRequest(QNetworkReply* reply);
 
-    void refreshData(ServerGameplayState* serverData);
+    void refreshData(ServerUtils::ServerGameplayState* serverData);
 
 private:
     void SetupUI();
@@ -115,6 +120,7 @@ private:
 
     void pushToScoreHistory(int score);
     void refreshHistory();
+    void resetHistory();
 
     void Update(int dt);
 

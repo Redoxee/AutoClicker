@@ -22,7 +22,7 @@
 #include "SWIUtils.h"
 
 using namespace SWIUtils;
-using namespace FailureFlagsUtils;
+using namespace ServerUtils;
 
 MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 {
@@ -49,7 +49,7 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
     this->lastRefreshedFrame = -1;
 
-    connect(gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
+    connect(gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerUtils::ServerGameplayState*)),this, SLOT(refreshData(ServerUtils::ServerGameplayState*)));
     gameWindow->ServerWorker()->RequestOrder(ServerWorker::Order::OrderStartGameplayRefresh);
 
     connect(this->updateWorker, &UpdateWorker::Update, this, &MainGameWidget::Update);
@@ -57,7 +57,7 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
 MainGameWidget::~MainGameWidget()
 {
-    disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
+    disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerUtils::ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
 }
 
 void MainGameWidget::SetupUI()
@@ -132,7 +132,8 @@ void MainGameWidget::SetupUI()
     this->clickUpgradeSlot->InstanceBought->setText("0");
     this->clickUpgradeSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
     this->clickUpgradeSlot->UpgradeButtons->secondButtonPattern = "Improve each unit by a factor of %1  |  %2 bits";
-    this->clickUpgradeSlot->UpgradeButtons->secondButtonTooltipPattern = "Multiply the effect by %1";
+    this->clickUpgradeSlot->UpgradeButtons->secondButtonTooltipPattern = "Needs at least %1 unit aquiered.";
+
     connect(this->clickUpgradeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickUpgradeIndex);});
     this->clickUpgradeSlot->SetMainLabelValue(0);
     this->clickUpgradeSlot->SetSubLabelValue(0);
@@ -145,6 +146,7 @@ void MainGameWidget::SetupUI()
     connect(this->firstGeneratorSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::FirstGeneratorIndex);});
     this->firstGeneratorSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
     this->firstGeneratorSlot->UpgradeButtons->secondButtonPattern = "Improve each unit by a factor of %1  |  %2 bits";
+    this->firstGeneratorSlot->UpgradeButtons->secondButtonTooltipPattern = "Needs at least %1 unit aquiered.";
     this->firstGeneratorSlot->SetMainLabelValue(0);
     this->firstGeneratorSlot->SetSubLabelValue(0);
     connect(this->firstGeneratorSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::FirstGeneratorImproveIndex);});
@@ -155,6 +157,7 @@ void MainGameWidget::SetupUI()
     connect(this->secondGeneratorSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::SecondGeneratorIndex);});
     this->secondGeneratorSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
     this->secondGeneratorSlot->UpgradeButtons->secondButtonPattern = "Improve each unit by a factor of %1  |  %2 bits";
+    this->secondGeneratorSlot->UpgradeButtons->secondButtonTooltipPattern = "Needs at least %1 unit aquiered.";
     this->secondGeneratorSlot->SetMainLabelValue(0);
     this->secondGeneratorSlot->SetSubLabelValue(0);
     connect(this->secondGeneratorSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::SecondGeneratorImproveIndex);});
@@ -172,6 +175,7 @@ void MainGameWidget::SetupUI()
     this->clickerButton->MainButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->clickerButton->MainButton->setMaximumWidth(3000);
     this->clickerButton->setFixedHeight(50);
+    this->clickerButton->secondButtonTooltipPattern = "Locked if the manual installer is over %1 improvements";
     vBoxLayout->addWidget(this->clickerButton);
     connect(this->clickerButton->MainButton, &QPushButton::clicked, this, &MainGameWidget::handleClick);
     connect(this->clickerButton->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickBonusFactorIndex);});
@@ -183,7 +187,9 @@ void MainGameWidget::SetupUI()
     this->prestigeSlot->InstanceBought->setVisible(false);
     this->prestigeSlot->SetMainLabelValue(0);
 
-    connect(this->prestigeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::PrestigeIndex);});
+    connect(this->prestigeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){
+        this->UpgradeButtonClick(ServerGameplayState::PrestigeIndex);
+    });
     connect(this->prestigeSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::PrestigeImproveIndex);});
 
     this->finishButton = new QPushButton();
@@ -290,6 +296,11 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         }
     }
 
+    if((serverData->clickUpgradeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->isVisible())
+    {
+        this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+    }
+
     if(!this->firstGeneratorSlot->isVisible())
     {
         if((serverData->firstGenerator->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
@@ -339,14 +350,15 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     }
 
     this->clickerButton->SetMainButtonValue(clickValue);
-    this->clickerButton->SetSecondaryButtonValue(serverData->clickFactor->Price);
+    this->clickerButton->SetSecondaryButtonValue(serverData->clickFactor->ImpactValue, serverData->clickFactor->Price);
+    this->clickerButton->SetSecondaryTooltipValue(serverData->clickFactor->Lock.Value);
     if (serverData->clickFactor->FailureFlags != FailureFlags::None)
     {
-        this->clickerButton->SecondaryButton->setEnabled(false);
+        this->clickerButton->secondaryAction->setEnabled(false);
     }
     else
     {
-        this->clickerButton->SecondaryButton->setEnabled(true);
+        this->clickerButton->secondaryAction->setEnabled(true);
     }
 
     this->gameWindow->currentFrame = serverData->FrameCount;
@@ -496,6 +508,14 @@ void MainGameWidget::refreshHistory()
     }
 }
 
+void MainGameWidget::resetHistory()
+{
+    for(int index = 0; index < this->historySize; ++index)
+    {
+        this->scoreHistory[index] = 0;
+    }
+}
+
 void MainGameWidget::onFinishButtonClicked()
 {
     this->gameWindow->BottomBox->removeWidget(this->finishButton);
@@ -576,6 +596,11 @@ void UpgradeSlot::RefreshDisplay(Upgrade *mainUpgrade, int mainImpactFactor, Upg
     this->UpgradeButtons->SetMainButtonValue(mainUpgrade->Price);
     this->UpgradeButtons->SetSecondaryButtonValue(improve->ImpactValue, improve->Price);
 
+    if(improve->Lock.Target != "None" && !this->UpgradeButtons->secondButtonTooltipPattern.isEmpty())
+    {
+        this->UpgradeButtons->SetSecondaryTooltipValue(improve->Lock.Value);
+    }
+
     if(mainUpgrade->FailureFlags != FailureFlags::None)
     {
         this->UpgradeButtons->MainButton->setEnabled(false);
@@ -605,7 +630,7 @@ void UpgradeSlot::RefreshDisplay(Upgrade *mainUpgrade, int mainImpactFactor, Upg
 ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
 {
     QHBoxLayout* hLayout = new QHBoxLayout(this);
-    QVBoxLayout* vLayout = new QVBoxLayout(this);
+    QVBoxLayout* vLayout = new QVBoxLayout();
     hLayout->setSpacing(0);
     hLayout->setMargin(0);
 
@@ -629,7 +654,6 @@ ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
     spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
     vLayout->addSpacerItem(spacer);
 
-    hLayout->addLayout(vLayout);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setFrameStyle(QFrame::Box | QFrame::Sunken);
     this->setFixedHeight(50);
