@@ -175,7 +175,7 @@ void ClickerManager::Initialize(const json::value& jsonConfiguration, string_t l
 				json::value jsonLock = jsonUpgrade.at(U("Lock"));
 				this->upgradeDefinitions[index].Lock.targetValue = jsonLock.at(U("Value")).as_number().to_int64();
 				string_t comparer = jsonLock.at(U("Comparer")).as_string();
-				if (comparer == U("SmallerThan"))
+				if (comparer == U("LesserThan"))
 				{
 					this->upgradeDefinitions[index].Lock.Comparer = AutoClicker::Comparer::Smaller;
 				}
@@ -408,7 +408,6 @@ web::json::value ClickerManager::GetDataAsJson()
 			auto lock = web::json::value::object();
 			if (data.Upgrades[index].Definition->Lock.LockIndex > -1)
 			{
-				auto lock = web::json::value::object();
 				int targetIndex = data.Upgrades[index].Definition->Lock.LockIndex;
 				
 				lock[U("Target")] = web::json::value::string(data.Upgrades[targetIndex].Definition->Name);

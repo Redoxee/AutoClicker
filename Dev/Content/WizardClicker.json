@@ -2,7 +2,7 @@
 	"Port" : "1414",
 	"InitialState" : "Paused",
 	
-	"InitialScore" : 0,
+	"InitialScore" : 10,
 	"TargetScore" :  1000000000,
 	"InitialClickValue" : 1,
 	"InitialGlobalFactor" : 1,
@@ -38,15 +38,22 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 2
+				"Value" : 4
 			},
 
-			"BasePrice" : 400000,
+			"BasePrice" : 20000,
 			"Unique" : true,
 			"PriceStrategy" : 
 			{
 				"Type" : "Exponential",
 				"Value" : 1.0
+			},
+
+			"Lock" : 
+			{
+				"TargetName" : "Click_upgrade_1",
+				"Comparer" : "GeaterThan",
+				"Value" : 20
 			}
 		},
 
@@ -67,8 +74,8 @@
 			"Lock":
 			{
 				"TargetName" : "Click_upgrade_1",
-				"Comparer" : "GreaterThan",
-				"Value" : 35
+				"Comparer" : "LesserThan",
+				"Value" : 20
 			}
 		},
 
