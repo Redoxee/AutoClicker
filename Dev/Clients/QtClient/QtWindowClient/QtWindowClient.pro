@@ -38,7 +38,8 @@ SOURCES += \
     tiledprogressbar.cpp \
     updateworker.cpp \
     upgradebutton.cpp \
-    windowshakeanimation.cpp
+    windowshakeanimation.cpp \
+    windowslideanimation.cpp
 
 HEADERS += \
     IProgressBar.h \
@@ -63,7 +64,8 @@ HEADERS += \
     tiledprogressbar.h \
     updateworker.h \
     upgradebutton.h \
-    windowshakeanimation.h
+    windowshakeanimation.h \
+    windowslideanimation.h
 
 FORMS +=
 

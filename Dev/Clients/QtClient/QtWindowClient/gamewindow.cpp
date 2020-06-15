@@ -17,6 +17,7 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
     this->serverWorker = new class::ServerWorker(application);
 
     this->GotToScreen(Screens::IntroScreen);
+//    this->GotToScreen(Screens::CinematicScreen);
 //    this->GotToScreen(Screens::GameScreen);
 //    this->GotToScreen(Screens::EndGameScreen);
 }

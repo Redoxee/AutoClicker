@@ -9,6 +9,7 @@
 #include <QProgressBar>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 
 class GameWindow;
 class WindowShakeAnimation;
@@ -28,7 +29,6 @@ private:
     GameWindow* gameWindow;
 
     QSequentialAnimationGroup* animationSequence;
-    WindowShakeAnimation* windowShakeAnimation;
 
     QProgressBar* progressBar;
     QPushButton* bottomButton;
