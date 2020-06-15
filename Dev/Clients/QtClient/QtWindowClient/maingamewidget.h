@@ -39,6 +39,8 @@ public:
 
     void SetMainLabelValue(int64_t value);
     void SetSubLabelValue(int64_t value);
+    void SetTooltipValue(int64_t value);
+
     void RefreshDisplay(ServerUtils::Upgrade* mainUpgrade, int mainImpactFactor, ServerUtils::Upgrade* Improve);
 
     QBoxLayout* MainLayout = nullptr;

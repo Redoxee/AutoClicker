@@ -133,6 +133,7 @@ void MainGameWidget::SetupUI()
     this->clickUpgradeSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
     this->clickUpgradeSlot->UpgradeButtons->secondButtonPattern = "Improve each unit by a factor of %1  |  %2 bits";
     this->clickUpgradeSlot->UpgradeButtons->secondButtonTooltipPattern = "Needs at least %1 unit aquiered.";
+    this->clickUpgradeSlot->TooltipPattern = "Currently improving the manual installer by %1 bits per click";
 
     connect(this->clickUpgradeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::ClickUpgradeIndex);});
     this->clickUpgradeSlot->SetMainLabelValue(0);
@@ -142,6 +143,7 @@ void MainGameWidget::SetupUI()
     this->firstGeneratorSlot = new UpgradeSlot(this);
     this->firstGeneratorSlot->MainPattern = "Auto installer";
     this->firstGeneratorSlot->SecondPattern = "Install %1 bits/s!";
+    this->firstGeneratorSlot->TooltipPattern = "Currently installing %1 bits per seconds";
 
     connect(this->firstGeneratorSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){this->UpgradeButtonClick(ServerGameplayState::FirstGeneratorIndex);});
     this->firstGeneratorSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
@@ -150,6 +152,7 @@ void MainGameWidget::SetupUI()
     this->firstGeneratorSlot->SetMainLabelValue(0);
     this->firstGeneratorSlot->SetSubLabelValue(0);
     connect(this->firstGeneratorSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::FirstGeneratorImproveIndex);});
+
 
     this->secondGeneratorSlot = new UpgradeSlot(this);
     this->secondGeneratorSlot->MainPattern = "Super installer";
@@ -161,6 +164,7 @@ void MainGameWidget::SetupUI()
     this->secondGeneratorSlot->SetMainLabelValue(0);
     this->secondGeneratorSlot->SetSubLabelValue(0);
     connect(this->secondGeneratorSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::SecondGeneratorImproveIndex);});
+    this->secondGeneratorSlot->TooltipPattern = "Currently installing %1 bits per seconds";
 
     upgradeLayout->addWidget(this->secondGeneratorSlot);
     upgradeLayout->addWidget(this->firstGeneratorSlot);
@@ -186,6 +190,7 @@ void MainGameWidget::SetupUI()
     this->prestigeSlot->UpgradeButtons->secondButtonPattern = "Boost the defragmentation by %1  |  %2 bits";
     this->prestigeSlot->InstanceBought->setVisible(false);
     this->prestigeSlot->SetMainLabelValue(0);
+    this->prestigeSlot->TooltipPattern = "Currently multiplying every install by %1";
 
     connect(this->prestigeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){
         this->UpgradeButtonClick(ServerGameplayState::PrestigeIndex);
@@ -273,6 +278,11 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     this->firstGeneratorSlot->RefreshDisplay(serverData->firstGenerator, framePerSecond * globalFactor, serverData->firstGeneratorImprove);
     this->secondGeneratorSlot->RefreshDisplay(serverData->secondGenerator, framePerSecond * globalFactor, serverData->secondGeneratorImprove);
     this->prestigeSlot->RefreshDisplay(serverData->prestige, 1, serverData->prestigeImprove);
+
+    this->clickUpgradeSlot->SetTooltipValue(serverData->clickUpgrade->InstanceBought * serverData->clickUpgrade->ImpactValue * bonusFactor);
+    this->firstGeneratorSlot->SetTooltipValue(serverData->firstGenerator->InstanceBought * serverData->firstGenerator->ImpactValue * bonusFactor * framePerSecond);
+    this->secondGeneratorSlot->SetTooltipValue(serverData->secondGenerator->InstanceBought * serverData->secondGenerator->ImpactValue * bonusFactor * framePerSecond);
+    this->prestigeSlot->SetTooltipValue(globalFactor);
 
     if(!this->clickerButton->SecondaryButton->isVisible())
     {
@@ -587,6 +597,18 @@ void UpgradeSlot::SetMainLabelValue(int64_t value)
 void UpgradeSlot::SetSubLabelValue(int64_t value)
 {
     this->SubLabel->setText(this->SecondPattern.arg(value));
+}
+
+void UpgradeSlot::SetTooltipValue(int64_t value)
+{
+    if(value > 0)
+    {
+        this->setToolTip(this->TooltipPattern.arg(value));
+    }
+    else
+    {
+        this->setToolTip("");
+    }
 }
 
 void UpgradeSlot::RefreshDisplay(Upgrade *mainUpgrade, int mainImpactFactor, Upgrade *improve)
