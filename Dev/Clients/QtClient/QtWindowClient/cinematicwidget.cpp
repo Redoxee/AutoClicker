@@ -13,38 +13,38 @@ CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWid
 
     QPropertyAnimation* progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
     progressBarAnimation->setStartValue(0);
-    progressBarAnimation->setEndValue(12);
-    progressBarAnimation->setDuration(10000);
+    progressBarAnimation->setEndValue(34);
+    progressBarAnimation->setDuration(4000);
     this->animationSequence->addAnimation(progressBarAnimation);
 
-    this->animationSequence->addPause(1000);
+    this->animationSequence->addPause(3000);
 
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
-    progressBarAnimation->setStartValue(12);
-    progressBarAnimation->setEndValue(30);
-    progressBarAnimation->setDuration(1200);
+    progressBarAnimation->setStartValue(34);
+    progressBarAnimation->setEndValue(42);
+    progressBarAnimation->setDuration(6000);
     this->animationSequence->addAnimation(progressBarAnimation);
 
-    this->animationSequence->addPause(2000);
+    this->animationSequence->addPause(4000);
 
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
-    progressBarAnimation->setStartValue(30);
-    progressBarAnimation->setEndValue(40);
-    progressBarAnimation->setDuration(300);
+    progressBarAnimation->setStartValue(42);
+    progressBarAnimation->setEndValue(45);
+    progressBarAnimation->setDuration(3000);
     this->animationSequence->addAnimation(progressBarAnimation);
 
-    this->animationSequence->addPause(6000);
+    this->animationSequence->addPause(8000);
 
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
-    progressBarAnimation->setStartValue(40);
+    progressBarAnimation->setStartValue(45);
     progressBarAnimation->setEndValue(99);
-    progressBarAnimation->setDuration(400);
+    progressBarAnimation->setDuration(350);
     this->animationSequence->addAnimation(progressBarAnimation);
 
-    WindowShakeAnimation* windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 1000, 15.0f, 0.05f);
+    WindowShakeAnimation* windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 750, 15.0f, 0.05f);
     this->animationSequence->addAnimation(windowShakeAnimation);
 
-    this->animationSequence->addPause(3300);
+    this->animationSequence->addPause(4300);
 
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
     progressBarAnimation->setStartValue(99);
@@ -57,27 +57,41 @@ CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWid
 
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
     progressBarAnimation->setStartValue(50);
+    progressBarAnimation->setEndValue(40);
+    progressBarAnimation->setDuration(500);
+    progressBarAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    this->animationSequence->addAnimation(progressBarAnimation);
+
+    progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
+    progressBarAnimation->setStartValue(40);
     progressBarAnimation->setEndValue(99);
     progressBarAnimation->setDuration(300);
     progressBarAnimation->setEasingCurve(QEasingCurve::InExpo);
     this->animationSequence->addAnimation(progressBarAnimation);
 
-    WindowSlideAnimation* slideAnimation = new WindowSlideAnimation(this, this->gameWindow, 500, QEasingCurve::OutQuad, QPoint(100, 0));
+    WindowSlideAnimation* slideAnimation = new WindowSlideAnimation(this, this->gameWindow, 450, QEasingCurve::OutQuad, QPoint(100, 0));
     this->animationSequence->addAnimation(slideAnimation);
 
-    windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 1000, 15.0f, 0.05f);
+    windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 750, 15.0f, 0.05f);
     this->animationSequence->addAnimation(windowShakeAnimation);
 
     this->animationSequence->addPause(1200);
 
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
     progressBarAnimation->setStartValue(99);
-    progressBarAnimation->setEndValue(20);
+    progressBarAnimation->setEndValue(30);
     progressBarAnimation->setEasingCurve(QEasingCurve::OutCubic);
     progressBarAnimation->setDuration(1000);
     this->animationSequence->addAnimation(progressBarAnimation);
 
     this->animationSequence->addPause(1000);
+
+    progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
+    progressBarAnimation->setStartValue(30);
+    progressBarAnimation->setEndValue(20);
+    progressBarAnimation->setDuration(500);
+    progressBarAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    this->animationSequence->addAnimation(progressBarAnimation);
 
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
     progressBarAnimation->setStartValue(20);
@@ -86,10 +100,10 @@ CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWid
     progressBarAnimation->setEasingCurve(QEasingCurve::InExpo);
     this->animationSequence->addAnimation(progressBarAnimation);
 
-    slideAnimation = new WindowSlideAnimation(this, this->gameWindow, 500, QEasingCurve::OutQuad, QPoint(200, 0));
+    slideAnimation = new WindowSlideAnimation(this, this->gameWindow, 450, QEasingCurve::OutQuad, QPoint(200, 0));
     this->animationSequence->addAnimation(slideAnimation);
 
-    windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 1000, 15.0f, 0.05f);
+    windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 750, 15.0f, 0.05f);
     this->animationSequence->addAnimation(windowShakeAnimation);
 
     this->animationSequence->addPause(1400);
@@ -100,10 +114,10 @@ CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWid
     progressBarAnimation->setDuration(350);
     this->animationSequence->addAnimation(progressBarAnimation);
 
-    slideAnimation = new WindowSlideAnimation(this, this->gameWindow, 500, QEasingCurve::OutQuad, QPoint(-300, 0));
+    slideAnimation = new WindowSlideAnimation(this, this->gameWindow, 400, QEasingCurve::OutQuad, QPoint(-300, 0));
     this->animationSequence->addAnimation(slideAnimation);
 
-    windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 1000, 15.0f, 0.05f);
+    windowShakeAnimation = new WindowShakeAnimation(this->gameWindow, 500, 15.0f, 0.05f);
     this->animationSequence->addAnimation(windowShakeAnimation);
 
     this->animationSequence->addPause(600);
@@ -141,16 +155,22 @@ void CinematicWidget::MainSequenceFinished()
     QMessageBox* messageBox = new QMessageBox(QMessageBox::Warning,
     "Whoops",
     "Something went wrong.\n\nPlease try the manual installation mode",
-    QMessageBox::NoButton, this,
-    Qt::FramelessWindowHint);
+    QMessageBox::NoButton, this);
 
-    messageBox->addButton("Manual installation mode", QMessageBox::ButtonRole::YesRole);
+    QPushButton* manualInstall = messageBox->addButton("Manual installation mode", QMessageBox::ButtonRole::YesRole);
     messageBox->exec();
 
-    this->gameWindow->BottomBox->removeWidget(this->bottomButton);
-    delete this->bottomButton;
+    if(messageBox->clickedButton() == manualInstall)
+    {
+        this->gameWindow->BottomBox->removeWidget(this->bottomButton);
+        delete this->bottomButton;
 
-    this->gameWindow->GotToScreen(Screens::GameScreen);
+        this->gameWindow->GotToScreen(Screens::GameScreen);
+    }
+    else
+    {
+        this->bottomButton->setVisible(true);
+    }
 }
 
 void CinematicWidget::GameStartPressed()
