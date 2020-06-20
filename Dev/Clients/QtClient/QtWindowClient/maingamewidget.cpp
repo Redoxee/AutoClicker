@@ -188,7 +188,6 @@ void MainGameWidget::SetupUI()
     this->prestigeSlot->SecondPattern = "Reset installation but speedup the process by a factor of %1";
     this->prestigeSlot->UpgradeButtons->mainButtonPattern = "Aquire\n%1 bits";
     this->prestigeSlot->UpgradeButtons->secondButtonPattern = "Boost the defragmentation by %1  |  %2 bits";
-    this->prestigeSlot->InstanceBought->setVisible(false);
     this->prestigeSlot->SetMainLabelValue(0);
     this->prestigeSlot->TooltipPattern = "Currently multiplying every install by %1";
 
