@@ -15,7 +15,7 @@ UpgradeButton::UpgradeButton(QWidget *parent) : QWidget(parent)
 
     this->MainButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->SecondaryButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    this->MainButton->setFixedWidth(55);
+    this->MainButton->setFixedWidth(70);
     this->SecondaryButton->setFixedWidth(25);
 
     this->secondaryMenu = new QMenu(this);
