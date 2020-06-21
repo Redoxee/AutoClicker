@@ -14,8 +14,8 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
     this->qApplication = application;
     this->Settings = new GameSettings();
 
-    this->Settings->SkipUpgradeReveal = true;
-    this->Settings->SkipIntroCinematic= true;
+//    this->Settings->SkipUpgradeReveal = true;
+//    this->Settings->SkipIntroCinematic= true;
 
     this->SetupUi();
 

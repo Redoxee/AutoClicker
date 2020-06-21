@@ -94,7 +94,6 @@ void MainGameWidget::SetupUI()
     this->historyChartView->setMaximumHeight(100);
 
     vBoxLayout->addWidget(this->historyChartView);
-    this->historyChartView->setVisible(false);
 
     this->scoreSlot = new ScoreSlot(this);
     vBoxLayout->addWidget(this->scoreSlot);
@@ -121,7 +120,6 @@ void MainGameWidget::SetupUI()
         this->ProgressBar[index] = new ScaledProgressBar(scale, this);
 
         progressLayout->addWidget(this->ProgressBar[index]);
-        this->ProgressBar[index]->setVisible(false);
     }
 
     vBoxLayout->addLayout(progressLayout);
@@ -210,15 +208,25 @@ void MainGameWidget::SetupUI()
 
     connect(this->finishButton, &QPushButton::clicked, this, &MainGameWidget::onFinishButtonClicked);
 
-    this->clickerButton->SecondaryButton->setVisible(false);
-    this->clickUpgradeSlot->setVisible(false);
-    this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
-    this->firstGeneratorSlot->setVisible(false);
-    this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
-    this->secondGeneratorSlot->setVisible(false);
-    this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
-    this->prestigeSlot->setVisible(false);
-    this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+    if(!GameSettings::Instance()->SkipUpgradeReveal)
+    {
+        this->clickerButton->SecondaryButton->setVisible(false);
+        this->clickUpgradeSlot->setVisible(false);
+        this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+        this->firstGeneratorSlot->setVisible(false);
+        this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+        this->secondGeneratorSlot->setVisible(false);
+        this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+        this->prestigeSlot->setVisible(false);
+        this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
+
+        for(int index = 1; index < 4; ++index)
+        {
+            this->ProgressBar[index]->setVisible(false);
+        }
+
+        this->historyChartView->setVisible(false);
+    }
 }
 
 void MainGameWidget::handleClick()
