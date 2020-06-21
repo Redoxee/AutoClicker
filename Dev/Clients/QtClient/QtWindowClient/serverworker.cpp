@@ -15,25 +15,35 @@ ServerWorker::ServerWorker(QApplication* application)
 
     this->data = new ServerGameplayState();
 
-    this->workerThread = new QThread();
-    connect(this->workerThread, SIGNAL(started()), this, SLOT(onThreadStart()));
-    this->workerThread->start();
-    this->moveToThread(this->workerThread);
+    this->thread = new QThread();
+    connect(this->thread, &QThread::started, this, &ServerWorker::ThreadStarted);
+    this->thread->start();
+    this->moveToThread(this->thread);
 }
 
 ServerWorker::~ServerWorker()
 {
+    this->TerminateServer();
+
+    this->thread->quit();
+    this->thread->wait();
+
     delete this->data;
-    delete this->workerThread;
+
+    delete this->serverProcess;
 }
 
-void ServerWorker::onThreadStart()
+void ServerWorker::ThreadStarted()
 {
-    qDebug() << "ServerWorker thread start.";
+    this->StartWorker();
+}
 
+void ServerWorker::StartWorker()
+{
+    qDebug() << "ServerWorker start.";
+    this->manager = new QNetworkAccessManager();
     connect(this, SIGNAL(PostOrderSignal(ServerWorker::Order)), this, SLOT(orderSlot(ServerWorker::Order)));
 
-    this->manager = new QNetworkAccessManager();
     connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(initialServerRequestResponse(QNetworkReply*)));
     QNetworkConfigurationManager configurationManager;
     QNetworkConfiguration configuration = configurationManager.defaultConfiguration();
@@ -43,8 +53,20 @@ void ServerWorker::onThreadStart()
     this->request.setUrl(QUrl(uri));
     this->currentState = State::SearchingPreexistingServerInstance;
     this->manager->get(this->request);
+}
 
-    connect(this->application, SIGNAL(lastWindowClosed()), this, SLOT(aboutToQuit()));
+void ServerWorker::PauseServer()
+{
+    this->currentState = State::Pause;
+    this->request.setUrl(QUrl(QString::fromStdString( AutoClicker::BaseURI() + "set_update_pause=true")));
+    this->reply = manager->get(this->request);
+}
+
+void ServerWorker::TerminateServer()
+{
+    this->currentState = State::Pause;
+    this->request.setUrl(QUrl(QString::fromStdString( AutoClicker::BaseURI() + "set_terminated=true")));
+    this->reply = manager->get(this->request);
 }
 
 void ServerWorker::initialServerRequestResponse(QNetworkReply* httpResponse)
@@ -103,10 +125,10 @@ void ServerWorker::StartNewServer()
 
     QString coreGameProcessPath = this->applicationPath + QString::fromStdString(AutoClicker::RelativeCoreServerPath());
     qDebug() << coreGameProcessPath;
-    QProcess qProcess;
+    this->serverProcess = new QProcess();
 
     // Note : windows only solution to display a console for the core game process
-    qProcess.setCreateProcessArgumentsModifier([] (QProcess::CreateProcessArguments *args)
+    this->serverProcess->setCreateProcessArgumentsModifier([] (QProcess::CreateProcessArguments *args)
     {
         args->flags &= ~CREATE_NO_WINDOW;
         args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
@@ -115,9 +137,9 @@ void ServerWorker::StartNewServer()
     QStringList arguments;
     arguments << "--Config" << this->applicationPath + QString::fromStdString(AutoClicker::RelativeConfigPath());
     arguments << "--LogFile" << "GameLog.txt";
-    qProcess.setProgram(coreGameProcessPath);
-    qProcess.setArguments(arguments);
-    qProcess.startDetached();
+    this->serverProcess->setProgram(coreGameProcessPath);
+    this->serverProcess->setArguments(arguments);
+    this->serverProcess->startDetached();
 
     connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(startServerRequest(QNetworkReply*)));
 
@@ -172,21 +194,4 @@ void ServerWorker::gameplayServerResponse(QNetworkReply* reply)
         QThread::msleep(AutoClicker::RefreshRate());
         this->reply = this->manager->get(this->request);
     }
-}
-
-
-void ServerWorker::aboutToQuit()
-{
-    qDebug() << "About to quit";
-    if(this->currentState == State::ActiveRefresh)
-    {
-        disconnect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(gameplayServerResponse(QNetworkReply*)));
-    }
-
-    this->currentState = State::Stopping;
-    this->request.setUrl(QUrl(QString::fromStdString( AutoClicker::BaseURI() + "set_update_pause=true")));
-    this->reply = manager->get(this->request);
-    qDebug() << "About to quit called.";
-    // TODO : find a way to enable one last request before quitting without waiting an arbitrary length of time.
-    QThread::sleep(1);
 }

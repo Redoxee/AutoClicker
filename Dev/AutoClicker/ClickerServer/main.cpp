@@ -9,7 +9,6 @@
 #include "Logger.h"
 
 using namespace std;
-
 using namespace web;
 using namespace http;
 using namespace utility;
@@ -146,10 +145,11 @@ int main(int argc, char *argv[])
 
 
 	start(configPath, logFileName);
-
-	std::wcout << "Press ENTER to exit." << std::endl;
-	std::string line;
-	std::getline(std::cin, line);
+	
+	while (!g_http->IsTerminated())
+	{
+		Sleep(200);
+	}
 
 	stop();
 	return 0;

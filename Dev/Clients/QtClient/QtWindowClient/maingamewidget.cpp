@@ -57,7 +57,11 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
 
 MainGameWidget::~MainGameWidget()
 {
-    disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerUtils::ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
+    ServerWorker* worker = this->gameWindow->ServerWorker();
+    if(worker!= nullptr)
+    {
+        disconnect(this->gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerUtils::ServerGameplayState*)),this, SLOT(refreshData(ServerGameplayState*)));
+    }
 }
 
 void MainGameWidget::SetupUI()

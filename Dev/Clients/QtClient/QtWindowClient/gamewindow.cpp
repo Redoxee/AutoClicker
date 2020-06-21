@@ -30,6 +30,9 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
 GameWindow::~GameWindow()
 {
     delete this->Settings;
+    this->Settings = nullptr;
+    delete this->serverWorker;
+    this->serverWorker = nullptr;
 }
 
 void GameWindow::SetupUi()

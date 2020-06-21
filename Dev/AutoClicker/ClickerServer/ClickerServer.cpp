@@ -81,4 +81,8 @@ void ClickerServer::ParseOrderRequest(std::string& id, std::string& param, strin
 
 		this->clickerManager.PostOrder(Order(OrderIdentifier::Meta_PauseUpdate, value));
 	}
+	else if (id == "set_terminated")
+	{
+		this->isTerminated = true;
+	}
 }

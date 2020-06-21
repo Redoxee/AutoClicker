@@ -35,10 +35,9 @@ public:
         SearchingPreexistingServerInstance,
         StartingNewServerInstance,
         ActiveRefresh,
-        Paused,
         NoServerFound,
         WaitingForGame,
-        Stopping,
+        Pause,
     };
 
     enum Order
@@ -52,7 +51,6 @@ public:
 
     State CurrentState() {return this->currentState;}
     void RequestOrder(Order order);
-
 signals:
     void InitialServerResponse();
     void ServerStarted();
@@ -65,11 +63,10 @@ private:
 
     QApplication* application = nullptr;
 
+    QThread* thread = nullptr;
     QNetworkAccessManager* manager = nullptr;
     QNetworkRequest request;
     QNetworkReply* reply = nullptr;
-
-    QThread* workerThread = nullptr;
 
     QString applicationPath;
 
@@ -78,15 +75,19 @@ private:
     int attemptCount;
     const int maxAttemptCount = 100;
 
+    QProcess* serverProcess = nullptr;
+
+    void StartWorker();
+    void PauseServer();
+    void TerminateServer();
     void StartNewServer();
 
 private slots:
-    void onThreadStart();
+    void ThreadStarted();
     void initialServerRequestResponse(QNetworkReply* httpResponse);
     void startServerRequest(QNetworkReply* httpResponse);
     void gameplayServerResponse(QNetworkReply* reply);
     void orderSlot(ServerWorker::Order order);
-    void aboutToQuit();
 };
 
 #endif // SERVERWORKER_H

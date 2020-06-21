@@ -26,14 +26,19 @@ public:
 		return listener.close();
 	}
 
+	bool IsTerminated()
+	{
+		return this->isTerminated;
+	}
+
 	~ClickerServer();
 
 private:
 
 	void HandleGet(http_request message);
 	void ParseOrderRequest(std::string& id, std::string& parameter, string_t& body);
-
-
+	
+	bool isTerminated = false;
 	http_listener listener;
 	ClickerManager clickerManager;
 };
