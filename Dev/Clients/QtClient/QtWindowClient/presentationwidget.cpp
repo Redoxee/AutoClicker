@@ -50,7 +50,15 @@ void PresentationWidget::StartButtonClicked()
     this->gameWindow->BottomBox->removeWidget(this->bottomButton);
     delete this->bottomButton;
 
-    this->gameWindow->GotToScreen(Screens::CinematicScreen);
+
+    if(!GameSettings::Instance()->SkipIntroCinematic)
+    {
+        this->gameWindow->GotToScreen(Screens::CinematicScreen);
+    }
+    else
+    {
+        this->gameWindow->GotToScreen(Screens::GameScreen);
+    }
 }
 
 

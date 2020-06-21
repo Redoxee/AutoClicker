@@ -21,6 +21,8 @@
 
 #include <vector>
 
+#include "gamesettings.h"
+
 class GameWindow;
 class ServerWorker;
 
@@ -38,12 +40,15 @@ class GameWindow : public QMainWindow
     Q_OBJECT
 public:
     GameWindow(QApplication* application, QWidget *parent = nullptr);
+    ~GameWindow();
     void GotToScreen(Screens nextScreen);
     QBoxLayout* BottomBox;
 
     inline ServerWorker* ServerWorker() { return this->serverWorker; };
     QLayout* LeftLayout = nullptr;
     QGridLayout* LeftGLayout = nullptr;
+
+    GameSettings* Settings;
 
     int currentFrame = -1;
     inline QLabel* LogoHolder() { return this->logoHolder; };

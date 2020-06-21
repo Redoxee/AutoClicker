@@ -12,6 +12,11 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
     : QMainWindow(parent)
 {
     this->qApplication = application;
+    this->Settings = new GameSettings();
+
+    this->Settings->SkipUpgradeReveal = true;
+    this->Settings->SkipIntroCinematic= true;
+
     this->SetupUi();
 
     this->serverWorker = new class::ServerWorker(application);
@@ -20,6 +25,11 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
 //    this->GotToScreen(Screens::CinematicScreen);
 //    this->GotToScreen(Screens::GameScreen);
 //    this->GotToScreen(Screens::EndGameScreen);
+}
+
+GameWindow::~GameWindow()
+{
+    delete this->Settings;
 }
 
 void GameWindow::SetupUi()
