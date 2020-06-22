@@ -17,14 +17,13 @@ ServerWorker::ServerWorker(QApplication* application)
 
     this->thread = new QThread();
     connect(this->thread, &QThread::started, this, &ServerWorker::ThreadStarted);
+    connect(this->thread, &QThread::finished, this, &ServerWorker::ThreadFinished);
     this->thread->start();
     this->moveToThread(this->thread);
 }
 
 ServerWorker::~ServerWorker()
 {
-    this->TerminateServer();
-
     this->thread->quit();
     this->thread->wait();
 
@@ -36,6 +35,11 @@ ServerWorker::~ServerWorker()
 void ServerWorker::ThreadStarted()
 {
     this->StartWorker();
+}
+
+void ServerWorker::ThreadFinished()
+{
+    this->TerminateServer();
 }
 
 void ServerWorker::StartWorker()

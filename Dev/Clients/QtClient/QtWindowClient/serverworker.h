@@ -84,6 +84,7 @@ private:
 
 private slots:
     void ThreadStarted();
+    void ThreadFinished();
     void initialServerRequestResponse(QNetworkReply* httpResponse);
     void startServerRequest(QNetworkReply* httpResponse);
     void gameplayServerResponse(QNetworkReply* reply);
