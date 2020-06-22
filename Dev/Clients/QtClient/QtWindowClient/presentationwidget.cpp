@@ -1,6 +1,11 @@
 #include "presentationwidget.h"
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QTextBrowser>
+#include <QFile>
+#include <QTextStream>
+#include <QStringList>
+#include <QUrl>
 
 #include "gamewindow.h"
 #include "serverworker.h"
@@ -36,6 +41,26 @@ void PresentationWidget::SetupUI()
     QLabel* tempLabel = new QLabel();
     tempLabel->setText("<Insert here> Message to explain why a terminal window is showing.");
     this->layout->addWidget(tempLabel);
+
+    QStringList presentationList;
+    QFile file("Ressources/Presentation.md");
+    if(!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    QTextStream in(&file);
+
+    while(!in.atEnd()) {
+        QString line = in.readLine();
+        presentationList << line;
+    }
+
+    file.close();
+
+    QTextBrowser* textBrowser = new QTextBrowser(this);
+    textBrowser->setMarkdown(presentationList.join("\n"));
+
+    this->layout->addWidget(textBrowser);
 
     this->bottomButton = new QPushButton(this);
     this->bottomButton->setText("Begin installation");
