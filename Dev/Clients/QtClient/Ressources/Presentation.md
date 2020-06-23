@@ -1,52 +1,47 @@
-# Shitty Wizard Installer
+# Disclaimer
 
-## What is this
+## This is not real
 
-This project is a clicker game.  
-My main inspirations are ```Coockie Clicker``` and ```Spaceplan```.  
-The theme of my game is a crazy bad software installer that requires you to ```"manually install"``` each bye.  
-The end goal should be around 1 billion points. I aim for a game that can be won in arround 30minutes.  
-The central feature of this project is the fact that the gameplay and the UI are separated across two process and they communicate through a Rest API.  
-This setup is a bit cumbersome to work with but the end goal is to make this project ase a base for programation and optimization exercise.  
-The idea came to me when I was playing Spaceplan and I was trying to determine what was the optimal build order to reach the end sequence.  
-If I'm success full, someone with basic knowledge of programation should be able to make a small program that play the game automatically, trying to win as fast as possible (or in as few action as possible).  
-The use of the Rest API makes it so it is possible to write such programe in most languages.  
-When the game will be close to it's final iteration, I plan to make example of such programes in as many language as I can.  
-This project, for now is fully opensource.  
-The backend (core gameplay) is coded in C++ using RestCPP as a library for the Rest work.  
-The front end (the User Interface) is coded in C++ using Qt.  
-This is also a personal project to peak out of my Unity comfort zone.
+The Shitty Wizard Installer is the creation of AntonMakesGames inc.
+By continuing you are not agreeing with a license agreement.
+If you are still reading this, you are aknowledging that the team responsible for this document is not aware of the eficacity nor the utility of such document.
+The AntonMakesGames (there after AMG) team do not believe this wizard can harm you or your computer, provided you got it from an official source.
+Some wizard could harm you. This one will not.  
+This wizard is not real. To the extent that some wizards may be real.
+The Shitty Wizartd Installer (there after SW Installer) will not install anything on your computer, it will only pretend to do so.  
+Do not panic, and do not close the black window that just opened. If you do so, you should take full resposability for SW Installer not behaving properly.
+You should expect something that looks like an installation but really isn't.
 
-## What have been done
+When the installation is finished, or if you find bugs, you can send me an email at  
+AntonMakesGames@gmail.com  
+considrer including the GameLog.txt as it will help me improve the SW Installer.
 
-* The base of the clicker mechanic
-* The base of the upgrade system
-* The game can be configured using a JSon
-* The base of the Rest API and rest server shenanigan.
-* The base of the Qt client (opening a window with a layout)
-* The base of the client call to the gameplay.
+If this is your first time installing I expect you not to read past this point.  
+Please, stop.
 
-## What is left to be done
+## In depth liability
 
-* A proper balancing of the game
-* Writing the intro textes.
-* Storyboarding the intro animation.
-* Implementing the storyboarded animation.
-* Being able to launche the Server from the client.
-* Binding the UI to the backend.
-* Refreshing the UI more smartly than just displaying all the gameplay values (Hiding endgame upgrades etc).
-* Storyboarding and implementing the main gameplay sequence.
-* Storyboarding and implementing the end game sequence.
-* Do pass of optimization and hunt for memory leaks.
-* Writing down the whole API so it is possible to write middle men programs that complete the game.
+This project is a clicker.  
+the main inspirations are ```Coockie Clicker``` and ```Spaceplan```.  
+The theme is a bad software installer that requires you to ```"manually install"``` each bytes.  
+AMG expect you to complete the installation in under three hours.  
+Try to optimize you're activity count, try to minimize your interaction. This could increase your final score.
+Please note that this is a two process installation setup, meaning that this installer is actually two programs executing concurently and comunicating through a REST api.
+This setup is a bit cumbersome, sure, but think about this: what if you didn't install the thing? What if instead, you wrote a program todo it in your place.
+The SW Installer won't hold you back (It can't).
+The use of the Rest API makes it possible for you to write a middle men software.  
 
-## What I could do after
+Send your requests to  
+[http://localhost:1234?[command]](http://localhost:1234?[command])  
 
-Ideally I would like this to be the base of some educational content. In the back of my mind I entertain the idea of searching for some gov funding so I could maintain this project and make it bloom.  
-One cool side of the architecture is that it could run on a distant server really easely. therefore, it could be interesting to setup a server in such way that people could compete on how fast they can finish the game. I imagine leader board and all...  
-If this work fine enough, It could be cool to make other game with the same ```middlemen``` approach (Tetris, 2048 etc...)
+commands :  
 
-### Who am I  
-I'm Anton. I'm a gameplay programmer in Paris that fancy himself as a potential indi dev.
+* click
+* buy = { *index of the upgrade you whant to buy* }  
+* get_state  ( *get the state of the installation as a json* )
+* set_frame_length = { *time between each automatic installations* }
+* set_update_pause = true/false ( *no more automatic installations* )
+* set_terminated ( *please don't* )
 
-#### [Full sources : github.com/Redoxee/AutoClicker](https://github.com/Redoxee/AutoClicker)
+Sources and examples of automatic software for the SW Installer can be found somewere around here :  
+[sources : github.com/Redoxee/AutoClicker](https://github.com/Redoxee/AutoClicker)

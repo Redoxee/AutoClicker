@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QUrl>
+#include <QCheckBox>
 
 #include "gamewindow.h"
 #include "serverworker.h"
@@ -38,9 +39,15 @@ PresentationWidget::PresentationWidget(QWidget* parent, GameWindow* gameWindow) 
 void PresentationWidget::SetupUI()
 {
     this->layout = new QVBoxLayout(this);
-    QLabel* tempLabel = new QLabel();
-    tempLabel->setText("<Insert here> Message to explain why a terminal window is showing.");
-    this->layout->addWidget(tempLabel);
+    this->layout->setContentsMargins(QMargins(7, 5, 5, 7));
+
+    QLabel* introLabel = new QLabel(this);
+    introLabel->setText("You will soon starting the instalation");
+    QFont font = introLabel->font();
+    font.setBold(true);
+    font.setPointSize(10);
+    introLabel->setFont(font);
+    this->layout->addWidget(introLabel);
 
     QStringList presentationList;
     QFile file("Ressources/Presentation.md");
@@ -59,13 +66,23 @@ void PresentationWidget::SetupUI()
 
     QTextBrowser* textBrowser = new QTextBrowser(this);
     textBrowser->setMarkdown(presentationList.join("\n"));
-
+    textBrowser->setOpenLinks(false);
+    textBrowser->setOpenExternalLinks(false);
     this->layout->addWidget(textBrowser);
+
+    QCheckBox* checkBox = new QCheckBox(this);
+    checkBox->setText("I don't care.");
+    checkBox->setToolTip("Me neither.");
+    checkBox->setLayoutDirection(Qt::RightToLeft);
+    this->layout->addWidget(checkBox);
 
     this->bottomButton = new QPushButton(this);
     this->bottomButton->setText("Begin installation");
     this->gameWindow->BottomBox->addWidget(this->bottomButton);
     this->bottomButton->hide();
+    QSizePolicy policy = this->bottomButton->sizePolicy();
+    policy.setRetainSizeWhenHidden(true);
+    this->bottomButton->setSizePolicy(policy);
 
     connect(this->bottomButton, SIGNAL(clicked()), this, SLOT(StartButtonClicked()));
 }

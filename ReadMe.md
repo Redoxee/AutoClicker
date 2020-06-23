@@ -4,7 +4,7 @@
 
 This project is a clicker game.  
 My main inspirations are ```Coockie Clicker``` and ```Spaceplan```.  
-The theme of my game is a crazy bad software installer that requires you to ```"manually install"``` each bye.  
+The theme of my game is a crazy bad software installer that requires you to ```"manually install"``` each byte.  
 The end goal should be around 1 billion points. I aim for a game that can be won in arround 30minutes.  
 The central feature of this project is the fact that the gameplay and the UI are separated across two process and they communicate through a Rest API.  
 This setup is a bit cumbersome to work with but the end goal is to make this project ase a base for programation and optimization exercise.  

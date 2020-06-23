@@ -40,6 +40,9 @@ void IntroScreenWidget::SetupUI()
     this->startButton = new QPushButton(this);
     this->startButton->setText("Next");
     this->mainWindow->BottomBox->addWidget(startButton);
+    QSizePolicy policy = this->startButton->sizePolicy();
+    policy.setRetainSizeWhenHidden(true);
+    this->startButton->setSizePolicy(policy);
 
     connect(this->startButton, SIGNAL(clicked()), this, SLOT(StartButtonPressed()));
 }
