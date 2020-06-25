@@ -13,6 +13,7 @@
 
 class GameWindow;
 class WindowShakeAnimation;
+class EventLogger;
 
 class CinematicWidget : public QWidget
 {
@@ -28,10 +29,11 @@ public slots:
 private:
     GameWindow* gameWindow;
 
-    QSequentialAnimationGroup* animationSequence;
+    QSequentialAnimationGroup* animationSequence = nullptr;
+    EventLogger* eventLogger = nullptr;
 
-    QProgressBar* progressBar;
-    QPushButton* bottomButton;
+    QProgressBar* progressBar = nullptr;
+    QPushButton* bottomButton = nullptr;
 
     void SetupUI();
 };

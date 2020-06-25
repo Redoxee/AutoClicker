@@ -24,7 +24,7 @@ private:
     void SetupUI();
     GameWindow* mainWindow;
 
-    QPushButton* startButton;
+    QPushButton* startButton = nullptr;
 };
 
 #endif // INTROSCREENWIDGET_H

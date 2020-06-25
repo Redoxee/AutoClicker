@@ -2,6 +2,7 @@
 #include "gamewindow.h"
 #include "windowshakeanimation.h"
 #include "windowslideanimation.h"
+#include "eventlogger.h"
 
 CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWidget(parent)
 {
@@ -135,6 +136,9 @@ void CinematicWidget::SetupUI()
     QLabel* tempLabel = new QLabel();
     tempLabel->setText("<Insert Here> UI To fake a installer that fail at the end.");
     vLayout->addWidget(tempLabel);
+
+    this->eventLogger = new EventLogger(this);
+    vLayout->addWidget(this->eventLogger);
 
     this->progressBar = new QProgressBar();
     vLayout->addWidget(this->progressBar);
