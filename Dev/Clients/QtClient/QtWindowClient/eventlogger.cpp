@@ -26,13 +26,11 @@ EventLogger::EventLogger(QWidget* parent) : QTextBrowser(parent)
         QString value = fileNames[index].toString();
         this->fileList.append(value);
     }
+}
 
-    QRandomGenerator generator;
-
-    for(int i = 0; i < 100; ++i)
-    {
-        int verbIndex = generator.bounded(this->verbList.count());
-        int fileIndex = generator.bounded(this->fileList.count());
-        this->append(this->verbList[verbIndex].arg(this->fileList[fileIndex]));
-    }
+void EventLogger::AppendRandomLog()
+{
+    int verbIndex = this->randomGenerator.bounded(this->verbList.count());
+    int fileIndex = this->randomGenerator.bounded(this->fileList.count());
+    this->append(this->verbList[verbIndex].arg(this->fileList[fileIndex]));
 }

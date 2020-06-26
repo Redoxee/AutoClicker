@@ -11,7 +11,10 @@ UpdateWorker::UpdateWorker()
 
 UpdateWorker::~UpdateWorker()
 {
-    this->thread->terminate();
+    this->isFinished = true;
+    this->thread->quit();
+    this->thread->wait();
+
     delete this->thread;
 }
 

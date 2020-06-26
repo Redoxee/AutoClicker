@@ -66,7 +66,7 @@ CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWid
     progressBarAnimation = new QPropertyAnimation(this->progressBar,"value");
     progressBarAnimation->setStartValue(40);
     progressBarAnimation->setEndValue(99);
-    progressBarAnimation->setDuration(300);
+    progressBarAnimation->setDuration(400);
     progressBarAnimation->setEasingCurve(QEasingCurve::InExpo);
     this->animationSequence->addAnimation(progressBarAnimation);
 
@@ -127,21 +127,34 @@ CinematicWidget::CinematicWidget(QWidget *parent, GameWindow* gameWindow) : QWid
     connect(this->bottomButton, SIGNAL(clicked()), this, SLOT(GameStartPressed()));
 
     this->StartCinematic();
+    connect(this->progressBar, &QProgressBar::valueChanged, this, &CinematicWidget::ValueChanged);
 }
 
 void CinematicWidget::SetupUI()
 {
     QVBoxLayout* vLayout = new QVBoxLayout(this);
 
+    vLayout->addSpacing(20);
+    vLayout->setMargin(0);
+
     QLabel* tempLabel = new QLabel();
-    tempLabel->setText("<Insert Here> UI To fake a installer that fail at the end.");
+    tempLabel->setText("Wizzarding the game to your work station");
+    QFont font = tempLabel->font();
+    font.setBold(true);
+    font.setPointSize(10);
+    tempLabel->setFont(font);
     vLayout->addWidget(tempLabel);
 
     this->eventLogger = new EventLogger(this);
+    this->eventLogger->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    this->eventLogger->setFixedHeight(200);
+
     vLayout->addWidget(this->eventLogger);
 
     this->progressBar = new QProgressBar();
     vLayout->addWidget(this->progressBar);
+
+    vLayout->addSpacerItem(new QSpacerItem(0,0, QSizePolicy::Fixed, QSizePolicy::Expanding));
 
     this->bottomButton = new QPushButton();
     this->bottomButton->setText("Start Manual Installation!");
@@ -184,3 +197,20 @@ void CinematicWidget::GameStartPressed()
 
     this->gameWindow->GotToScreen(Screens::GameScreen);
 }
+
+void CinematicWidget::ValueChanged(int value)
+{
+    if(value <= this->prevProgress)
+    {
+        this->prevProgress = value;
+        return;
+    }
+
+    for(int i = this->prevProgress; i < value; ++i)
+    {
+        this->eventLogger->AppendRandomLog();
+    }
+
+    this->prevProgress = value;
+}
+

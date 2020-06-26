@@ -13,6 +13,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonValue>
+#include <QRandomGenerator>
 
 class EventLogger : public QTextBrowser
 {
@@ -20,9 +21,12 @@ class EventLogger : public QTextBrowser
 public:
     explicit EventLogger(QWidget* parent);
 
+    void AppendRandomLog();
+
 private:
     QVector<QString> verbList;
     QVector<QString> fileList;
+    QRandomGenerator randomGenerator;
 };
 
 #endif // EVENTLOGGER_H

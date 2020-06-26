@@ -35,7 +35,10 @@ private:
     QProgressBar* progressBar = nullptr;
     QPushButton* bottomButton = nullptr;
 
+    int prevProgress = 0;
+
     void SetupUI();
+    void ValueChanged(int value);
 };
 
 #endif // GAMECINEMATIC_H

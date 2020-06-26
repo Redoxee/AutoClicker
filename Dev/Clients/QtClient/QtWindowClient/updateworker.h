@@ -11,8 +11,10 @@ class UpdateWorker : public QObject
 public:
     UpdateWorker();
     virtual ~UpdateWorker();
+
 signals:
     void Update(float dt);
+
 private slots:
     void Run();
     void Finished();
