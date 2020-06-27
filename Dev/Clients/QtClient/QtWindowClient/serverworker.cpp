@@ -69,8 +69,14 @@ void ServerWorker::PauseServer()
 void ServerWorker::TerminateServer()
 {
     this->currentState = State::Pause;
+    if(this->reply != nullptr)
+    {
+        this->reply->abort();
+    }
+
     this->request.setUrl(QUrl(QString::fromStdString( AutoClicker::BaseURI() + "set_terminated=true")));
     this->reply = manager->get(this->request);
+    QThread::msleep(200);
 }
 
 void ServerWorker::initialServerRequestResponse(QNetworkReply* httpResponse)
