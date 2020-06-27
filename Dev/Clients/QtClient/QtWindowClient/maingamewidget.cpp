@@ -7,7 +7,7 @@
 #include <QtCharts/QChartView>
 #include <QGraphicsLayout>
 #include <QSplitter>
-
+#include <QScrollBar>
 #include <QMenu>
 #include <QAction>
 
@@ -20,6 +20,7 @@
 #include "servergameplaystate.h"
 #include "serverworker.h"
 #include "SWIUtils.h"
+#include "eventlogger.h"
 
 using namespace SWIUtils;
 using namespace ServerUtils;
@@ -106,6 +107,11 @@ void MainGameWidget::SetupUI()
 
     this->frameValueLabel = new QLabel(this);
     this->gameWindow->LeftLayout->addWidget(this->frameValueLabel);
+
+    this->eventLogger = new EventLogger(this);
+    this->eventLogger->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->eventLogger->setMinimumHeight(10);
+    vBoxLayout->addWidget(eventLogger);
 
     QVBoxLayout* progressLayout = new QVBoxLayout();
     progressLayout->setMargin(0);
@@ -195,6 +201,8 @@ void MainGameWidget::SetupUI()
 
     connect(this->prestigeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){
         this->UpgradeButtonClick(ServerGameplayState::PrestigeIndex);
+        this->resetHistory();
+        this->skipNextHistoryUpdates = 3;
     });
     connect(this->prestigeSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::PrestigeImproveIndex);});
 
@@ -441,6 +449,15 @@ void MainGameWidget::RefreshProgressBars(int score)
         if(!this->ProgressBar[index]->isVisible() && this->ProgressBar[index]->value() > 0)
         {
             this->ProgressBar[index]->setVisible(true);
+
+            if(index > 0)
+            {
+                this->ProgressBar[index- 1]->setTextVisible(false);
+                if(index > 2)
+                {
+                    this->ProgressBar[index- 1]->setFixedHeight(10);
+                }
+            }
         }
     }
 }
@@ -457,7 +474,12 @@ void MainGameWidget::Update(int)
         return;
     }
 
-    else if(abs(this->displayedScore - this->realCurrentScore) <= 10)
+    if(this->displayedScore < this->realCurrentScore)
+    {
+        this->eventLogger->AppendRandomLog();
+    }
+
+    if(abs(this->displayedScore - this->realCurrentScore) <= 10)
     {
         this->displayedScore = this->realCurrentScore;
     }
@@ -483,6 +505,12 @@ void MainGameWidget::pushToScoreHistory(int score)
 
 void MainGameWidget::refreshHistory()
 {
+    if(this->skipNextHistoryUpdates > 0)
+    {
+        this->skipNextHistoryUpdates--;
+        return;
+    }
+
     this->historySeries->clear();
     int maxValue = 100;
 

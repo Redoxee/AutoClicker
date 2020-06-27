@@ -31,6 +31,7 @@ class UpdateWorker;
 class ScaledProgressBar;
 class GameWindow;
 class UpgradeButton;
+class EventLogger;
 
 class UpgradeSlot : public QFrame
 {
@@ -92,6 +93,8 @@ private:
     QNetworkAccessManager *manager = nullptr;
     QNetworkRequest request;
 
+    EventLogger* eventLogger = nullptr;
+
     ScaledProgressBar* ProgressBar[4];
 
     UpgradeSlot* clickUpgradeSlot = nullptr;
@@ -116,6 +119,7 @@ private:
     const int historySize = 100;
     int historyCursor;
     int* scoreHistory = nullptr;
+    int skipNextHistoryUpdates = 0;
     QtCharts::QLineSeries* historySeries = nullptr;
     QtCharts::QChartView* historyChartView = nullptr;
     QtCharts::QLogValueAxis* historyYAxis = nullptr;
