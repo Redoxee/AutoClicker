@@ -14,6 +14,7 @@ ServerWorker::ServerWorker(QApplication* application)
     this->applicationPath = application->applicationDirPath();
 
     this->data = new ServerGameplayState();
+    this->isOwner = false;
 
     this->thread = new QThread();
     connect(this->thread, &QThread::started, this, &ServerWorker::ThreadStarted);
@@ -39,7 +40,10 @@ void ServerWorker::ThreadStarted()
 
 void ServerWorker::ThreadFinished()
 {
-    this->TerminateServer();
+    if(this->isOwner)
+    {
+        this->TerminateServer();
+    }
 }
 
 void ServerWorker::StartWorker()
@@ -154,6 +158,7 @@ void ServerWorker::StartNewServer()
     connect(this->manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(startServerRequest(QNetworkReply*)));
 
     this->reply = this->manager->get(this->request);
+    this->isOwner = true;
 }
 
 void ServerWorker::startServerRequest(QNetworkReply* httpResponse)

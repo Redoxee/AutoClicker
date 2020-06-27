@@ -76,6 +76,7 @@ private:
     const int maxAttemptCount = 100;
 
     QProcess* serverProcess = nullptr;
+    bool isOwner = false;
 
     void StartWorker();
     void PauseServer();
