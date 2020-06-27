@@ -29,6 +29,7 @@ SOURCES += \
     fancyprogressbarwrapper.cpp \
     gamewindow.cpp \
     gridprogressbar.cpp \
+    historychart.cpp \
     introscreenwidget.cpp \
     main.cpp \
     maingamewidget.cpp \
@@ -56,6 +57,7 @@ HEADERS += \
     gamesettings.h \
     gamewindow.h \
     gridprogressbar.h \
+    historychart.h \
     introscreenwidget.h \
     presentationwidget.h \
     cinematicwidget.h \

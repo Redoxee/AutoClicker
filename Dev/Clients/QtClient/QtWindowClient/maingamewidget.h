@@ -14,13 +14,6 @@
 
 #include <vector>
 
-namespace QtCharts
-{
-    class QLineSeries;
-    class QChartView;
-    class QLogValueAxis;
-};
-
 namespace ServerUtils
 {
     struct ServerGameplayState;
@@ -32,11 +25,12 @@ class ScaledProgressBar;
 class GameWindow;
 class UpgradeButton;
 class EventLogger;
+class HistoryChart;
 
 class UpgradeSlot : public QFrame
 {
 public:
-    UpgradeSlot(QWidget* parrent = nullptr);
+    UpgradeSlot(QWidget* parent = nullptr);
 
     void SetMainLabelValue(int64_t value);
     void SetSubLabelValue(int64_t value);
@@ -116,17 +110,8 @@ private:
 
     int timeAccumulator = 0;
 
-    const int historySize = 100;
-    int historyCursor;
-    int* scoreHistory = nullptr;
+    HistoryChart* historyChart = nullptr;
     int skipNextHistoryUpdates = 0;
-    QtCharts::QLineSeries* historySeries = nullptr;
-    QtCharts::QChartView* historyChartView = nullptr;
-    QtCharts::QLogValueAxis* historyYAxis = nullptr;
-
-    void pushToScoreHistory(int score);
-    void refreshHistory();
-    void resetHistory();
 
     void Update(int dt);
 

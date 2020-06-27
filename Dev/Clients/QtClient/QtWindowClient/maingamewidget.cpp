@@ -1,11 +1,5 @@
 #include "maingamewidget.h"
 
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QChart>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QLogValueAxis>
-#include <QtCharts/QChartView>
-#include <QGraphicsLayout>
 #include <QSplitter>
 #include <QScrollBar>
 #include <QMenu>
@@ -21,6 +15,7 @@
 #include "serverworker.h"
 #include "SWIUtils.h"
 #include "eventlogger.h"
+#include "historychart.h"
 
 using namespace SWIUtils;
 using namespace ServerUtils;
@@ -33,14 +28,6 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->isFinished = false;
     this->isSleeping = false;
 
-    this->scoreHistory = new int[this->historySize];
-    for(int i = 0; i < this->historySize; ++i)
-    {
-        this->scoreHistory[i] = 0;
-    }
-
-    this->historyCursor = 0;
-
     this->SetupUI();
 
     this->manager = new QNetworkAccessManager();
@@ -49,6 +36,7 @@ MainGameWidget::MainGameWidget(GameWindow* gameWindow) : QWidget(gameWindow)
     this->RefreshProgressBars(0);
 
     this->lastRefreshedFrame = -1;
+    this->skipNextHistoryUpdates = 0;
 
     connect(gameWindow->ServerWorker(), SIGNAL(RefreshGameData(ServerUtils::ServerGameplayState*)),this, SLOT(refreshData(ServerUtils::ServerGameplayState*)));
     gameWindow->ServerWorker()->RequestOrder(ServerWorker::Order::OrderStartGameplayRefresh);
@@ -70,31 +58,8 @@ void MainGameWidget::SetupUI()
     QVBoxLayout* vBoxLayout = new QVBoxLayout(this);
     vBoxLayout->setMargin(0);
 
-    this->historySeries = new QtCharts::QLineSeries();
-    QtCharts::QChart *chart = new QtCharts::QChart();
-    chart->legend()->hide();
-    chart->addSeries(this->historySeries);
-    chart->layout()->setContentsMargins(0, 0, 0, 0);
-    chart->setMargins(QMargins(0, 0, 0, 0));
-    chart->setBackgroundRoundness(0);
-
-    this->historyYAxis = new QtCharts::QLogValueAxis();
-    this->historyYAxis->setMin(0);
-    this->historyYAxis->setLabelFormat("%g bits");
-    QFont font = this->historyYAxis->labelsFont();
-    font.setPointSize(6);
-    this->historyYAxis->setLabelsFont(font);
-    this->historyYAxis->setBase(10.0);
-    this->historyYAxis->setMinorTickCount(0);
-    chart->addAxis(this->historyYAxis, Qt::AlignLeft);
-    this->historySeries->attachAxis(this->historyYAxis);
-    this->historyChartView = new QtCharts::QChartView(chart);
-    this->historyChartView->setRenderHint(QPainter::Antialiasing, true);
-    this->historyChartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    this->historyChartView->setMinimumHeight(100);
-    this->historyChartView->setMaximumHeight(100);
-
-    vBoxLayout->addWidget(this->historyChartView);
+    this->historyChart = new HistoryChart(this);
+    vBoxLayout->addWidget(this->historyChart);
 
     this->scoreSlot = new ScoreSlot(this);
     vBoxLayout->addWidget(this->scoreSlot);
@@ -201,7 +166,7 @@ void MainGameWidget::SetupUI()
 
     connect(this->prestigeSlot->UpgradeButtons->MainButton, &QPushButton::clicked, this, [this](){
         this->UpgradeButtonClick(ServerGameplayState::PrestigeIndex);
-        this->resetHistory();
+        this->historyChart->ResetHistory();
         this->skipNextHistoryUpdates = 3;
     });
     connect(this->prestigeSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::PrestigeImproveIndex);});
@@ -233,7 +198,7 @@ void MainGameWidget::SetupUI()
             this->ProgressBar[index]->setVisible(false);
         }
 
-        this->historyChartView->setVisible(false);
+        this->historyChart->setVisible(false);
     }
 }
 
@@ -393,19 +358,17 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     this->gameWindow->currentFrame = serverData->FrameCount;
 
     this->realCurrentScore = serverData->Score;
+    this->historyChart->PushToScoreHistory(serverData->Score);
 
-    this->pushToScoreHistory(serverData->Score);
-
-    int displayGap = abs(this->displayedScore - this->realCurrentScore);
-
-    if(!this->historyChartView->isVisible() && displayGap > 15000)
+    int displayGap = this->displayedScore - this->realCurrentScore;
+    if(!this->historyChart->isVisible() && abs(displayGap) > 15000)
     {
-        this->historyChartView->setVisible(true);
+        this->historyChart->setVisible(true);
     }
 
-    if(this->historyChartView->isVisible())
+    if(this->historyChart->isVisible())
     {
-        this->refreshHistory();
+        this->historyChart->RefreshHistory();
     }
 
     if(!this->isSleeping && serverData->IsSleeping())
@@ -495,74 +458,6 @@ void MainGameWidget::Update(int)
     }
 
     this->RefreshProgressBars(this->displayedScore);
-}
-
-void MainGameWidget::pushToScoreHistory(int score)
-{
-    this->scoreHistory[this->historyCursor++] = score;
-    this->historyCursor = this->historyCursor % this->historySize;
-}
-
-void MainGameWidget::refreshHistory()
-{
-    if(this->skipNextHistoryUpdates > 0)
-    {
-        this->skipNextHistoryUpdates--;
-        return;
-    }
-
-    this->historySeries->clear();
-    int maxValue = 100;
-
-    for(int i = 0; i < this->historySize; ++i)
-    {
-        int index = (this->historyCursor + i) % this->historySize;
-        int score = this->scoreHistory[index];
-        if(score > maxValue)
-        {
-            maxValue = score;
-        }
-    }
-
-    maxValue *= 1.1;
-    int minValue = 1;
-    if(maxValue > 1000)
-    {
-        minValue = maxValue / 1000;
-    }
-
-    this->historyYAxis->setMax(maxValue);
-    this->historyYAxis->setMin(minValue);
-
-    for(int i = 0; i < this->historySize; ++i)
-    {
-        int index = (this->historyCursor + i) % this->historySize;
-        int score = this->scoreHistory[index];
-
-        if(i > 0 && i < (this->historySize - 1))
-        {
-            if(score == this->scoreHistory[index - 1] && score == this->scoreHistory[index + 1])
-            {
-                continue;
-            }
-        }
-
-        if(score < 1)
-        {
-            score = 1;
-        }
-
-        float xPos = static_cast<float>(i) / static_cast<float>(this->historySize);
-        this->historySeries->append(xPos, score);
-    }
-}
-
-void MainGameWidget::resetHistory()
-{
-    for(int index = 0; index < this->historySize; ++index)
-    {
-        this->scoreHistory[index] = 0;
-    }
 }
 
 void MainGameWidget::onFinishButtonClicked()
