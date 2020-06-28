@@ -6,9 +6,10 @@
 namespace AutoClicker {
     inline unsigned long FrameLength() { return 500;}
     inline unsigned long RefreshRate() { return 250;}
+    inline std::string InitFilePath() {return "Ressources/client_init.json";};
     inline std::string BaseURI() { return "http://localhost:1414/AutoClicker?"; }
     inline std::string RelativeCoreServerPath() { return "/Server/ClickerServer.exe"; }
-    inline std::string RelativeConfigPath() { return "/Content/WizardClicker.json"; }
+    inline std::string RelativeServerConfigPath() { return "/Content/WizardClicker.json"; }
     inline int ScoreFormula(int frame)
     {
         int score = 300000 - frame * 3;

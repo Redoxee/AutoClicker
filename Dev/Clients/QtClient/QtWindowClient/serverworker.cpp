@@ -4,6 +4,7 @@
 
 #include "autoclickerconfig.h"
 #include "servergameplaystate.h"
+#include "gamesettings.h"
 
 using namespace ServerUtils;
 
@@ -42,7 +43,10 @@ void ServerWorker::ThreadFinished()
 {
     if(this->isOwner)
     {
-        this->TerminateServer();
+        if(!GameSettings::Instance()->DontKillProcessOnClose)
+        {
+            this->TerminateServer();
+        }
     }
 }
 
@@ -149,7 +153,7 @@ void ServerWorker::StartNewServer()
     });
 
     QStringList arguments;
-    arguments << "--Config" << this->applicationPath + QString::fromStdString(AutoClicker::RelativeConfigPath());
+    arguments << "--Config" << this->applicationPath + QString::fromStdString(AutoClicker::RelativeServerConfigPath());
     arguments << "--LogFile" << "GameLog.txt";
     this->serverProcess->setProgram(coreGameProcessPath);
     this->serverProcess->setArguments(arguments);

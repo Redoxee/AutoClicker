@@ -1,6 +1,8 @@
 #ifndef GAMESETTINGS_H
 #define GAMESETTINGS_H
 
+#include <QJsonObject>
+
 class GameSettings
 {
 public:
@@ -10,6 +12,8 @@ public:
     bool SkipIntroCinematic = false;
     bool SkipUpgradeReveal = false;
     bool DontKillProcessOnClose = false;
+
+    QJsonObject LoadingQuips;
 
     static GameSettings* Instance();
 

@@ -1,5 +1,13 @@
 #include "gamewindow.h"
 
+#include <QStringBuilder>
+#include <QFile>
+#include <QTextStream>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonValue>
+
 #include "autoclickerconfig.h"
 #include "introscreenwidget.h"
 #include "presentationwidget.h"
@@ -14,8 +22,57 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
     this->qApplication = application;
     this->Settings = new GameSettings();
 
-//    this->Settings->SkipUpgradeReveal = true;
-//    this->Settings->SkipIntroCinematic= true;
+    QString val;
+    QFile file;
+    file.setFileName(QString::fromStdString(AutoClicker::InitFilePath()));
+    bool loadingSuccessfull = true;
+    if(file.exists())
+    {
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        val = file.readAll();
+        file.close();
+
+        QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+        QJsonObject root = d.object();
+
+        if(root.contains(QString("SkipUpgradeReveal")))
+        {
+            this->Settings->SkipUpgradeReveal = root["SkipProgressiveReveal"].toBool();
+        }
+
+        if(root.contains(QString("SkipIntroCinematic")))
+        {
+            this->Settings->SkipIntroCinematic = root["SkipIntroCinematic"].toBool();
+        }
+
+        if(root.contains(QString("DontKillProcessOnClose")))
+        {
+            this->Settings->DontKillProcessOnClose = root["DontKillProcessOnClose"].toBool();
+        }
+
+        if(root.contains("LoadingQuips"))
+        {
+            this->Settings->LoadingQuips = root["LoadingQuips"].toObject();
+        }
+        else
+        {
+            loadingSuccessfull = false;
+        }
+    }
+    else
+    {
+        loadingSuccessfull = false;
+    }
+
+    if(!loadingSuccessfull)
+    {
+        this->setFixedSize(500, 600);
+        QLabel* errorLabel = new QLabel();
+        errorLabel->setText(QString("Something whent wrong while loading the init file : ") % QString::fromStdString(AutoClicker::InitFilePath()));
+        errorLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        errorLabel->show();
+        return;
+    }
 
     this->SetupUi();
 
@@ -29,10 +86,10 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
 
 GameWindow::~GameWindow()
 {
-    delete this->Settings;
-    this->Settings = nullptr;
     delete this->serverWorker;
     this->serverWorker = nullptr;
+    delete this->Settings;
+    this->Settings = nullptr;
 }
 
 void GameWindow::SetupUi()

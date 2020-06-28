@@ -2,17 +2,11 @@
 #include <QRandomGenerator>
 #include <QScrollBar>
 
+#include "gamesettings.h"
+
 EventLogger::EventLogger(QWidget* parent) : QFrame(parent)
 {
-    QString val;
-    QFile file;
-    file.setFileName("Ressources/LoadingQuips.json");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    val = file.readAll();
-    file.close();
-
-    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
-    QJsonObject root = d.object();
+    QJsonObject root = GameSettings::Instance()->LoadingQuips;
     QJsonArray formats = root["Formats"].toArray();
     for(int index = 0; index < formats.count(); ++index)
     {

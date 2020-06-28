@@ -6,8 +6,6 @@
 #include <QFrame>
 #include <QLabel>
 #include <QString>
-#include <QFile>
-#include <QTextStream>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
