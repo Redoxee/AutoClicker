@@ -5,8 +5,9 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QFrame>
-#include <QPushButton>
-#include <vector>
+#include <QRadioButton>
+#include <QGroupBox>
+#include <QPen>
 
 namespace QtCharts
 {
@@ -19,6 +20,14 @@ namespace QtCharts
 class HistoryChart : public QFrame
 {
     Q_OBJECT
+    const int historySize = 100;
+
+    enum class DisplayMode
+    {
+        Score,
+        Delta,
+    };
+
 public:
     HistoryChart(QWidget* parent);
 
@@ -26,9 +35,12 @@ public:
     void RefreshHistory();
     void ResetHistory();
 
+private slots:
+    void DisplayModeChangePressed(DisplayMode displayMode);
+
 private:
 
-    const int historySize = 100;
+    DisplayMode mode = DisplayMode::Score;
     int historyCursor;
     int* scoreHistory = nullptr;
     int* scoreDeltaHistory = nullptr;
@@ -37,8 +49,11 @@ private:
     QtCharts::QLogValueAxis* historyYAxis = nullptr;
     QtCharts::QChart* chart = nullptr;
 
-    QPushButton* scoreButton = nullptr;
-    QPushButton* deltaButton = nullptr;
+    QPen* scorePen = nullptr;
+    QPen* deltaPen = nullptr;
+
+    QRadioButton* scoreButton = nullptr;
+    QRadioButton* deltaButton = nullptr;
 };
 
 #endif // HISTORYCHART_H
