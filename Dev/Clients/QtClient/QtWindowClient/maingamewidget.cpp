@@ -90,7 +90,7 @@ void MainGameWidget::SetupUI()
 
         this->ProgressBar[index] = new ScaledProgressBar(scale, this);
 
-        progressLayout->addWidget(this->ProgressBar[index]);
+        progressLayout->insertWidget(0, this->ProgressBar[index]);
     }
 
     vBoxLayout->addLayout(progressLayout);
@@ -199,6 +199,16 @@ void MainGameWidget::SetupUI()
         }
 
         this->historyChart->setVisible(false);
+    }
+    else
+    {
+        for(int index = 0; index < 3; ++index)
+        {
+            this->ProgressBar[index]->setTextVisible(false);
+
+            if(index < 2)
+            this->ProgressBar[index]->setFixedHeight(8);
+        }
     }
 }
 
@@ -418,7 +428,7 @@ void MainGameWidget::RefreshProgressBars(int score)
                 this->ProgressBar[index- 1]->setTextVisible(false);
                 if(index > 2)
                 {
-                    this->ProgressBar[index- 1]->setFixedHeight(10);
+                    this->ProgressBar[index- 1]->setFixedHeight(8);
                 }
             }
         }
