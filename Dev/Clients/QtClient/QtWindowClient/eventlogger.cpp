@@ -59,6 +59,12 @@ EventLogger::EventLogger(QWidget* parent) : QFrame(parent)
 
 void EventLogger::AppendRandomLog()
 {
+    if(this->skipRandomLogCounter > 0)
+    {
+        this->skipRandomLogCounter--;
+        return;
+    }
+
     int verbIndex = this->randomGenerator->bounded(this->verbList.count());
     int fileIndex = this->randomGenerator->bounded(this->fileList.count());
     this->AppendString(this->verbList[verbIndex].arg(this->fileList[fileIndex]));
@@ -82,4 +88,20 @@ void EventLogger::AppendString(QString log)
     }
 
     this->scrollArea->verticalScrollBar()->setValue(this->scrollArea->verticalScrollBar()->maximum());
+}
+
+void EventLogger::ClearLogs()
+{
+    this->stringList->clear();
+    for(int index = 0; index < this->maxSize; ++index)
+    {
+        this->labels[index]->setText("");
+    }
+
+    this->scrollArea->verticalScrollBar()->setValue(this->scrollArea->verticalScrollBar()->maximum());
+}
+
+void EventLogger::SkipNextRandomLogs(int numberOfSkip)
+{
+    this->skipRandomLogCounter = numberOfSkip;
 }

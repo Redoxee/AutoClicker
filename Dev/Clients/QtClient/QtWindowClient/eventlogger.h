@@ -24,6 +24,8 @@ public:
 
     void AppendRandomLog();
     void AppendString(QString log);
+    void ClearLogs();
+    void SkipNextRandomLogs(int numberOfSkip);
 
 private:
     QVector<QString> verbList;
@@ -33,6 +35,8 @@ private:
     QStringList* stringList = nullptr;
     QScrollArea* scrollArea = nullptr;
     QLabel** labels = nullptr;
+
+    int skipRandomLogCounter = 0;
     const int maxSize = 30;
 };
 

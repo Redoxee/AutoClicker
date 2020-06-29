@@ -80,6 +80,11 @@ void MainGameWidget::SetupUI()
     this->eventLogger->setMinimumHeight(10);
     vBoxLayout->addWidget(eventLogger);
 
+    this->eventLogger->SkipNextRandomLogs(1);
+    this->eventLogger->AppendString("Switching to Manual installation mode.");
+    this->eventLogger->AppendString("When ready use the bottom control");
+    this->eventLogger->AppendString("to start the installation process.");
+
     QVBoxLayout* progressLayout = new QVBoxLayout();
     progressLayout->setMargin(0);
 
@@ -170,6 +175,8 @@ void MainGameWidget::SetupUI()
         this->UpgradeButtonClick(ServerGameplayState::PrestigeIndex);
         this->historyChart->ResetHistory();
         this->skipNextHistoryUpdates = 3;
+        this->eventLogger->ClearLogs();
+        this->eventLogger->AppendString("Reseting installation");
     });
     connect(this->prestigeSlot->UpgradeButtons->secondaryAction, &QAction::triggered, this, [this](){this->UpgradeButtonClick(ServerGameplayState::PrestigeImproveIndex);});
 
@@ -316,6 +323,10 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
             }
         }
     }
+    else if(((serverData->clickFactor->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached))
+    {
+        this->clickerButton->SecondaryButton->setVisible(false);
+    }
 
     if(!this->clickUpgradeSlot->isVisible())
     {
@@ -328,9 +339,16 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         }
     }
 
-    if((serverData->clickUpgradeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->isVisible())
+    if(!this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->isVisible())
     {
-        this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        if((serverData->clickUpgradeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        }
+    }
+    else if((serverData->clickUpgradeImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
+    {
+        this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
     }
 
     if(!this->firstGeneratorSlot->isVisible())
@@ -344,9 +362,16 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         }
     }
 
-    if((serverData->firstGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
+    if(!this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
     {
-        this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        if((serverData->firstGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        }
+    }
+    else if((serverData->firstGeneratorImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
+    {
+        this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
     }
 
     if(!this->secondGeneratorSlot->isVisible())
@@ -360,9 +385,16 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         }
     }
 
-    if((serverData->secondGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
+    if(!this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
     {
-        this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        if((serverData->secondGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        }
+    }
+    else if((serverData->secondGeneratorImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
+    {
+        this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
     }
 
     if(!this->prestigeSlot->isVisible())
@@ -376,9 +408,16 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         }
     }
 
-    if((serverData->prestigeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None && !this->prestigeSlot->UpgradeButtons->SecondaryButton->isVisible())
+    if(!this->prestigeSlot->UpgradeButtons->SecondaryButton->isVisible())
     {
-        this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        if((serverData->prestigeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
+        }
+    }
+    else if((serverData->prestigeImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
+    {
+        this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
     }
 
     this->clickerButton->SetMainButtonValue(clickValue);
@@ -411,7 +450,6 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
 
     if(!this->isSleeping && serverData->IsSleeping())
     {
-        // TODO Display a message here to explain why the game isnt advancing.
         // Maybe a dialog box.
         this->isSleeping = true;
 
@@ -465,9 +503,9 @@ void MainGameWidget::RefreshProgressBars(int score)
             if(index > 0)
             {
                 this->ProgressBar[index- 1]->setTextVisible(false);
-                if(index > 2)
+                if(index > 1)
                 {
-                    this->ProgressBar[index- 1]->setFixedHeight(8);
+                    this->ProgressBar[index- 2]->setFixedHeight(8);
                 }
             }
         }
