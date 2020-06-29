@@ -56,6 +56,7 @@ namespace AutoClicker
 
 		this->data->ClickTemporaryBonusDuration = configuration.TempBoostDuration;
 		this->data->WakeDuration = configuration.WakeDuration;
+		this->data->WakeTimer = configuration.WakeDuration;
 
 		this->data->CopyTo(this->initialData);
 	}

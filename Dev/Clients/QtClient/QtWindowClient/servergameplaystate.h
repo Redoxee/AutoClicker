@@ -123,7 +123,7 @@ namespace ServerUtils
 
         bool IsSleeping()
         {
-            return this->WakeTimer>0 && this->WakeDuration > 0;
+            return this->WakeTimer < 1 && this->WakeDuration > 0 && this->PassiveSpeed > 0;
         }
 
         void SetDataData(QJsonObject jsonData)

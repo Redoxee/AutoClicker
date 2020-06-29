@@ -5,6 +5,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QStringBuilder>
+#include <QMessageBox>
 
 #include "autoclickerconfig.h"
 #include "SWIUtils.h"
@@ -412,8 +413,19 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     {
         // TODO Display a message here to explain why the game isnt advancing.
         // Maybe a dialog box.
-
         this->isSleeping = true;
+
+        QMessageBox* messageBox = new QMessageBox(QMessageBox::Warning,
+        "Whoops",
+        "It seems you where looking away.\nThe installation has been paused while waiting for you.",
+        QMessageBox::NoButton, this);
+
+        messageBox->addButton("Continue installation", QMessageBox::ButtonRole::YesRole);
+        messageBox->exec();
+
+        this->handleClick();
+        this->isSleeping = false;
+
     }
 
     if(!this->isFinished && serverData->IsFinished())
