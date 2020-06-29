@@ -39,7 +39,6 @@ EventLogger::EventLogger(QWidget* parent) : QFrame(parent)
     QVBoxLayout* vLayout = new QVBoxLayout(scrollableWidget);
     scrollableWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     vLayout->setMargin(0);
-//    this->scrollArea->setWidgetResizable(true);
 
     vLayout->setSpacing(0);
     vLayout->setMargin(0);
@@ -49,7 +48,7 @@ EventLogger::EventLogger(QWidget* parent) : QFrame(parent)
     {
         this->labels[index] = new QLabel(this);
         this->labels[index]->setMinimumHeight(10);
-        this->labels[index]->setMinimumWidth(250);
+        this->labels[index]->setMinimumWidth(271);
         this->labels[index]->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
         vLayout->addWidget(this->labels[index]);
     }
