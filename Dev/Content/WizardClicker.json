@@ -193,13 +193,6 @@
 			{
 				"Type" : "Exponential",
 				"Value" : 4.0
-			},
-
-			"Lock":
-			{
-				"TargetName" : "Click_upgrade_1",
-				"Comparer" : "LesserThan",
-				"Value" : 35
 			}
 		}
 	]
