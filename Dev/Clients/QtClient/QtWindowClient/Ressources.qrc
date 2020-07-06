@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>RcRessources/DotGobbler.png</file>
+        <file>RcRessources/Gradient.png</file>
+        <file>RcRessources/hat1.png</file>
+        <file>RcRessources/hat2.png</file>
+        <file>RcRessources/hat3.png</file>
+        <file>RcRessources/Presentation.md</file>
+        <file>RcRessources/SWI_Logo3.png</file>
+        <file>RcRessources/ThankYouForPlaying.png</file>
+    </qresource>
+</RCC>
