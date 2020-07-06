@@ -37,6 +37,7 @@ public:
     void SetTooltipValue(int64_t value);
 
     void RefreshDisplay(ServerUtils::Upgrade* mainUpgrade, int mainImpactFactor, ServerUtils::Upgrade* Improve);
+    void RefreshComponentVisibility(bool mainVisible, bool mainActive, bool secondVisible, bool secondActive);
 
     QBoxLayout* MainLayout = nullptr;
     QLabel* InstanceBought = nullptr;

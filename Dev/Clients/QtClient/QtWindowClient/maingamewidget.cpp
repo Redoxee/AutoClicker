@@ -218,6 +218,11 @@ void MainGameWidget::SetupUI()
             if(index < 2)
             this->ProgressBar[index]->setFixedHeight(8);
         }
+
+        for(int index = 0; index < 3; ++index)
+        {
+            this->gameWindow->ProgressiveIllus[index]->setVisible(true);
+        }
     }
 }
 
@@ -478,7 +483,9 @@ void MainGameWidget::RefreshProgressBars(int score)
 
             if(index > 0)
             {
-                this->ProgressBar[index- 1]->setTextVisible(false);
+                this->ProgressBar[index - 1]->setTextVisible(false);
+                this->gameWindow->ProgressiveIllus[index - 1]->setVisible(true);
+
                 if(index > 1)
                 {
                     this->ProgressBar[index- 2]->setFixedHeight(8);
@@ -643,6 +650,35 @@ void UpgradeSlot::RefreshDisplay(Upgrade *mainUpgrade, int mainImpactFactor, Upg
     if(mainUpgrade->InstanceBought > 1 && !this->InstanceBought->isVisible())
     {
         this->InstanceBought->setVisible(true);
+    }
+}
+
+void UpgradeSlot::RefreshComponentVisibility(bool mainVisible, bool mainActive, bool secondVisible, bool secondActive)
+{
+    if(!mainVisible && !this->isVisible())
+    {
+        return;
+    }
+
+    if(mainVisible && !this->isVisible())
+    {
+        this->setVisible(true);
+    }
+
+    if(mainActive != this->UpgradeButtons->MainButton->isEnabled())
+    {
+        this->UpgradeButtons->MainButton->setEnabled(mainActive);
+        this->UpgradeButtons->SecondaryButton->setEnabled(mainActive);
+    }
+
+    if(secondVisible && !this->UpgradeButtons->SecondaryButton->isVisible())
+    {
+        this->UpgradeButtons->SecondaryButton->setVisible(true);
+    }
+
+    if(secondActive != this->UpgradeButtons->secondaryAction->isEnabled())
+    {
+        this->UpgradeButtons->secondaryAction->setEnabled(secondActive);
     }
 }
 
