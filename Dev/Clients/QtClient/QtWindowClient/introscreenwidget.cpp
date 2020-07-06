@@ -30,7 +30,7 @@ void IntroScreenWidget::SetupUI()
     vLayout->addSpacing(0);
 
     QLabel* illusHolder = new QLabel(this);
-    QPixmap* illus = new QPixmap("Ressources/DotGobbler.png", "png", Qt::ImageConversionFlag::AutoDither);
+    QPixmap* illus = new QPixmap(":/RcRessources/DotGobbler.png", "png", Qt::ImageConversionFlag::AutoDither);
     illusHolder->setPixmap(*illus);
     illusHolder->setFixedWidth(294);
     illusHolder->setFixedHeight(450);

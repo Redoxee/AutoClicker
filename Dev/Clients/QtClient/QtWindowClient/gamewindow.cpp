@@ -113,7 +113,7 @@ void GameWindow::SetupUi()
     this->leftWidget->setMaximumWidth(200);
     this->leftWidget->setMinimumWidth(200);
     this->leftWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-    this->leftWidget->setStyleSheet("QWidget#LeftWidget {border-image: url(Ressources/Gradient.png)} .QLabel {color : white}");
+    this->leftWidget->setStyleSheet("QWidget#LeftWidget {border-image: url(:/RcRessources/Gradient.png)} .QLabel {color : white}");
 
     this->LeftGLayout = new QGridLayout(this->leftWidget);
     this->LeftGLayout->setMargin(0);
@@ -121,28 +121,47 @@ void GameWindow::SetupUi()
     this->LeftGLayout->addLayout(this->LeftLayout, 0, 0);
     this->LeftLayout->setMargin(0);
     this->logoHolder = new QLabel(this);
-    QPixmap* logo = new QPixmap("Ressources/SWI_logo3.png");
+    QPixmap* logo = new QPixmap(":/RcRessources/SWI_Logo3.png");
     this->logoHolder->setPixmap(*logo);
     this->LeftLayout->addWidget(this->logoHolder);
 
-    this->ProgressiveIllus1 = new QLabel(this);
-    QPixmap* hat1PixMap = new QPixmap("Ressources/Hat1.png");
-    this->ProgressiveIllus1->setPixmap(*hat1PixMap);
-    this->ProgressiveIllus1->setAlignment(Qt::AlignLeft);
-    this->ProgressiveIllus1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    this->LeftLayout->addWidget(this->ProgressiveIllus1);
-    this->ProgressiveIllus2 = new QLabel(this);
-    QPixmap* hat2PixMap = new QPixmap("Ressources/Hat2.png");
-    this->ProgressiveIllus2->setPixmap(*hat2PixMap);
-    this->LeftLayout->addWidget(this->ProgressiveIllus2);
-    this->ProgressiveIllus2->setAlignment(Qt::AlignRight);
-    this->ProgressiveIllus2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    this->ProgressiveIllus3 = new QLabel(this);
-    QPixmap* hat3PixMap = new QPixmap("Ressources/Hat3.png");
-    this->ProgressiveIllus3->setPixmap(*hat3PixMap);
-    this->LeftLayout->addWidget(this->ProgressiveIllus3);
-    this->ProgressiveIllus3->setAlignment(Qt::AlignCenter);
-    this->ProgressiveIllus3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    this->ProgressiveIllus = new QLabel*[3];
+    QPixmap* hat1PixMap = new QPixmap(":/RcRessources/hat1.png");
+    this->ProgressiveIllus[0] = new QLabel(this);
+    this->ProgressiveIllus[0]->setPixmap(*hat1PixMap);
+    this->ProgressiveIllus[0]->setAlignment(Qt::AlignLeft);
+
+    QSizePolicy policy = this->ProgressiveIllus[0]->sizePolicy();
+    policy.setHorizontalPolicy(QSizePolicy::Policy::Expanding);
+    policy.setRetainSizeWhenHidden(true);
+    this->ProgressiveIllus[0]->setSizePolicy(policy);
+    this->LeftLayout->addWidget(this->ProgressiveIllus[0]);
+
+    this->ProgressiveIllus[1] = new QLabel(this);
+    QPixmap* hat2PixMap = new QPixmap(":/RcRessources/hat2.png");
+    this->ProgressiveIllus[1]->setPixmap(*hat2PixMap);
+    this->ProgressiveIllus[1]->setAlignment(Qt::AlignRight);
+
+    policy = this->ProgressiveIllus[1]->sizePolicy();
+    policy.setHorizontalPolicy(QSizePolicy::Policy::Expanding);
+    policy.setRetainSizeWhenHidden(true);
+    this->ProgressiveIllus[1]->setSizePolicy(policy);
+    this->LeftLayout->addWidget(this->ProgressiveIllus[1]);
+
+    this->ProgressiveIllus[2] = new QLabel(this);
+    QPixmap* hat3PixMap = new QPixmap(":/RcRessources/hat3.png");
+    this->ProgressiveIllus[2]->setPixmap(*hat3PixMap);
+    this->ProgressiveIllus[2]->setAlignment(Qt::AlignCenter);
+
+    policy = this->ProgressiveIllus[2]->sizePolicy();
+    policy.setHorizontalPolicy(QSizePolicy::Policy::Expanding);
+    policy.setRetainSizeWhenHidden(true);
+    this->ProgressiveIllus[2]->setSizePolicy(policy);
+    this->LeftLayout->addWidget(this->ProgressiveIllus[2]);
+
+    this->ProgressiveIllus[0]->setVisible(false);
+    this->ProgressiveIllus[1]->setVisible(false);
+    this->ProgressiveIllus[2]->setVisible(false);
 
     QSpacerItem* spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->LeftLayout->addItem(spacer);

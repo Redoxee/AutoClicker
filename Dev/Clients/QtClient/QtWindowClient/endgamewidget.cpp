@@ -181,7 +181,7 @@ void EndGameWidget::SetupUI()
 
     connect(leftDoorWrapper, &QAbstractAnimation::finished, this, [this]()
     {
-       QPixmap* logo = new QPixmap("Ressources/ThankYouForPlaying.png");
+       QPixmap* logo = new QPixmap(":/RcRessources/ThankYouForPlaying.png");
        QLabel* logoHolder = this->gameWindow->LogoHolder();
        logoHolder->setPixmap(*logo);
 

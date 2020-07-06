@@ -50,7 +50,7 @@ void PresentationWidget::SetupUI()
     this->layout->addWidget(introLabel);
 
     QStringList presentationList;
-    QFile file("Ressources/Presentation.md");
+    QFile file(":/RcRessources/Presentation.md");
     if(!file.open(QIODevice::ReadOnly)) {
         return;
     }

@@ -49,6 +49,7 @@ public:
     QGridLayout* LeftGLayout = nullptr;
 
     GameSettings* Settings;
+    QLabel** ProgressiveIllus = nullptr;
 
     int currentFrame = -1;
     inline QLabel* LogoHolder() { return this->logoHolder; };
@@ -64,10 +65,6 @@ private :
 
     QWidget* leftWidget = nullptr;
     QLabel* logoHolder = nullptr;
-
-    QLabel* ProgressiveIllus1 = nullptr;
-    QLabel* ProgressiveIllus2 = nullptr;
-    QLabel* ProgressiveIllus3 = nullptr;
 
 
     QWidget* CurrentDisplayedScreen = nullptr;
