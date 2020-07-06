@@ -34,6 +34,9 @@ EndScoreWidget::EndScoreWidget(QWidget *parent) : QWidget(parent)
         rLayout->addWidget(rBar);
         this->progressbars[i * 2] = lBar;
         this->progressbars[i * 2+ 1] = rBar;
+
+        lBar->setMaximumWidth(50);
+        rBar->setMaximumWidth(50);
     }
 
     this->centralLayout = cLayout;

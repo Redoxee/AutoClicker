@@ -65,6 +65,11 @@ private :
     QWidget* leftWidget = nullptr;
     QLabel* logoHolder = nullptr;
 
+    QLabel* ProgressiveIllus1 = nullptr;
+    QLabel* ProgressiveIllus2 = nullptr;
+    QLabel* ProgressiveIllus3 = nullptr;
+
+
     QWidget* CurrentDisplayedScreen = nullptr;
     class::ServerWorker* serverWorker = nullptr;
 };

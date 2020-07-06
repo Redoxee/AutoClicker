@@ -94,7 +94,7 @@ GameWindow::~GameWindow()
 
 void GameWindow::SetupUi()
 {
-    this->setWindowTitle("Shitty Wizard Installer");
+    this->setWindowTitle("SWInstaller");
     this->setFixedSize(500, 600);
 
     this->mainWidget = new QWidget(this);
@@ -121,28 +121,28 @@ void GameWindow::SetupUi()
     this->LeftGLayout->addLayout(this->LeftLayout, 0, 0);
     this->LeftLayout->setMargin(0);
     this->logoHolder = new QLabel(this);
-    QPixmap* logo = new QPixmap("Ressources/SWI_logo.png");
+    QPixmap* logo = new QPixmap("Ressources/SWI_logo3.png");
     this->logoHolder->setPixmap(*logo);
     this->LeftLayout->addWidget(this->logoHolder);
 
-    QLabel* hat1Holder = new QLabel(this);
+    this->ProgressiveIllus1 = new QLabel(this);
     QPixmap* hat1PixMap = new QPixmap("Ressources/Hat1.png");
-    hat1Holder->setPixmap(*hat1PixMap);
-    hat1Holder->setAlignment(Qt::AlignLeft);
-    hat1Holder->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    this->LeftLayout->addWidget(hat1Holder);
-    QLabel* hat2Holder = new QLabel(this);
+    this->ProgressiveIllus1->setPixmap(*hat1PixMap);
+    this->ProgressiveIllus1->setAlignment(Qt::AlignLeft);
+    this->ProgressiveIllus1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    this->LeftLayout->addWidget(this->ProgressiveIllus1);
+    this->ProgressiveIllus2 = new QLabel(this);
     QPixmap* hat2PixMap = new QPixmap("Ressources/Hat2.png");
-    hat2Holder->setPixmap(*hat2PixMap);
-    this->LeftLayout->addWidget(hat2Holder);
-    hat2Holder->setAlignment(Qt::AlignRight);
-    hat2Holder->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    QLabel* hat3Holder = new QLabel(this);
+    this->ProgressiveIllus2->setPixmap(*hat2PixMap);
+    this->LeftLayout->addWidget(this->ProgressiveIllus2);
+    this->ProgressiveIllus2->setAlignment(Qt::AlignRight);
+    this->ProgressiveIllus2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    this->ProgressiveIllus3 = new QLabel(this);
     QPixmap* hat3PixMap = new QPixmap("Ressources/Hat3.png");
-    hat3Holder->setPixmap(*hat3PixMap);
-    this->LeftLayout->addWidget(hat3Holder);
-    hat3Holder->setAlignment(Qt::AlignCenter);
-    hat3Holder->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    this->ProgressiveIllus3->setPixmap(*hat3PixMap);
+    this->LeftLayout->addWidget(this->ProgressiveIllus3);
+    this->ProgressiveIllus3->setAlignment(Qt::AlignCenter);
+    this->ProgressiveIllus3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     QSpacerItem* spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->LeftLayout->addItem(spacer);

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QProgressBar>
+#include <QBoxLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -13,7 +14,7 @@ class EndScoreWidget : public QWidget
 public:
     explicit EndScoreWidget(QWidget *parent = nullptr);
 
-    QLayout* centralLayout = nullptr;
+    QBoxLayout* centralLayout = nullptr;
 
     void Update(float time);
 
