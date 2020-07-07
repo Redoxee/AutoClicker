@@ -98,13 +98,13 @@ namespace SWIClientReleaseTool
             }
 
             int folderEnd = releaseFolder.LastIndexOf("\\");
-            string folderName = releaseFolder.Substring(0, folderEnd);
-            string zipName = releaseFolder;
+            string folderName = releaseFolder;
+            string zipName = releaseFolder.Substring(0, releaseFolder.Length);
             zipName += ".zip";
 
             // TODO : find a way to generalize this.
             string zipBin = "E:\\Programmes_\\7Zip\\7z.exe";
-            string zipCommand = $"{zipBin} a {zipName} {folderName}";
+            string zipCommand = $"\"{zipBin}\" a \"{zipName}\" \"{folderName}\\*\"";
 
             Console.WriteLine($"Zipping to {zipName}");
             if (!isDryRun)
