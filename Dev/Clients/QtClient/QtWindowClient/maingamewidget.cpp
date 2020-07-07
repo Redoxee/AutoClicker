@@ -283,7 +283,6 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         bonusFactor *= serverData->TempBonusFactor;
     }
 
-
     this->clickUpgradeSlot->RefreshDisplay(serverData->clickUpgrade, globalFactor, serverData->clickUpgradeImprove);
     this->firstGeneratorSlot->RefreshDisplay(serverData->firstGenerator, framePerSecond * globalFactor, serverData->firstGeneratorImprove);
     this->secondGeneratorSlot->RefreshDisplay(serverData->secondGenerator, framePerSecond * globalFactor, serverData->secondGeneratorImprove);
