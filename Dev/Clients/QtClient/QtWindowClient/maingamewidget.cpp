@@ -276,13 +276,13 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
     }
 
     bonusFactor *= globalFactor;
+    clickValue *= bonusFactor;
 
     if(serverData->TempBonusDuration > 0)
     {
         bonusFactor *= serverData->TempBonusFactor;
     }
 
-    clickValue *= bonusFactor;
 
     this->clickUpgradeSlot->RefreshDisplay(serverData->clickUpgrade, globalFactor, serverData->clickUpgradeImprove);
     this->firstGeneratorSlot->RefreshDisplay(serverData->firstGenerator, framePerSecond * globalFactor, serverData->firstGeneratorImprove);
@@ -309,97 +309,17 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
         this->clickerButton->SecondaryButton->setVisible(false);
     }
 
-    if(!this->clickUpgradeSlot->isVisible())
-    {
-        if((serverData->clickUpgrade->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            if(serverData->Score >= (serverData->clickUpgrade->Price / 2))
-            {
-                this->clickUpgradeSlot->setVisible(true);
-            }
-        }
-    }
+    bool clickUpgradeScoreConstraint = serverData->Score >= (serverData->clickUpgrade->Price / 2);
+    this->clickUpgradeSlot->RefreshComponentVisibility(serverData->clickUpgrade, serverData->clickUpgradeImprove, clickUpgradeScoreConstraint);
 
-    if(!this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->isVisible())
-    {
-        if((serverData->clickUpgradeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
-        }
-    }
-    else if((serverData->clickUpgradeImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
-    {
-        this->clickUpgradeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
-    }
+    bool firstGeneratorConstraint = serverData->Score >= (serverData->firstGenerator->Price / 2);
+    this->firstGeneratorSlot->RefreshComponentVisibility(serverData->firstGenerator, serverData->firstGeneratorImprove, firstGeneratorConstraint);
 
-    if(!this->firstGeneratorSlot->isVisible())
-    {
-        if((serverData->firstGenerator->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            if(serverData->Score >= (serverData->firstGenerator->Price / 2))
-            {
-                this->firstGeneratorSlot->setVisible(true);
-            }
-        }
-    }
+    bool secondGeneratorConstraint = serverData->Score >= (serverData->secondGenerator->Price / 2);
+    this->secondGeneratorSlot->RefreshComponentVisibility(serverData->secondGenerator, serverData->secondGeneratorImprove, secondGeneratorConstraint);
 
-    if(!this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
-    {
-        if((serverData->firstGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
-        }
-    }
-    else if((serverData->firstGeneratorImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
-    {
-        this->firstGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
-    }
-
-    if(!this->secondGeneratorSlot->isVisible())
-    {
-        if((serverData->secondGenerator->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            if(serverData->Score >= (serverData->secondGenerator->Price / 2))
-            {
-                this->secondGeneratorSlot->setVisible(true);
-            }
-        }
-    }
-
-    if(!this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->isVisible())
-    {
-        if((serverData->secondGeneratorImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(true);
-        }
-    }
-    else if((serverData->secondGeneratorImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
-    {
-        this->secondGeneratorSlot->UpgradeButtons->SecondaryButton->setVisible(false);
-    }
-
-    if(!this->prestigeSlot->isVisible())
-    {
-        if((serverData->prestige->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            if(serverData->Score >= (serverData->prestige->Price / 2))
-            {
-                this->prestigeSlot->setVisible(true);
-            }
-        }
-    }
-
-    if(!this->prestigeSlot->UpgradeButtons->SecondaryButton->isVisible())
-    {
-        if((serverData->prestigeImprove->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
-        {
-            this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(true);
-        }
-    }
-    else if((serverData->prestigeImprove->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
-    {
-        this->prestigeSlot->UpgradeButtons->SecondaryButton->setVisible(false);
-    }
+    bool prestigeConstraint = serverData->Score >= (serverData->prestige->Price / 2);
+    this->prestigeSlot->RefreshComponentVisibility(serverData->prestige, serverData->prestigeImprove, prestigeConstraint);
 
     this->clickerButton->SetMainButtonValue(clickValue);
     this->clickerButton->SetSecondaryButtonValue(serverData->clickFactor->ImpactValue, serverData->clickFactor->Price);
@@ -431,7 +351,6 @@ void MainGameWidget::refreshData(ServerGameplayState* serverData)
 
     if(!this->isSleeping && serverData->IsSleeping())
     {
-        // Maybe a dialog box.
         this->isSleeping = true;
 
         QMessageBox* messageBox = new QMessageBox(QMessageBox::Warning,
@@ -653,32 +572,30 @@ void UpgradeSlot::RefreshDisplay(Upgrade *mainUpgrade, int mainImpactFactor, Upg
     }
 }
 
-void UpgradeSlot::RefreshComponentVisibility(bool mainVisible, bool mainActive, bool secondVisible, bool secondActive)
+void UpgradeSlot::RefreshComponentVisibility(ServerUtils::Upgrade* mainUpgrade, ServerUtils::Upgrade* improve, bool scoreConstraint)
 {
-    if(!mainVisible && !this->isVisible())
+
+    if(!this->isVisible())
     {
-        return;
+        if((mainUpgrade->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            if(scoreConstraint)
+            {
+                this->setVisible(true);
+            }
+        }
     }
 
-    if(mainVisible && !this->isVisible())
+    if(!this->UpgradeButtons->SecondaryButton->isVisible())
     {
-        this->setVisible(true);
+        if((improve->FailureFlags & ~FailureFlags::NotEnoughMoney) == FailureFlags::None)
+        {
+            this->UpgradeButtons->SecondaryButton->setVisible(true);
+        }
     }
-
-    if(mainActive != this->UpgradeButtons->MainButton->isEnabled())
+    else if((improve->FailureFlags & FailureFlags::PurchaseLimitReached) == FailureFlags::PurchaseLimitReached)
     {
-        this->UpgradeButtons->MainButton->setEnabled(mainActive);
-        this->UpgradeButtons->SecondaryButton->setEnabled(mainActive);
-    }
-
-    if(secondVisible && !this->UpgradeButtons->SecondaryButton->isVisible())
-    {
-        this->UpgradeButtons->SecondaryButton->setVisible(true);
-    }
-
-    if(secondActive != this->UpgradeButtons->secondaryAction->isEnabled())
-    {
-        this->UpgradeButtons->secondaryAction->setEnabled(secondActive);
+        this->UpgradeButtons->SecondaryButton->setVisible(false);
     }
 }
 
