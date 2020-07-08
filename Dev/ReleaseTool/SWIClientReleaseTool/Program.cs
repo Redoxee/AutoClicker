@@ -18,9 +18,15 @@ namespace SWIClientReleaseTool
             }
 
             bool isDryRun = true;
-            if (args.Contains("/D"))
+            if (args.Contains("-D"))
             {
                 isDryRun = false;
+            }
+
+            bool doZip = false;
+            if(args.Contains("-Z"))
+            {
+                doZip = true;
             }
 
             string releaseFolder = args[args.Length -1];
@@ -97,21 +103,24 @@ namespace SWIClientReleaseTool
                 }
             }
 
-            int folderEnd = releaseFolder.LastIndexOf("\\");
-            string folderName = releaseFolder;
-            string zipName = releaseFolder.Substring(0, releaseFolder.Length);
-            zipName += ".zip";
-
-            // TODO : find a way to generalize this.
-            string zipBin = "E:\\Programmes_\\7Zip\\7z.exe";
-            string zipCommand = $"\"{zipBin}\" a \"{zipName}\" \"{folderName}\\*\"";
-
-            Console.WriteLine($"Zipping to {zipName}");
-            if (!isDryRun)
+            if (doZip)
             {
-                Console.WriteLine("Command");
-                Console.WriteLine(zipCommand);
-                System.Diagnostics.Process.Start(zipCommand);
+                int folderEnd = releaseFolder.LastIndexOf("\\");
+                string folderName = releaseFolder;
+                string zipName = releaseFolder.Substring(0, releaseFolder.Length);
+                zipName += ".zip";
+
+                // TODO : find a way to generalize this.
+                string zipBin = "E:\\Programmes_\\7Zip\\7z.exe";
+                string zipCommand = $"\"{zipBin}\" a \"{zipName}\" \"{folderName}\\*\"";
+
+                Console.WriteLine($"Zipping to {zipName}");
+                if (!isDryRun)
+                {
+                    Console.WriteLine("Command");
+                    Console.WriteLine(zipCommand);
+                    System.Diagnostics.Process.Start(zipCommand);
+                }
             }
         }
     }
