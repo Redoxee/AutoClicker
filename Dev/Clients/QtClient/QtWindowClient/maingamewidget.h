@@ -59,6 +59,17 @@ public:
     QLabel* FactorLabel = nullptr;
 };
 
+class ProgressContainer : public QFrame
+{
+public:
+    explicit ProgressContainer(QWidget* parent = nullptr);
+
+    static const int NumberOfProgressBars = 4;
+    ScaledProgressBar* ProgressBars[NumberOfProgressBars];
+
+    void RevealAllBars();
+};
+
 class MainGameWidget : public QWidget
 {
     Q_OBJECT
@@ -90,7 +101,7 @@ private:
 
     EventLogger* eventLogger = nullptr;
 
-    ScaledProgressBar* ProgressBar[4];
+    ProgressContainer* ProgressBars = nullptr;
 
     UpgradeSlot* clickUpgradeSlot = nullptr;
     UpgradeSlot* firstGeneratorSlot = nullptr;

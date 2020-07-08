@@ -35,7 +35,7 @@ GameWindow::GameWindow(QApplication* application, QWidget *parent)
         QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
         QJsonObject root = d.object();
 
-        if(root.contains(QString("SkipUpgradeReveal")))
+        if(root.contains(QString("SkipProgressiveReveal")))
         {
             this->Settings->SkipUpgradeReveal = root["SkipProgressiveReveal"].toBool();
         }
@@ -158,10 +158,6 @@ void GameWindow::SetupUi()
     policy.setRetainSizeWhenHidden(true);
     this->ProgressiveIllus[2]->setSizePolicy(policy);
     this->LeftLayout->addWidget(this->ProgressiveIllus[2]);
-
-    this->ProgressiveIllus[0]->setVisible(false);
-    this->ProgressiveIllus[1]->setVisible(false);
-    this->ProgressiveIllus[2]->setVisible(false);
 
     QSpacerItem* spacer = new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->LeftLayout->addItem(spacer);

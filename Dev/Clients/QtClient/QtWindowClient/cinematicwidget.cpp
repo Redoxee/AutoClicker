@@ -138,7 +138,7 @@ void CinematicWidget::SetupUI()
     vLayout->setMargin(0);
 
     QLabel* tempLabel = new QLabel();
-    tempLabel->setText("Wizzarding the game to your work station");
+    tempLabel->setText("Wizarding the game to your work station");
     QFont font = tempLabel->font();
     font.setBold(true);
     font.setPointSize(10);

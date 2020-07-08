@@ -88,17 +88,8 @@ void MainGameWidget::SetupUI()
     QVBoxLayout* progressLayout = new QVBoxLayout();
     progressLayout->setMargin(0);
 
-    this->ProgressBar[0] = new ScaledProgressBar(1000, this);
-    progressLayout->addWidget(this->ProgressBar[0]);
-
-    for(int index = 1; index < 4; ++index)
-    {
-        float scale = pow(10, 3 + 2 * index);
-
-        this->ProgressBar[index] = new ScaledProgressBar(scale, this);
-
-        progressLayout->insertWidget(0, this->ProgressBar[index]);
-    }
+    this->ProgressBars = new ProgressContainer(this);
+    vBoxLayout->addWidget(this->ProgressBars);
 
     vBoxLayout->addLayout(progressLayout);
 
@@ -204,25 +195,14 @@ void MainGameWidget::SetupUI()
 
         for(int index = 1; index < 4; ++index)
         {
-            this->ProgressBar[index]->setVisible(false);
+            this->ProgressBars->ProgressBars[index]->setVisible(false);
         }
 
         this->historyChart->setVisible(false);
     }
     else
     {
-        for(int index = 0; index < 3; ++index)
-        {
-            this->ProgressBar[index]->setTextVisible(false);
-
-            if(index < 2)
-            this->ProgressBar[index]->setFixedHeight(8);
-        }
-
-        for(int index = 0; index < 3; ++index)
-        {
-            this->gameWindow->ProgressiveIllus[index]->setVisible(true);
-        }
+        this->ProgressBars->RevealAllBars();
     }
 }
 
@@ -386,30 +366,29 @@ void MainGameWidget::RefreshProgressBars(int score)
     {
         for(int index = 0; index < numberOfbars; ++index)
         {
-            this->ProgressBar[index]->setValue(100);
+            this->ProgressBars->ProgressBars[index]->setValue(100);
         }
 
         return;
     }
 
+
     for(int index = 0; index < numberOfbars; ++index)
     {
-        this->ProgressBar[index]->SetScaledValue(displayedScore);
-        if(!this->ProgressBar[index]->isVisible() && this->ProgressBar[index]->value() > 0)
-        {
-            this->ProgressBar[index]->setVisible(true);
+        this->ProgressBars->ProgressBars[index]->SetScaledValue(displayedScore);
+    }
 
-            if(index > 0)
-            {
-                this->ProgressBar[index - 1]->setTextVisible(false);
-                this->gameWindow->ProgressiveIllus[index - 1]->setVisible(true);
+    if(!this->ProgressBars->ProgressBars[1]->isVisible() && this->ProgressBars->ProgressBars[1]->value() > 0)
+    {
+        this->ProgressBars->RevealAllBars();
 
-                if(index > 1)
-                {
-                    this->ProgressBar[index- 2]->setFixedHeight(8);
-                }
-            }
-        }
+        QMessageBox* messageBox = new QMessageBox(QMessageBox::Information,
+        "SWInstaller",
+        "Initial setup complete.\nStarting the full installation.",
+        QMessageBox::NoButton, this);
+
+        messageBox->addButton("Ok", QMessageBox::ButtonRole::YesRole);
+        messageBox->exec();
     }
 }
 
@@ -628,4 +607,41 @@ ScoreSlot::ScoreSlot(QWidget* parent): QFrame(parent)
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setFrameStyle(QFrame::Box | QFrame::Sunken);
     this->setFixedHeight(50);
+}
+
+ProgressContainer::ProgressContainer(QWidget* parent): QFrame(parent)
+{
+    QVBoxLayout* vLayout = new QVBoxLayout(this);
+    vLayout->setMargin(0);
+
+    this->ProgressBars[0] = new ScaledProgressBar(1000, this);
+    vLayout->addWidget(this->ProgressBars[0]);
+
+    for(int index = 1; index < NumberOfProgressBars; ++index)
+    {
+        float scale = pow(10, 3 + 2 * index);
+
+        this->ProgressBars[index] = new ScaledProgressBar(scale, this);
+
+        vLayout->insertWidget(0, this->ProgressBars[index]);
+    }
+
+    vLayout->addSpacing(5);
+}
+
+void ProgressContainer::RevealAllBars()
+{
+    for(int index = 1; index < NumberOfProgressBars; ++index)
+    {
+        this->ProgressBars[index]->setVisible(true);
+
+        this->ProgressBars[index - 1]->setTextVisible(false);
+
+        if(index > 1)
+        {
+            this->ProgressBars[index- 2]->setFixedHeight(8);
+        }
+    }
+
+    this->setFrameStyle(QFrame::Box | QFrame::Sunken);
 }
