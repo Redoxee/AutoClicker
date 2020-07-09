@@ -11,7 +11,7 @@
 
 	"InitialTemporaryBoostDuration" : 4,
 
-	"InitialWakeDuration" : 1000,
+	"InitialWakeDuration" : 10000,
 
 	"Upgrades" :
 	[
@@ -101,10 +101,10 @@
 			"ImpactStrategy" : 
 			{
 				"Type" : "Factor",
-				"Value" : 60
+				"Value" : 20
 			},
 
-			"BasePrice" : 200000,
+			"BasePrice" : 10000,
 			"Unique" : true,
 			"PriceStrategy" : 
 			{
@@ -116,7 +116,7 @@
 			{
 				"TargetName" : "Generator_1",
 				"Comparer" : "GeaterThan",
-				"Value" : 35
+				"Value" : 10
 			}
 		},
 
@@ -157,7 +157,7 @@
 			{
 				"TargetName" : "Generator_2",
 				"Comparer" : "GeaterThan",
-				"Value" : 35
+				"Value" : 25
 			}
 		},
 
