@@ -346,7 +346,7 @@ EndGameModuleWidget::EndGameModuleWidget(QWidget* parent, GameWindow* gameWindow
     vvLayout->setSpacing(2);
     vvLayout->setMargin(0);
 
-    this->finalScoreLabel = new QLabel("Your finalScore is");
+    this->finalScoreLabel = new QLabel("Final Score");
     this->finalScoreLabel->setAlignment(Qt::AlignCenter);
     sizePolicy = this->finalScoreLabel->sizePolicy();
     sizePolicy.setRetainSizeWhenHidden(true);
