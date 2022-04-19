@@ -3,7 +3,7 @@
 ## What is this
 
 This project is a clicker game.  
-My main inspirations are ```Coockie Clicker``` and ```Spaceplan```.  
+My main inspirations are ```Cookie Clicker``` and ```Spaceplan```.  
 The theme is a crazy bad software installer that requires you to ```"manually install"``` the program.  
 The end goal is 1 billion points (named bytes). The first playthrough is around 2 hours.  
 The central feature of this project is the fact that the gameplay and the UI are separated across two process that communicate through a Rest API.  
