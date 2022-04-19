@@ -1,9 +1,9 @@
 # Shitty Wizard Installer
 
-## What is this
+## What's this
 
 This project is a clicker game.  
-My main inspirations are ```Cookie Clicker``` and ```Spaceplan```.  
+The main inspirations are ```Cookie Clicker``` and ```Spaceplan```.  
 The theme is a crazy bad software installer that requires you to ```"manually install"``` the program.  
 The end goal is 1 billion points (named bytes). The first playthrough is around 2 hours.  
 The central feature of this project is the fact that the gameplay and the UI are separated across two process that communicate through a Rest API.  
@@ -15,13 +15,12 @@ The backend (core gameplay) is coded in C++ using RestCPP as a library for the R
 The front end (the User Interface) is coded in C++ using Qt.  
 This is also a personal project to peak out of my Unity comfort zone.
 
-## What is left to be done
+## What's left to be done
 
-* Rebalance the game.
 * Do pass of optimization and hunt for memory leaks.
 * Writing examples of middlemen clients.
 
-## What I could do after
+## What's next
 
 Ideally I would like this to be the base of some educational content. In the back of my mind I entertain the idea of searching for some gov funding so I could maintain this project and make it bloom.  
 One cool side of the architecture is that it could run on a distant server really easely. Therefore, it could be interesting to setup a server in such way that people could competes on how fast they can finish the game. I imagine leader board and all...  
